@@ -1,6 +1,6 @@
 "use client";
 
-import { Mail } from "lucide-react";
+import { Mail, Phone } from "lucide-react"; // Added Phone icon
 import Link from "next/link";
 import { BsInstagram } from "react-icons/bs";
 import { useState, useRef } from "react";
@@ -10,18 +10,22 @@ import toast, { Toaster } from "react-hot-toast";
 type FormState = {
   name: string;
   email: string;
+  phone: string; // Added phone
   customization: string;
   message: string;
   file?: File | null;
   fileBase64?: string | null;
 };
+
 type FetchError = {
   message: string;
 };
+
 const Contact = () => {
   const [form, setForm] = useState<FormState>({
     name: "",
     email: "",
+    phone: "", // Initialize phone
     customization: "",
     message: "",
     file: null,
@@ -39,8 +43,6 @@ const Contact = () => {
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
-
-      // convert file to base64
       const base64 = await fileToBase64(file);
 
       setForm((prev) => ({
@@ -57,7 +59,6 @@ const Contact = () => {
       file: null,
       fileBase64: null,
     }));
-
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
@@ -81,6 +82,7 @@ const Contact = () => {
         body: JSON.stringify({
           name: form.name,
           email: form.email,
+          phone: form.phone, // Included in API call
           customization: form.customization,
           message: form.message,
           referenceImage: form.fileBase64
@@ -100,11 +102,15 @@ const Contact = () => {
         toast.error(data.error || "Something went wrong");
         throw new Error(data.error);
       }
+
       setStatus({ type: "success", msg: "Message sent successfully!" });
       toast.success("Message sent successfully!");
+
+      // Reset form
       setForm({
         name: "",
         email: "",
+        phone: "",
         customization: "",
         message: "",
         file: null,
@@ -127,8 +133,7 @@ const Contact = () => {
           Get in Touch
         </h1>
         <p className="text-stone-500 font-light mb-8 max-w-md">
-          {` Questions about an order, collaboration inquiries, or just want to say
-          hello? We're here.`}
+          {`Questions about an order, collaboration inquiries, or just want to say hello? We're here.`}
         </p>
 
         <div className="space-y-4 mb-12">
@@ -139,6 +144,16 @@ const Contact = () => {
             <Mail size={20} />
             <span>junhaestudio@gmail.com</span>
           </Link>
+
+          {/* Added Phone display link */}
+          <Link
+            href="tel:+1234567890"
+            className="flex items-center gap-3 text-stone-800 hover:text-stone-500 transition-colors"
+          >
+            <Phone size={20} />
+            <span>+1 (234) 567-890</span>
+          </Link>
+
           <Link
             href="#"
             className="flex items-center gap-3 text-stone-800 hover:text-stone-500 transition-colors"
@@ -151,18 +166,33 @@ const Contact = () => {
 
       <div className="flex-1 bg-white p-8 border border-stone-100 shadow-sm">
         <form className="space-y-6" onSubmit={handleSubmit}>
-          <div>
-            <label className="block text-xs font-bold uppercase tracking-widest text-stone-400 mb-2">
-              Name
-            </label>
-            <input
-              type="text"
-              value={form.name}
-              onChange={(e) => setForm({ ...form, name: e.target.value })}
-              className="w-full border-b border-stone-200 py-2 focus:outline-none focus:border-stone-900 transition-colors bg-transparent"
-              placeholder="Jane Doe"
-              required
-            />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label className="block text-xs font-bold uppercase tracking-widest text-stone-400 mb-2">
+                Name
+              </label>
+              <input
+                type="text"
+                value={form.name}
+                onChange={(e) => setForm({ ...form, name: e.target.value })}
+                className="w-full border-b border-stone-200 py-2 focus:outline-none focus:border-stone-900 transition-colors bg-transparent"
+                placeholder="Jane Doe"
+                required
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs font-bold uppercase tracking-widest text-stone-400 mb-2">
+                Phone Number
+              </label>
+              <input
+                type="tel"
+                value={form.phone}
+                onChange={(e) => setForm({ ...form, phone: e.target.value })}
+                className="w-full border-b border-stone-200 py-2 focus:outline-none focus:border-stone-900 transition-colors bg-transparent"
+                placeholder="+1 (555) 000-0000"
+              />
+            </div>
           </div>
 
           <div>
@@ -209,7 +239,6 @@ const Contact = () => {
             ></textarea>
           </div>
 
-          {/* ⭐ TRENDY UPLOAD FIELD */}
           <div>
             <label className="block text-xs font-bold uppercase tracking-widest text-stone-400 mb-2">
               Upload Image (Optional)
@@ -221,7 +250,7 @@ const Contact = () => {
             >
               {!form.file ? (
                 <>
-                  <p className="text-sm text-stone-500">
+                  <p className="text-sm text-stone-500 text-center">
                     Drag & drop or click to upload a reference image
                   </p>
                   <p className="text-xs text-stone-400 mt-2">
@@ -233,11 +262,11 @@ const Contact = () => {
                   <Image
                     src={URL.createObjectURL(form.file)}
                     alt="Preview"
-                    width={800}
-                    height={800}
+                    width={112}
+                    height={112}
                     className="w-28 h-28 object-cover rounded-xl mb-3"
                   />
-                  <p className="text-sm text-stone-700 font-medium">
+                  <p className="text-sm text-stone-700 font-medium text-center">
                     {form.file.name}
                   </p>
                   <button
@@ -261,10 +290,6 @@ const Contact = () => {
                 onChange={handleFileChange}
               />
             </div>
-
-            <p className="text-xs text-stone-400 mt-2">
-              If you have a reference image, upload it here.
-            </p>
           </div>
 
           {status && (
@@ -280,7 +305,7 @@ const Contact = () => {
           <button
             type="submit"
             disabled={loading}
-            className="bg-stone-900 text-white px-8 py-3 text-sm font-medium tracking-widest uppercase hover:bg-stone-700 transition-colors disabled:opacity-60"
+            className="w-full md:w-auto bg-stone-900 text-white px-12 py-4 text-sm font-medium tracking-widest uppercase hover:bg-stone-700 transition-colors disabled:opacity-60"
           >
             {loading ? "Sending..." : "Send Message"}
           </button>

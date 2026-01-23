@@ -4,6 +4,7 @@ import { sanityClient } from "@/app/lib/sanityClient";
 type ContactFormBody = {
   name: string;
   email: string;
+  phone?: string; // Added phone (optional)
   customization: string;
   message: string;
   referenceImage?: {
@@ -17,6 +18,7 @@ type ContactFormDoc = {
   _type: "contactForm";
   name: string;
   email: string;
+  phone?: string; // Added phone
   customization: string;
   message: string;
   referenceImage?: {
@@ -37,6 +39,7 @@ export async function POST(req: NextRequest) {
   try {
     const body: ContactFormBody = await req.json();
 
+    // --- Validation ---
     if (!body.name || body.name.trim().length < 2) {
       return NextResponse.json(
         { error: "Name must be at least 2 characters long." },
@@ -50,6 +53,9 @@ export async function POST(req: NextRequest) {
         { status: 400 },
       );
     }
+
+    // Optional: Add basic phone validation if desired
+    // if (body.phone && body.phone.length < 5) { ... }
 
     if (!body.customization || body.customization.trim().length < 5) {
       return NextResponse.json(
@@ -65,14 +71,17 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    // --- Prepare Document ---
     const doc: ContactFormDoc = {
       _type: "contactForm",
       name: body.name,
       email: body.email,
+      phone: body.phone, // Map phone to the Sanity document
       customization: body.customization,
       message: body.message,
     };
 
+    // --- Handle Image Upload ---
     if (body.referenceImage) {
       doc.referenceImage = {
         _type: "image",
@@ -87,7 +96,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ message: "Submitted successfully", result });
   } catch (error) {
-    console.log(error);
+    console.error("Sanity Submission Error:", error);
     return NextResponse.json(
       { error: "Something went wrong." },
       { status: 500 },
