@@ -144,7 +144,7 @@ const ThankYouContent = () => {
     });
 
     // --- Summary Section ---
-    const finalY = (doc as any).lastAutoTable.finalY + 30;
+    const finalY = doc.lastAutoTable.finalY + 30;
     const summaryX = 350;
 
     doc.setFontSize(10);

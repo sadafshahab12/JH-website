@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
-import { Truck, Ruler, X, Plus, Minus } from "lucide-react";
+import { Truck, Ruler, X } from "lucide-react";
 
 import { useShop } from "@/app/context/ShopContext";
 import { Product, ProductVariant } from "@/app/types/productType";
@@ -65,7 +65,7 @@ const ProductDetailsPage = () => {
   >();
   const [selectedSize, setSelectedSize] = useState<ProductSize>("S");
   const [mainImage, setMainImage] = useState<string>("");
-  const [quantity, setQuantity] = useState<number>(1);
+
   const [activeTab, setActiveTab] = useState<"details" | "shipping" | "care">(
     "details",
   );
@@ -374,27 +374,7 @@ const ProductDetailsPage = () => {
               )}
             </div>
 
-            {/* Quantity */}
-            <div className="flex items-center gap-3">
-              <span className="text-xs font-bold tracking-widest text-stone-400 uppercase">
-                Quantity
-              </span>
-              <div className="flex items-center border border-stone-200 rounded-sm">
-                <button
-                  onClick={() => setQuantity((prev) => Math.max(1, prev - 1))}
-                  className="p-2 text-stone-500 hover:text-stone-900"
-                >
-                  <Minus size={16} />
-                </button>
-                <span className="px-4 text-sm font-medium">{quantity}</span>
-                <button
-                  onClick={() => setQuantity((prev) => prev + 1)}
-                  className="p-2 text-stone-500 hover:text-stone-900"
-                >
-                  <Plus size={16} />
-                </button>
-              </div>
-            </div>
+
 
             <button
               onClick={handleAddToCart}
