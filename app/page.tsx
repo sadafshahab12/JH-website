@@ -101,7 +101,7 @@ const Home = () => {
         <div className="absolute inset-0 flex items-center justify-center p-8 md:p-20 w-full text-center">
           <div className="max-w-4xl">
             <span className="inline-block py-1 px-4 border border-stone-800 rounded-full text-[10px] md:text-xs font-semibold tracking-[0.2em] mb-6 backdrop-blur-sm text-stone-900 uppercase whitespace-normal max-w-xs md:max-w-md text-center">
-              Ethically Crafted • Defined by Silence • 2026
+              Ethically Crafted • Defined by Silence • 2025
             </span>
 
             <h1 className="text-4xl  sm:text-7xl font-extrabold text-crimson sm:text-stone-950 leading-[1.1] mb-8 tracking-tight">

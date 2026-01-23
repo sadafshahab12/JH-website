@@ -8,7 +8,7 @@ import { groq } from "next-sanity";
 import { jsPDF } from "jspdf";
 import autoTable, { Color } from "jspdf-autotable";
 import { PopulatedOrder } from "../types/orderType";
-
+export const dynamic = "force-dynamic";
 const ThankYouPage = () => {
   const searchParams = useSearchParams();
   const orderNumber = searchParams.get("order");
