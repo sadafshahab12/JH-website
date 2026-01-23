@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { client } from "@/sanity/lib/client";
@@ -8,8 +8,9 @@ import { groq } from "next-sanity";
 import { jsPDF } from "jspdf";
 import autoTable, { Color } from "jspdf-autotable";
 import { PopulatedOrder } from "../types/orderType";
-export const dynamic = "force-dynamic";
-const ThankYouPage = () => {
+
+// --- Sub-component to handle SearchParams logic ---
+const ThankYouContent = () => {
   const searchParams = useSearchParams();
   const orderNumber = searchParams.get("order");
 
@@ -17,39 +18,47 @@ const ThankYouPage = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!orderNumber) return;
+    if (!orderNumber) {
+      setLoading(false);
+      return;
+    }
 
     const fetchOrder = async () => {
-      const query = groq`
-  *[_type == "order" && orderNumber == $orderNumber][0]{
-    _id,
-    orderNumber,
-    customer,
-    items[] {
-      _key,
-      product->{
-        _id,
-        name,
-        slug,
-        price
-      },
-      quantity,
-      price,
-      size,
-      color,
-      colorCode
-    },
-    subtotal,
-    shippingFee,
-    total,
-    payment
-  }`;
+      try {
+        const query = groq`
+          *[_type == "order" && orderNumber == $orderNumber][0]{
+            _id,
+            orderNumber,
+            customer,
+            items[] {
+              _key,
+              product->{
+                _id,
+                name,
+                slug,
+                price
+              },
+              quantity,
+              price,
+              size,
+              color,
+              colorCode
+            },
+            subtotal,
+            shippingFee,
+            total,
+            payment
+          }`;
 
-      const result: PopulatedOrder | null = await client.fetch(query, {
-        orderNumber,
-      });
-      setOrder(result);
-      setLoading(false);
+        const result: PopulatedOrder | null = await client.fetch(query, {
+          orderNumber,
+        });
+        setOrder(result);
+      } catch (error) {
+        console.error("Error fetching order:", error);
+      } finally {
+        setLoading(false);
+      }
     };
 
     fetchOrder();
@@ -74,7 +83,7 @@ const ThankYouPage = () => {
     doc.text("Official Order Receipt", margin, 75);
 
     // --- Order Info Box ---
-    doc.setFillColor(250, 250, 249); // stone-50
+    doc.setFillColor(250, 250, 249);
     doc.rect(margin, 100, 515, 70, "F");
 
     doc.setFontSize(10);
@@ -135,7 +144,7 @@ const ThankYouPage = () => {
     });
 
     // --- Summary Section ---
-    const finalY = doc.lastAutoTable.finalY + 30;
+    const finalY = (doc as any).lastAutoTable.finalY + 30;
     const summaryX = 350;
 
     doc.setFontSize(10);
@@ -152,7 +161,6 @@ const ThankYouPage = () => {
       align: "right",
     });
 
-    // Total Line
     doc.setDrawColor(200);
     doc.line(summaryX, finalY + 30, 540, finalY + 30);
 
@@ -164,7 +172,6 @@ const ThankYouPage = () => {
       align: "right",
     });
 
-    // --- Footer Message ---
     doc.setFontSize(9);
     doc.setFont("helvetica", "italic");
     doc.setTextColor(150);
@@ -176,7 +183,9 @@ const ThankYouPage = () => {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-stone-50">
-        <div className="text-xl font-semibold">Loading...</div>
+        <div className="text-xl font-semibold animate-pulse">
+          Loading Order Details...
+        </div>
       </div>
     );
   }
@@ -184,15 +193,20 @@ const ThankYouPage = () => {
   if (!order) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-stone-50">
-        <div className="text-xl font-semibold">Order not found</div>
+        <div className="text-center">
+          <div className="text-xl font-semibold mb-4">Order not found</div>
+          <Link href="/" className="text-stone-600 underline">
+            Return Home
+          </Link>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center  px-4 py-10">
-      <div className="w-full max-w-xl  rounded-3xl  p-6 sm:p-8 text-center">
-        <h1 className="text-2xl sm:text-3xl font-vogue font-semibold text-stone-900 mb-3 sm:mb-4">
+    <div className="min-h-screen flex items-center justify-center px-4 py-10">
+      <div className="w-full max-w-xl rounded-3xl p-6 sm:p-8 text-center">
+        <h1 className="text-2xl sm:text-3xl font-semibold text-stone-900 mb-3 sm:mb-4">
           Thank You! 🎉
         </h1>
 
@@ -235,4 +249,17 @@ const ThankYouPage = () => {
   );
 };
 
-export default ThankYouPage;
+// --- Main Page Component ---
+export default function ThankYouPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen flex items-center justify-center bg-stone-50">
+          <div className="text-xl font-semibold">Loading...</div>
+        </div>
+      }
+    >
+      <ThankYouContent />
+    </Suspense>
+  );
+}

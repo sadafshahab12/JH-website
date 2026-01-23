@@ -127,7 +127,9 @@ const CheckoutPage = () => {
 
       toast.success("Order placed successfully! 🎉");
       router.push(`/thank-you?order=${data.orderNumber}`);
-      clearCart();
+      setTimeout(() => {
+        clearCart();
+      }, 800);
     } catch (err) {
       console.error(err);
       setError("Something went wrong while placing your order");
