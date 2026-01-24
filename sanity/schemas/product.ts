@@ -195,15 +195,15 @@ export const product = defineType({
     select: {
       title: "name",
       media: "baseImage",
-      originalPrice: "originalPrice",
-      discountPrice: "discountPrice",
+      pkOriginal: "pricing.pkPrice.original",
+      pkDiscount: "pricing.pkPrice.discount",
     },
     prepare(selection) {
-      const { title, media, originalPrice, discountPrice } = selection;
+      const { title, media, pkOriginal, pkDiscount } = selection;
 
-      const priceText = discountPrice
-        ? `PKR ${discountPrice} (PKR ${originalPrice})`
-        : `PKR ${originalPrice}`;
+      const priceText = pkDiscount
+        ? `PKR ${pkDiscount} (PKR ${pkOriginal})`
+        : `PKR ${pkOriginal}`;
 
       return {
         title,

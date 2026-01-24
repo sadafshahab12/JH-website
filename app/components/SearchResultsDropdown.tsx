@@ -16,12 +16,17 @@ export default function SearchResultsDropdown() {
     client
       .fetch(
         `*[_type=="product" && name match $q][0..4]{
-          _id,
-          name,
-          slug,
-          baseImage,
-          discountPrice
-        }`,
+    _id,
+    name,
+    slug,
+    baseImage,
+    pricing {
+      pkPrice {
+        discount,
+        original
+      }
+    }
+  }`,
         { q: `${searchTerm}*` },
       )
       .then(setProducts);
@@ -55,7 +60,9 @@ export default function SearchResultsDropdown() {
               <div className="flex-1">
                 <p className="text-sm text-stone-900">{product.name}</p>
                 <p className="text-xs text-stone-500">
-                  PKR {product.discountPrice}
+                  PKR{" "}
+                  {product.pricing.pkPrice.discount ??
+                    product.pricing.pkPrice.original}
                 </p>
               </div>
             </Link>
