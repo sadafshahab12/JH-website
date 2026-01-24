@@ -11,7 +11,8 @@ import React, {
 import { Product, ProductColor } from "../types/productType";
 import { CartItem, ProductSize } from "../types/cartItems";
 import { client } from "@/sanity/lib/client";
-import { groq } from "next-sanity";
+
+import { shopContextQuery } from "../lib/query";
 
 interface ShopContextType {
   products: Product[];
@@ -26,6 +27,7 @@ interface ShopContextType {
     variantId: string,
     selectedImage: string,
     selectedPrice: number,
+    priceMode: "pk" | "intl", // NEW
   ) => void;
 
   removeFromCart: (
@@ -33,6 +35,7 @@ interface ShopContextType {
     variantId: string,
     size: ProductSize,
     colorCode: string,
+    priceMode: "pk" | "intl",
   ) => void;
 
   updateQuantity: (
@@ -56,66 +59,7 @@ export const ShopProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     const fetchProducts = async () => {
-      const data = await client.fetch(groq`
-      *[_type == "product"]{
-        _id,
-        _createdAt,
-        _updatedAt,
-        name,
-        slug,
-        originalPrice,
-        discountPrice,
-        description,
-        fit,
-        fabricDetails,
-        availableSizes,
-        category->{
-          _id,
-          title,
-          slug
-        },
-        badges[]->{
-          _id,
-          title,
-          color
-        },
-        baseImage{
-          _type,
-          asset->{
-            _id,
-            url
-          }
-        },
-        sizeGuide->{
-          _id,
-          title,
-          image{
-            _type,
-            asset->{_id, url}
-          },
-          sizes[] {
-            size,
-            chest,
-            length
-          }
-        },
-        variants[]{
-          _key,
-          id,
-          color,
-          colorCode,
-          images[] {
-            _key,
-            _type,
-            asset->{
-              _id,
-              url
-            }
-          }
-        }
-      }
-    `);
-
+      const data = await client.fetch(shopContextQuery);
       setProducts(data);
     };
 
@@ -148,6 +92,7 @@ export const ShopProvider = ({ children }: { children: ReactNode }) => {
     variantId: string,
     selectedImage: string,
     selectedPrice: number,
+    priceMode: "pk" | "intl",
   ) => {
     setCart((prev) => {
       const existingItem = prev.find(
@@ -156,7 +101,8 @@ export const ShopProvider = ({ children }: { children: ReactNode }) => {
           item.size === size &&
           item.color === color &&
           item.variantId === variantId &&
-          item.colorCode === colorCode,
+          item.colorCode === colorCode &&
+          item.priceMode === priceMode,
       );
 
       if (existingItem) {
@@ -165,7 +111,8 @@ export const ShopProvider = ({ children }: { children: ReactNode }) => {
           item.size === size &&
           item.color === color &&
           item.variantId === variantId &&
-          item.colorCode === colorCode
+          item.colorCode === colorCode &&
+          item.priceMode === priceMode
             ? { ...item, quantity: item.quantity + 1 }
             : item,
         );
@@ -183,6 +130,7 @@ export const ShopProvider = ({ children }: { children: ReactNode }) => {
           product,
           selectedImage,
           selectedPrice,
+          priceMode,
         },
       ];
     });
@@ -195,6 +143,7 @@ export const ShopProvider = ({ children }: { children: ReactNode }) => {
     variantId: string,
     size: ProductSize,
     colorCode: string,
+      priceMode: "pk" | "intl"
   ) => {
     setCart((prev) =>
       prev.filter(
@@ -203,7 +152,8 @@ export const ShopProvider = ({ children }: { children: ReactNode }) => {
             item.productId === productId &&
             item.variantId === variantId &&
             item.size === size &&
-            item.colorCode === colorCode
+            item.colorCode === colorCode &&
+            item.priceMode === priceMode
           ),
       ),
     );
@@ -235,17 +185,16 @@ export const ShopProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const cartTotal = cart.reduce(
-    (total, item) =>
-      total +
-      (item.product.discountPrice ?? item.product.originalPrice) *
-        item.quantity,
+    (total, item) => total + item.selectedPrice * item.quantity,
     0,
   );
 
   const cartCount = cart.reduce((count, item) => count + item.quantity, 0);
+
   const clearCart = () => {
     setCart([]);
   };
+
   return (
     <ShopContext.Provider
       value={{

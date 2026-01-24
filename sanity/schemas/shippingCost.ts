@@ -12,6 +12,18 @@ export default defineType({
       validation: (Rule) => Rule.required(),
     }),
     defineField({
+      name: "currency",
+      title: "Currency",
+      type: "string",
+      options: {
+        list: [
+          { title: "PKR", value: "pk" },
+          { title: "USD", value: "intl" },
+        ],
+      },
+      validation: (Rule) => Rule.required(),
+    }),
+    defineField({
       name: "city",
       title: "City",
       type: "string",
@@ -21,14 +33,15 @@ export default defineType({
       name: "shippingFee",
       title: "Shipping Fee",
       type: "number",
-      description: "Shipping cost in PKR (or your default currency)",
+      description: "Shipping cost in PKR (or in usd)",
       validation: (Rule) => Rule.required().min(0),
     }),
     defineField({
       name: "freeShippingMinOrder",
-      title: "Free Shipping Minimum Order",
+      title: "Free Shipping Minimum Quantity",
       type: "number",
-      description: "If cart total is greater than this value, shipping is free",
+      description:
+        "Minimum number of items in cart to qualify for free shipping",
       validation: (Rule) => Rule.min(0),
     }),
     defineField({

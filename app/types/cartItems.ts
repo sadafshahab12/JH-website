@@ -1,7 +1,7 @@
 import { Product } from "./productType";
 
 export type ProductSize = "XS" | "S" | "M" | "L" | "XL" | "XXL";
-
+export type PriceMode = "pk" | "intl";
 export interface CartItem {
   productId: string;
   variantId: string;
@@ -13,4 +13,5 @@ export interface CartItem {
   selectedImage: string;
   selectedPrice: number;
   selectedImageAssetId?: string;
+  priceMode: PriceMode;
 }

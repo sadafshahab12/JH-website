@@ -52,7 +52,7 @@ const CartDrawer = () => {
           ) : (
             cart.map((item) => (
               <div
-                key={`${item.variantId}-${item.size}-${item.colorCode}`}
+                key={`${item.variantId}-${item.size}-${item.colorCode}-${item.priceMode}`}
                 className="flex space-x-4"
               >
                 <div className="w-20 h-24 bg-stone-100 overflow-hidden rounded-sm shrink-0">
@@ -64,16 +64,21 @@ const CartDrawer = () => {
                     className="w-full h-full object-cover"
                   />
                 </div>
+
                 <div className="flex-1 flex flex-col justify-between">
                   <div>
                     <div className="flex justify-between items-start">
-                      <h3 className="text-sm font-medium text-stone-900 line-clamp-1">
+                      <h3 className="text-sm font-medium text-stone-900">
                         {item.product.name}
                       </h3>
-                      <p className="text-sm text-stone-900">
-                        ${item.selectedPrice * item.quantity}
-                      </p>
                     </div>
+
+                    {/* Price in next line */}
+                    <p className="text-sm text-stone-900 mt-2">
+                      {item.priceMode === "pk" ? "PKR" : "USD"}{" "}
+                      {item.selectedPrice * item.quantity}
+                    </p>
+
                     <p className="text-xs text-stone-500 mt-1">
                       {item.color} / {item.size}
                     </p>
@@ -123,6 +128,7 @@ const CartDrawer = () => {
                           item.variantId,
                           item.size,
                           item.colorCode,
+                          item.priceMode,
                         )
                       }
                       className="text-xs text-stone-400 hover:text-red-500 underline transition-colors"
@@ -140,8 +146,12 @@ const CartDrawer = () => {
           <div className="border-t border-stone-100 p-6 space-y-4 bg-stone-50">
             <div className="flex justify-between text-sm">
               <span className="text-stone-500">Subtotal</span>
-              <span className="font-medium">${cartTotal}</span>
+              <span className="font-medium">
+                {/* 💡 You can show currency here too */}
+                {cart[0].priceMode === "pk" ? "PKR" : "USD"} {cartTotal}
+              </span>
             </div>
+
             <p className="text-xs text-stone-400 text-center">
               Shipping calculated at checkout.
             </p>

@@ -40,16 +40,18 @@ export interface OrderCustomer {
 /* ---------- ORDER ITEM ---------- */
 
 export type OrderSize = "XS" | "S" | "M" | "L" | "XL" | "XXL";
+export type CurrencyMode = "pk" | "intl";
 
 export interface OrderItem {
-  product: SanityReference; // product document reference
+  _key: string;
+  product: SanityReference;
   variantId: string;
   size: OrderSize;
   color: string;
   colorCode: string;
   quantity: number;
-  price: number; // single item price
-  image?: SanityImageReference;
+  price: number;
+  priceMode: CurrencyMode;
 }
 
 /* ---------- PAYMENT ---------- */
@@ -62,15 +64,14 @@ export interface OrderPayment {
 /* ---------- STORED ORDER (SANITY) ---------- */
 
 export interface Order {
-  _id?: string; // returned by Sanity
+  _id?: string;
   _createdAt?: string;
   _type: "order";
 
-  orderNumber: string; // <-- added
-
+  orderNumber: string;
   customer: OrderCustomer;
+  currencyMode: CurrencyMode;
   items: OrderItem[];
-
   payment: OrderPayment;
 
   subtotal: number;
@@ -80,12 +81,15 @@ export interface Order {
   status: OrderStatus;
 }
 
+/* ---------- CREATE ORDER PAYLOAD ---------- */
+
 export interface CreateOrderPayload {
   _type: "order";
 
-  orderNumber?: string; // <-- added (optional because you may generate it in backend)
+  orderNumber?: string;
 
   customer: OrderCustomer;
+  currencyMode: CurrencyMode;
 
   items: {
     _key: string;
@@ -96,6 +100,7 @@ export interface CreateOrderPayload {
     colorCode: string;
     quantity: number;
     price: number;
+    priceMode: CurrencyMode;
   }[];
 
   subtotal: number;
@@ -104,9 +109,13 @@ export interface CreateOrderPayload {
 
   payment: {
     method: "EasyPaisa";
-    receiptAssetId?: string; // uploaded first
+    // Use this only if you upload receipt separately
+    receiptAssetId?: string;
   };
 }
+
+/* ---------- POPULATED ORDER TYPES ---------- */
+
 export interface PopulatedOrderItem {
   product: {
     _id: string;
@@ -120,12 +129,15 @@ export interface PopulatedOrderItem {
   colorCode: string;
   quantity: number;
   price: number;
+  priceMode: CurrencyMode;
 }
+
 export interface PopulatedOrder {
   _id?: string;
   _type: "order";
   orderNumber: string;
   customer: OrderCustomer;
+  currencyMode: CurrencyMode;
   items: PopulatedOrderItem[];
   payment: OrderPayment;
   subtotal: number;

@@ -6,6 +6,15 @@ import { sanityClient } from "@/app/lib/sanityClient";
 
 export async function POST(req: Request) {
   try {
+    // Make sure request is multipart/form-data
+    const contentType = req.headers.get("content-type") || "";
+    if (!contentType.includes("multipart/form-data")) {
+      return NextResponse.json(
+        { error: "Content-Type must be multipart/form-data" },
+        { status: 400 },
+      );
+    }
+
     const formData = await req.formData();
 
     const orderRaw = formData.get("order");
@@ -20,6 +29,14 @@ export async function POST(req: Request) {
 
     const order: CreateOrderPayload = JSON.parse(orderRaw);
 
+    // Validate required fields
+    if (!order.customer || !order.items || order.items.length === 0) {
+      return NextResponse.json(
+        { error: "Order must have customer & items" },
+        { status: 400 },
+      );
+    }
+
     let receiptAssetRef: string | undefined;
 
     /* ---------- EDGE-SAFE RECEIPT UPLOAD ---------- */
@@ -33,24 +50,25 @@ export async function POST(req: Request) {
     }
 
     /* ---------- CREATE ORDER ---------- */
-    const orderNumber = `P-${Date.now().toString().slice(-6)}-${Math.floor(Math.random() * 1000)}`;
+    const orderNumber =
+      order.orderNumber ||
+      `P-${Date.now().toString().slice(-6)}-${Math.floor(Math.random() * 1000)}`;
+
     const sanityOrder = {
       _type: "order",
       orderNumber,
       customer: order.customer,
-
-      // ✅ Add _key here
+      currencyMode: order.currencyMode,
       items: order.items.map((item) => ({
         ...item,
-        _key: uuidv4(),
+        _key: item._key || uuidv4(),
       })),
-
       subtotal: order.subtotal,
       shippingFee: order.shippingFee,
       total: order.total,
       status: "pending",
       payment: {
-        method: order.payment.method,
+        method: order.payment?.method || "EasyPaisa",
         ...(receiptAssetRef && {
           receipt: {
             _type: "file",

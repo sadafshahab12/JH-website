@@ -9,7 +9,6 @@ import { jsPDF } from "jspdf";
 import autoTable, { Color } from "jspdf-autotable";
 import { PopulatedOrder } from "../types/orderType";
 
-// --- Sub-component to handle SearchParams logic ---
 const ThankYouContent = () => {
   const searchParams = useSearchParams();
   const orderNumber = searchParams.get("order");
@@ -30,6 +29,7 @@ const ThankYouContent = () => {
             _id,
             orderNumber,
             customer,
+            currencyMode,
             items[] {
               _key,
               product->{
@@ -40,6 +40,7 @@ const ThankYouContent = () => {
               },
               quantity,
               price,
+              priceMode,
               size,
               color,
               colorCode
@@ -53,6 +54,7 @@ const ThankYouContent = () => {
         const result: PopulatedOrder | null = await client.fetch(query, {
           orderNumber,
         });
+
         setOrder(result);
       } catch (error) {
         console.error("Error fetching order:", error);
@@ -64,12 +66,17 @@ const ThankYouContent = () => {
     fetchOrder();
   }, [orderNumber]);
 
+  const getCurrencySymbol = (mode: "pk" | "intl") =>
+    mode === "pk" ? "PKR" : "USD";
+
   const downloadPDF = () => {
     if (!order) return;
 
     const doc = new jsPDF("p", "pt", "a4");
     const margin = 40;
     const accentColor: Color = [28, 25, 23];
+
+    const currency = getCurrencySymbol(order.currencyMode);
 
     // --- Header ---
     doc.setFont("helvetica", "bold");
@@ -111,13 +118,16 @@ const ThankYouContent = () => {
     doc.text(order.customer.phone, margin, 245);
 
     // --- Items Table ---
-    const rows = order.items.map((item) => [
-      item.product.name,
-      `${item.color} / ${item.size}`,
-      item.quantity.toString(),
-      `PKR ${item.price.toLocaleString()}`,
-      `PKR ${(item.price * item.quantity).toLocaleString()}`,
-    ]);
+    const rows = order.items.map((item) => {
+      const itemCurrency = getCurrencySymbol(item.priceMode);
+      return [
+        item.product.name,
+        `${item.color} / ${item.size}`,
+        item.quantity.toString(),
+        `${itemCurrency} ${item.price.toLocaleString()}`,
+        `${itemCurrency} ${(item.price * item.quantity).toLocaleString()}`,
+      ];
+    });
 
     autoTable(doc, {
       startY: 270,
@@ -152,14 +162,19 @@ const ThankYouContent = () => {
     doc.setTextColor(100);
 
     doc.text("Subtotal:", summaryX, finalY);
-    doc.text(`PKR ${order.subtotal.toLocaleString()}`, 540, finalY, {
+    doc.text(`${currency} ${order.subtotal.toLocaleString()}`, 540, finalY, {
       align: "right",
     });
 
     doc.text("Shipping Fee:", summaryX, finalY + 20);
-    doc.text(`PKR ${order.shippingFee.toLocaleString()}`, 540, finalY + 20, {
-      align: "right",
-    });
+    doc.text(
+      `${currency} ${order.shippingFee.toLocaleString()}`,
+      540,
+      finalY + 20,
+      {
+        align: "right",
+      },
+    );
 
     doc.setDrawColor(200);
     doc.line(summaryX, finalY + 30, 540, finalY + 30);
@@ -168,7 +183,7 @@ const ThankYouContent = () => {
     doc.setFont("helvetica", "bold");
     doc.setTextColor(accentColor[0], accentColor[1], accentColor[2]);
     doc.text("Total:", summaryX, finalY + 50);
-    doc.text(`PKR ${order.total.toLocaleString()}`, 540, finalY + 50, {
+    doc.text(`${currency} ${order.total.toLocaleString()}`, 540, finalY + 50, {
       align: "right",
     });
 
@@ -249,7 +264,6 @@ const ThankYouContent = () => {
   );
 };
 
-// --- Main Page Component ---
 export default function ThankYouPage() {
   return (
     <Suspense

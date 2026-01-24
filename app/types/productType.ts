@@ -40,6 +40,10 @@ export interface ProductBadge {
   title: string;
   value: string;
 }
+export interface RegionalPrice {
+  original: number;
+  discount?: number; // Optional kyunke har waqt discount nahi hota
+}
 export interface Product {
   _id: string;
   _type: "product";
@@ -54,8 +58,10 @@ export interface Product {
   availableSizes: ("S" | "M" | "L" | "XL")[];
   fit: "Regular" | "Slim" | "Oversized";
   details?: string[]; // optional
-  originalPrice: number;
-  discountPrice: number;
+  pricing: {
+    pkPrice: RegionalPrice;
+    intlPrice: RegionalPrice;
+  };
   fabricDetails?: string[]; // optional
   sizeGuide?: SizeGuide; // optional
 }

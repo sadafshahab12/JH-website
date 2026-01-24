@@ -1,11 +1,6 @@
 import { defineType, defineField } from "sanity";
 
 
-type Product = {
-  originalPrice?: number;
-  discountPrice?: number;
-};
-
 export const product = defineType({
   name: "product",
   title: "Product",
@@ -33,29 +28,37 @@ export const product = defineType({
       validation: (Rule) => Rule.required(),
     }),
 
+
+
     /* ------------------------------
-     Pricing
-    ------------------------------ */
+  Pricing Section (Updated)
+------------------------------ */
     defineField({
-      name: "originalPrice",
-      title: "Original Price",
-      type: "number",
-      validation: (Rule) => Rule.required().min(0),
-    }),
-
-    defineField({
-      name: "discountPrice",
-      title: "Discount Price",
-      type: "number",
-      validation: (Rule) =>
-        Rule.min(0).custom((value, context) => {
-          const original = (context.parent as Product).originalPrice;
-
-          if (value && original && value > original) {
-            return "Discount price cannot be higher than original price";
-          }
-          return true;
+      name: "pricing",
+      title: "Pricing & Regions",
+      type: "object",
+      fields: [
+        // Pakistan Pricing
+        defineField({
+          name: "pkPrice",
+          title: "Pakistan Price (PKR)",
+          type: "object",
+          fields: [
+            { name: "original", type: "number", title: "Original Price" },
+            { name: "discount", type: "number", title: "Discount Price" },
+          ],
         }),
+        // International Pricing
+        defineField({
+          name: "intlPrice",
+          title: "International Price (USD - Shipping Included)",
+          type: "object",
+          fields: [
+            { name: "original", type: "number", title: "Original Price" },
+            { name: "discount", type: "number", title: "Discount Price" },
+          ],
+        }),
+      ],
     }),
 
     /* ------------------------------
@@ -199,8 +202,7 @@ export const product = defineType({
       discountPrice: "discountPrice",
     },
     prepare(selection) {
-      const { title, media, originalPrice, discountPrice } =
-        selection;
+      const { title, media, originalPrice, discountPrice } = selection;
 
       const priceText = discountPrice
         ? `PKR ${discountPrice} (PKR ${originalPrice})`

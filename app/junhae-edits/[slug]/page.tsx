@@ -14,6 +14,22 @@ import Image from "next/image";
 import Link from "next/link";
 import { Review } from "@/app/types/reviewType";
 
+const getPrices = (product: Product) => {
+  const pk = product.pricing?.pkPrice;
+  const intl = product.pricing?.intlPrice;
+
+  return {
+    pk: {
+      original: pk?.original ?? 0,
+      discount: pk?.discount ?? pk?.original ?? 0,
+    },
+    intl: {
+      original: intl?.original ?? 0,
+      discount: intl?.discount ?? intl?.original ?? 0,
+    },
+  };
+};
+
 // --- REUSABLE COLOR PICKER COMPONENT ---
 const ColorPicker = ({
   product,
@@ -60,6 +76,8 @@ const ProductDetailsPage = () => {
   const slug = typeof params?.slug === "string" ? params.slug : "";
 
   const [product, setProduct] = useState<Product | undefined>();
+  const [priceMode, setPriceMode] = useState<"pk" | "intl">("pk");
+
   const [selectedVariant, setSelectedVariant] = useState<
     ProductVariant | undefined
   >();
@@ -109,14 +127,22 @@ const ProductDetailsPage = () => {
       setLoadingRelated(true);
       try {
         const res: Product[] = await client.fetch(
-          `*[_type == "product" && slug.current != $slug] [0..7]{
-            _id,
-            name,
-            slug,
-            baseImage,
-            originalPrice,
-            discountPrice
-          }`,
+          `*[_type == "product" && slug.current != $slug][0..7]{
+    _id,
+    name,
+    slug,
+    baseImage,
+    pricing{
+      pkPrice{
+        original,
+        discount
+      },
+      intlPrice{
+        original,
+        discount
+      }
+    }
+  }`,
           { slug },
         );
 
@@ -177,12 +203,19 @@ const ProductDetailsPage = () => {
 
   const handleAddToCart = () => {
     if (!product || !selectedVariant) return;
+    if (!product || !selectedVariant) return;
     if (!selectedSize) {
       setErrorMsg("Please select a size.");
       return;
     }
     setErrorMsg("");
-    const price = product.discountPrice ?? product.originalPrice;
+
+    const price =
+      priceMode === "pk"
+        ? (product.pricing.pkPrice.discount ?? product.pricing.pkPrice.original)
+        : (product.pricing.intlPrice.discount ??
+          product.pricing.intlPrice.original);
+
     const image =
       mainImage || urlFor(selectedVariant.images[0]).width(900).url();
 
@@ -194,6 +227,7 @@ const ProductDetailsPage = () => {
       selectedVariant.id,
       image,
       price,
+      priceMode, // <-- THIS WAS MISSING
     );
   };
 
@@ -234,7 +268,7 @@ const ProductDetailsPage = () => {
       </div>
     );
   }
-
+  const prices = getPrices(product);
   return (
     <div className="pt-20 sm:pt-32 pb-24 min-h-screen bg-white animate-fade-in">
       <div className="max-w-7xl mx-auto px-6 mb-6">
@@ -314,10 +348,50 @@ const ProductDetailsPage = () => {
             <h1 className="text-2xl sm:text-4xl font-vogue text-stone-900 mb-2">
               {product.name}
             </h1>
+            <div className="mb-6 space-y-1">
+              <div className="flex gap-2">
+                {priceMode === "pk" &&
+                  prices.pk.discount < prices.pk.original && (
+                    <span className="line-through text-stone-400">
+                      PKR {prices.pk.original}
+                    </span>
+                  )}
 
-            <p className="text-xl font-light text-stone-600 mb-6">
-              PKR {product.discountPrice}
-            </p>
+                {priceMode === "intl" &&
+                  prices.intl.discount < prices.intl.original && (
+                    <span className="line-through text-stone-400">
+                      USD {prices.intl.original}
+                    </span>
+                  )}
+
+                <span className="text-xl">
+                  {priceMode === "pk"
+                    ? `PKR ${prices.pk.discount}`
+                    : `USD ${prices.intl.discount}`}
+                </span>
+              </div>
+            </div>
+
+            <div className="flex gap-4 mt-3">
+              <label className="flex items-center gap-2 text-sm">
+                <input
+                  type="radio"
+                  checked={priceMode === "pk"}
+                  onChange={() => setPriceMode("pk")}
+                />
+                PKR
+              </label>
+
+              <label className="flex items-center gap-2 text-sm">
+                <input
+                  type="radio"
+                  checked={priceMode === "intl"}
+                  onChange={() => setPriceMode("intl")}
+                />
+                USD
+              </label>
+            </div>
+
             {reviews.length > 0 && (
               <div className="flex items-center gap-2 text-sm text-stone-600 mb-6">
                 <span className="text-amber-500">⭐</span>
@@ -374,8 +448,6 @@ const ProductDetailsPage = () => {
               )}
             </div>
 
-
-
             <button
               onClick={handleAddToCart}
               className="w-full bg-stone-900 text-white py-4 px-8 text-sm font-bold tracking-widest uppercase hover:bg-stone-800 transition-colors shadow-lg active:transform active:scale-[0.99]"
@@ -404,18 +476,25 @@ const ProductDetailsPage = () => {
                 {activeTab === "details" && (
                   <div className="space-y-2 animate-fade-in">
                     <p>{product.description}</p>
-                    <p>
+
+                    <div>
                       <span className="font-medium text-stone-900">
                         Fabric:
-                      </span>{" "}
-                      {product.fabricDetails?.join(", ")}
-                    </p>
+                      </span>
+                      <ul className="list-disc list-inside mt-1">
+                        {product.fabricDetails?.map((item, index) => (
+                          <li key={index}>{item}</li>
+                        ))}
+                      </ul>
+                    </div>
+
                     <p>
                       <span className="font-medium text-stone-900">Fit:</span>{" "}
                       {product.fit}
                     </p>
                   </div>
                 )}
+
                 {activeTab === "shipping" && (
                   <div className="flex items-start gap-3 animate-fade-in">
                     <Truck size={18} className="text-stone-400 mt-1 shrink-0" />
@@ -576,13 +655,40 @@ const ProductDetailsPage = () => {
                   <h3 className="text-sm font-medium text-stone-900 line-clamp-1">
                     {rp.name}
                   </h3>
-                  <div className="flex items-center gap-2">
-                    <span className="text-xs font-light text-stone-400 line-through">
-                      PKR {rp.originalPrice}
-                    </span>
-                    <span className="text-xs font-medium text-stone-900">
-                      PKR {rp.discountPrice}
-                    </span>
+                  <div className="flex flex-col gap-1">
+                    {/* PKR */}
+                    <div className="flex items-center gap-2">
+                      {rp.pricing?.pkPrice?.discount &&
+                        rp.pricing.pkPrice.discount <
+                          rp.pricing.pkPrice.original && (
+                          <span className="text-xs font-light text-stone-400 line-through">
+                            PKR {rp.pricing.pkPrice.original}
+                          </span>
+                        )}
+
+                      <span className="text-xs font-medium text-stone-900">
+                        PKR{" "}
+                        {rp.pricing?.pkPrice?.discount ??
+                          rp.pricing?.pkPrice?.original}
+                      </span>
+                    </div>
+
+                    {/* USD */}
+                    <div className="flex items-center gap-2">
+                      {rp.pricing?.intlPrice?.discount &&
+                        rp.pricing.intlPrice.discount <
+                          rp.pricing.intlPrice.original && (
+                          <span className="text-xs font-light text-stone-400 line-through">
+                            USD {rp.pricing.intlPrice.original}
+                          </span>
+                        )}
+
+                      <span className="text-xs font-medium text-stone-900">
+                        USD{" "}
+                        {rp.pricing?.intlPrice?.discount ??
+                          rp.pricing?.intlPrice?.original}
+                      </span>
+                    </div>
                   </div>
                 </div>
               </Link>
