@@ -90,14 +90,6 @@ export const order = defineType({
           title: "Order Item",
           type: "object",
           fields: [
-            // IMPORTANT: _key is required for array items
-            defineField({
-              name: "_key",
-              title: "Key",
-              type: "string",
-              hidden: true,
-            }),
-
             defineField({
               name: "product",
               title: "Product",

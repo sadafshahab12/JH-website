@@ -1,5 +1,3 @@
-
-
 import { defineField, defineType } from "sanity";
 
 export default defineType({
@@ -28,8 +26,6 @@ export default defineType({
       title: "Phone Number",
       type: "string",
       description: "Optional contact number for the client",
-      // Optional: Add regex validation if you want a specific format
-      // validation: (Rule) => Rule.regex(/^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\./0-9]*$/).error("Invalid phone number format")
     }),
 
     defineField({
