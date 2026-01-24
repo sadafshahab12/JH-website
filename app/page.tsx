@@ -25,21 +25,23 @@ const Home = () => {
       const start = Date.now();
 
       const data: Product[] = await client.fetch(groq`
-        *[_type == "product"] | order(_createdAt desc) {
-          _id,
-          _createdAt,
-          name,
-          slug,
-          baseImage,
-          originalPrice,
-          discountPrice,
-          badges[]->{
-            _key,
-            title,
-            value
-          }
-        }
-      `);
+  *[_type == "product"] | order(_createdAt desc) {
+    _id,
+    _createdAt,
+    name,
+    slug,
+    baseImage,
+    pricing{
+      pkPrice{original, discount},
+      intlPrice{original, discount}
+    },
+    badges[]->{
+      _key,
+      title,
+      value
+    }
+  }
+`);
 
       const reviewsData: ReviewWithProduct[] = await client.fetch(groq`
         *[_type == "review"] | order(_createdAt desc)[0..2]{
@@ -209,9 +211,40 @@ const Home = () => {
                   <h3 className="text-lg font-medium text-stone-900 group-hover:text-stone-600 transition-colors">
                     {product.name}
                   </h3>
-                  <p className="text-sm text-stone-500 mt-1">
-                    PKR {product.discountPrice}
-                  </p>
+                  <div className="flex flex-col gap-2 mt-2">
+                    {/* PKR Section */}
+                    <div className="flex flex-col">
+                      <div className="flex items-center gap-2">
+                        {product.pricing.pkPrice.discount && (
+                          <span className="text-stone-400 line-through text-sm">
+                            PKR{" "}
+                            {product.pricing.pkPrice.original.toLocaleString()}
+                          </span>
+                        )}
+                        <span className="text-base font-bold text-stone-950">
+                          PKR{" "}
+                          {(
+                            product.pricing.pkPrice.discount ??
+                            product.pricing.pkPrice.original
+                          ).toLocaleString()}
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* USD Section */}
+                    <div className="flex items-center gap-2">
+                      {product.pricing.intlPrice.discount && (
+                        <span className="text-stone-400 line-through text-[11px]">
+                          USD {product.pricing.intlPrice.original}
+                        </span>
+                      )}
+                      <span className="text-sm font-medium text-stone-700">
+                        USD{" "}
+                        {product.pricing.intlPrice.discount ??
+                          product.pricing.intlPrice.original}
+                      </span>
+                    </div>
+                  </div>
                 </Link>
               ))}
         </div>

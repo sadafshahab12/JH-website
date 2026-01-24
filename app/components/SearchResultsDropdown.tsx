@@ -16,17 +16,15 @@ export default function SearchResultsDropdown() {
     client
       .fetch(
         `*[_type=="product" && name match $q][0..4]{
-    _id,
-    name,
-    slug,
-    baseImage,
-    pricing {
-      pkPrice {
-        discount,
-        original
-      }
-    }
-  }`,
+          _id,
+          name,
+          slug,
+          baseImage,
+          pricing {
+            pkPrice { discount, original },
+            intlPrice { discount, original }
+          }
+        }`,
         { q: `${searchTerm}*` },
       )
       .then(setProducts);
@@ -59,11 +57,37 @@ export default function SearchResultsDropdown() {
 
               <div className="flex-1">
                 <p className="text-sm text-stone-900">{product.name}</p>
-                <p className="text-xs text-stone-500">
-                  PKR{" "}
-                  {product.pricing.pkPrice.discount ??
-                    product.pricing.pkPrice.original}
-                </p>
+
+                {/* PKR + USD */}
+                <div className="flex gap-4 text-xs mt-1">
+                  {/* PKR */}
+                  <div className="flex items-baseline gap-2">
+                    <span className="text-stone-500">PKR</span>
+                    <span className="font-semibold text-stone-900">
+                      {product.pricing.pkPrice.discount ??
+                        product.pricing.pkPrice.original}
+                    </span>
+                    {product.pricing.pkPrice.discount && (
+                      <span className="line-through text-stone-400">
+                        {product.pricing.pkPrice.original}
+                      </span>
+                    )}
+                  </div>
+
+                  {/* USD */}
+                  <div className="flex items-baseline gap-2">
+                    <span className="text-stone-500">USD</span>
+                    <span className="font-semibold text-stone-900">
+                      {product.pricing.intlPrice.discount ??
+                        product.pricing.intlPrice.original}
+                    </span>
+                    {product.pricing.intlPrice.discount && (
+                      <span className="line-through text-stone-400">
+                        {product.pricing.intlPrice.original}
+                      </span>
+                    )}
+                  </div>
+                </div>
               </div>
             </Link>
           ))}
