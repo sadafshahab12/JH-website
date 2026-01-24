@@ -1,6 +1,5 @@
 import { defineType, defineField } from "sanity";
 
-
 export const product = defineType({
   name: "product",
   title: "Product",
@@ -27,8 +26,6 @@ export const product = defineType({
       },
       validation: (Rule) => Rule.required(),
     }),
-
-
 
     /* ------------------------------
   Pricing Section (Updated)
@@ -189,7 +186,7 @@ export const product = defineType({
       title: "Fit",
       type: "string",
       options: {
-        list: ["Regular", "Oversized", "Slim"],
+        list: ["Regular", "Unisex", "Oversized", "Slim"],
       },
     }),
   ],

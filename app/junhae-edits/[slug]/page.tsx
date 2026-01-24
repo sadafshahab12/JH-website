@@ -372,24 +372,35 @@ const ProductDetailsPage = () => {
               </div>
             </div>
 
-            <div className="flex gap-4 mt-3">
-              <label className="flex items-center gap-2 text-sm">
-                <input
-                  type="radio"
-                  checked={priceMode === "pk"}
-                  onChange={() => setPriceMode("pk")}
-                />
-                PKR
-              </label>
+            <div className="mt-6 mb-6">
+              <div className="flex items-center gap-6">
+                <label className="flex items-center gap-2 text-sm">
+                  <input
+                    type="radio"
+                    checked={priceMode === "pk"}
+                    onChange={() => setPriceMode("pk")}
+                    className="w-4 h-4 accent-stone-900"
+                  />
+                  <span className="font-medium">PKR</span>
+                </label>
 
-              <label className="flex items-center gap-2 text-sm">
-                <input
-                  type="radio"
-                  checked={priceMode === "intl"}
-                  onChange={() => setPriceMode("intl")}
-                />
-                USD
-              </label>
+                <label className="flex items-center gap-2 text-sm">
+                  <input
+                    type="radio"
+                    checked={priceMode === "intl"}
+                    onChange={() => setPriceMode("intl")}
+                    className="w-4 h-4 accent-stone-900"
+                  />
+                  <span className="font-medium">USD</span>
+                </label>
+              </div>
+
+              <p className="text-xs text-stone-500 mt-3">
+                Select <span className="font-semibold text-stone-700">USD</span>{" "}
+                if you are ordering from outside Pakistan.
+              </p>
+
+              <div className="mt-4 border-t border-stone-200" />
             </div>
 
             {reviews.length > 0 && (
