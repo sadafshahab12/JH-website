@@ -287,7 +287,6 @@ const ProductDetailsPage = () => {
               className="w-full h-full object-cover animate-fade-in"
               width={1000}
               height={1000}
-              loading="lazy"
               priority
             />
           </div>
@@ -310,9 +309,8 @@ const ProductDetailsPage = () => {
                     src={imgUrl}
                     alt="Thumbnail"
                     className="w-full h-full object-cover"
-                    width={1000}
-                    height={1000}
-                    loading="lazy"
+                    width={300}
+                    height={200}
                   />
                 </button>
               );
@@ -696,7 +694,43 @@ const ProductDetailsPage = () => {
           </div>
         )}
       </div>
-
+      {/* Trust Section / Product Footer */}
+      <div className="max-w-7xl mx-auto px-6 mt-24 border-t border-stone-100 pt-16 pb-12">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
+          <div className="text-center space-y-3">
+            <div className="flex justify-center">
+              <Truck size={24} strokeWidth={1} />
+            </div>
+            <h4 className="text-xs font-bold tracking-[0.2em] uppercase">
+              Global Shipping
+            </h4>
+            <p className="text-xs text-stone-500 font-light leading-relaxed">
+              Ethically crafted in Pakistan, delivered to your doorstep anywhere
+              in the world.
+            </p>
+          </div>
+          <div className="text-center space-y-3">
+            <div className="flex justify-center text-2xl font-light">↺</div>
+            <h4 className="text-xs font-bold tracking-[0.2em] uppercase">
+              Easy Returns
+            </h4>
+            <p className="text-xs text-stone-500 font-light leading-relaxed">
+              Not the right fit? Enjoy a hassle-free 7-day return policy for all
+              unworn items.
+            </p>
+          </div>
+          <div className="text-center space-y-3">
+            <div className="flex justify-center text-2xl font-light">🛡️</div>
+            <h4 className="text-xs font-bold tracking-[0.2em] uppercase">
+              Secure Payment
+            </h4>
+            <p className="text-xs text-stone-500 font-light leading-relaxed">
+              Your data is protected. Pay securely via card, JazzCash, or bank
+              transfer.
+            </p>
+          </div>
+        </div>
+      </div>
       {/* Size Guide Modal */}
       {showSizeGuide && (
         <div

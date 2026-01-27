@@ -210,39 +210,56 @@ const Shop = () => {
           </div>
         </div>
         {/* Filters */}
-        <div className="flex justify-between items-center mb-10">
-          <div className="flex gap-5 overflow-x-auto pb-2 scrollbar-hide">
-            {categories.map((cat) => (
-              <button
-                key={cat}
-                onClick={() => setFilterCategory(cat)}
-                className={`text-sm transition-colors whitespace-nowrap ${
-                  filterCategory === cat
-                    ? "text-stone-900 font-medium border-b-2 border-stone-900"
-                    : "text-stone-400 hover:text-stone-600"
-                }`}
-              >
-                {cat}
-              </button>
-            ))}
-          </div>
-
-          <div className="flex items-center gap-2">
-            <SlidersHorizontal size={14} />
-            <select
-              value={sortOption}
-              onChange={(e) => setSortOption(e.target.value)}
-              className="text-sm bg-transparent focus:outline-none cursor-pointer"
-            >
-              {sortOptions.map((opt) => (
-                <option key={opt.value} value={opt.value}>
-                  {opt.label}
-                </option>
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-12 border-b border-stone-100 pb-6">
+          {/* Category Tabs - Optimized for Mobile Scroll */}
+          <nav className="relative overflow-hidden group">
+            <div className="flex items-center gap-8 overflow-x-auto pb-1 scrollbar-hide -mb-1">
+              {categories.map((cat) => (
+                <button
+                  key={cat}
+                  onClick={() => setFilterCategory(cat)}
+                  className={`relative text-[11px] md:text-xs uppercase tracking-[0.15em] transition-all duration-300 whitespace-nowrap pb-2 ${
+                    filterCategory === cat
+                      ? "text-stone-900 font-semibold"
+                      : "text-stone-400 hover:text-stone-600"
+                  }`}
+                >
+                  {cat}
+                  {/* Animated Underline */}
+                  <span
+                    className={`absolute bottom-0 left-0 w-full h-[1.5px] bg-stone-900 transition-transform duration-300 ${
+                      filterCategory === cat ? "scale-x-100" : "scale-x-0"
+                    }`}
+                  />
+                </button>
               ))}
-            </select>
+            </div>
+          </nav>
+
+          {/* Filter/Sort Section */}
+          <div className="flex items-center justify-between md:justify-end gap-6 border-t md:border-t-0 border-stone-100 pt-4 md:pt-0">
+            <div className="flex items-center gap-2 group cursor-pointer">
+              <SlidersHorizontal
+                size={14}
+                className="text-stone-400 group-hover:text-stone-900 transition-colors"
+              />
+              <span className="text-[11px] uppercase tracking-widest text-stone-400">
+                Sort:
+              </span>
+              <select
+                value={sortOption}
+                onChange={(e) => setSortOption(e.target.value)}
+                className="text-[11px] uppercase tracking-widest bg-transparent focus:outline-none cursor-pointer font-medium text-stone-900"
+              >
+                {sortOptions.map((opt) => (
+                  <option key={opt.value} value={opt.value}>
+                    {opt.label}
+                  </option>
+                ))}
+              </select>
+            </div>
           </div>
         </div>
-
         {/* Content Wrapper */}
         <div className="min-h-150">
           {loading ? (
@@ -386,8 +403,10 @@ const Shop = () => {
             {/* Main Description - Adjusted leading and text size for mobile */}
             <p className="text-stone-500 text-xs sm:text-sm md:text-base font-light leading-relaxed sm:leading-loose max-w-3xl mx-auto px-2">
               Welcome to{" "}
-              <span className="text-stone-900 font-vogue font-medium">Junhae Studio</span>,
-              your destination for premium
+              <span className="text-stone-900 font-vogue font-medium">
+                Junhae Studio
+              </span>
+              , your destination for premium
               <strong className="font-medium text-stone-800">
                 {" "}
                 minimalist clothing

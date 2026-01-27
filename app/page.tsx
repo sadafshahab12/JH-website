@@ -67,7 +67,6 @@ const Home = () => {
             alt="Junhae Studio Collection"
             width={1000}
             height={1000}
-            loading="lazy"
             priority
             className="w-full h-full object-cover opacity-80"
           />
@@ -281,7 +280,7 @@ const Home = () => {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {loading
               ? Array.from({ length: 3 }).map((_, idx) => (
                   <div
