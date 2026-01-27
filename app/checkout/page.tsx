@@ -442,9 +442,9 @@ const CheckoutPage = () => {
                         />
                       </div>
                       <div className="flex-1">
-                        <h4 className="text-sm font-medium text-stone-900 line-clamp-1">
+                        <h3 className="text-sm font-medium text-stone-900 line-clamp-1">
                           {item.product.name}
-                        </h4>
+                        </h3>
                         <p className="text-xs text-stone-500 mt-1">
                           {item.color} / {item.size} × {item.quantity}
                         </p>

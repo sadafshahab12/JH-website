@@ -44,13 +44,13 @@ export const metadata: Metadata = {
     title: "Junhae Studio | Minimalist Print-On-Demand Apparel",
     description:
       "Premium minimalist print-on-demand clothing for modern fashion lovers.",
-    url: "https://www.junhaestudio.com", // Ensure this matches your standard URL
+    url: "https://www.junhaestudio.com",
     siteName: "Junhae Studio",
     locale: "en_US",
     type: "website",
     images: [
       {
-        url: "https://www.junhaestudio.com/og-image.jpg", // Add a real OG image path
+        url: "https://www.junhaestudio.com/og-image.png",
         width: 1200,
         height: 630,
         alt: "Junhae Studio Minimalist Apparel",
@@ -74,7 +74,7 @@ export default function RootLayout({
     "@type": "Organization",
     name: "Junhae Studio",
     url: "https://www.junhaestudio.com",
-    logo: "https://www.junhaestudio.com/logo.png", // Ensure this path is correct
+    logo: "https://www.junhaestudio.com/logo.png",
     description: "Premium minimalist print-on-demand apparel brand.",
     address: {
       "@type": "PostalAddress",

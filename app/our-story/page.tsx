@@ -164,9 +164,9 @@ const OurStoryPage: React.FC = () => {
 
       {/* Footer / Contact */}
       <footer className="pb-20 px-6 text-center max-w-2xl mx-auto">
-        <h4 className="text-2xl font-vogue text-stone-900 mb-6">
+        <h3 className="text-2xl font-vogue text-stone-900 mb-6">
           Join Our Global Journey
-        </h4>
+        </h3>
         <div className="flex flex-col md:flex-row justify-center items-center gap-8">
           <Link
             href="https://instagram.com/junhaestudio"

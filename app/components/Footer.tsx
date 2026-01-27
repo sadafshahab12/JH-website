@@ -18,9 +18,9 @@ const Footer = () => {
           </div>
 
           <div>
-            <h4 className="text-stone-100 font-medium tracking-wider text-sm mb-6">
+            <h3 className="text-stone-100 font-medium tracking-wider text-sm mb-6">
               EXPLORE
-            </h4>
+            </h3>
             <ul className="space-y-4 text-sm font-light">
               <li>
                 <Link
@@ -58,9 +58,9 @@ const Footer = () => {
           </div>
 
           <div>
-            <h4 className="text-stone-100 font-medium tracking-wider text-sm mb-6">
+            <h3 className="text-stone-100 font-medium tracking-wider text-sm mb-6">
               SUPPORT
-            </h4>
+            </h3>
             <ul className="space-y-4 text-sm font-light">
               <li>
                 <Link

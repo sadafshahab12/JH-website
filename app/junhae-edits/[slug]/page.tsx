@@ -530,9 +530,9 @@ const ProductDetailsPage = () => {
                 {activeTab === "care" && (
                   <div className="space-y-4 animate-fade-in">
                     <div>
-                      <h4 className="text-sm font-medium text-stone-900 mb-2">
+                      <h3 className="text-sm font-medium text-stone-900 mb-2">
                         👕 Clothing Care (T-shirt / Hoodie / Sweatshirt)
-                      </h4>
+                      </h3>
                       <ul className="list-disc pl-4 space-y-1 text-sm text-stone-600">
                         <li>Machine wash cold, inside out</li>
                         <li>Use mild detergent (no bleach)</li>
@@ -701,9 +701,9 @@ const ProductDetailsPage = () => {
             <div className="flex justify-center">
               <Truck size={24} strokeWidth={1} />
             </div>
-            <h4 className="text-xs font-bold tracking-[0.2em] uppercase">
+            <h3 className="text-xs font-bold tracking-[0.2em] uppercase">
               Global Shipping
-            </h4>
+            </h3>
             <p className="text-xs text-stone-500 font-light leading-relaxed">
               Ethically crafted in Pakistan, delivered to your doorstep anywhere
               in the world.
@@ -711,9 +711,9 @@ const ProductDetailsPage = () => {
           </div>
           <div className="text-center space-y-3">
             <div className="flex justify-center text-2xl font-light">↺</div>
-            <h4 className="text-xs font-bold tracking-[0.2em] uppercase">
+            <h3 className="text-xs font-bold tracking-[0.2em] uppercase">
               Easy Returns
-            </h4>
+            </h3>
             <p className="text-xs text-stone-500 font-light leading-relaxed">
               Not the right fit? Enjoy a hassle-free 7-day return policy for all
               unworn items.
@@ -721,9 +721,9 @@ const ProductDetailsPage = () => {
           </div>
           <div className="text-center space-y-3">
             <div className="flex justify-center text-2xl font-light">🛡️</div>
-            <h4 className="text-xs font-bold tracking-[0.2em] uppercase">
+            <h3 className="text-xs font-bold tracking-[0.2em] uppercase">
               Secure Payment
-            </h4>
+            </h3>
             <p className="text-xs text-stone-500 font-light leading-relaxed">
               Your data is protected. Pay securely via card, JazzCash, or bank
               transfer.
