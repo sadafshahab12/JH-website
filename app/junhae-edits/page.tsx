@@ -293,7 +293,6 @@ const Shop = () => {
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-12 transition-opacity duration-500">
               {paginatedProducts.map((product) => {
                 const prices = getPrices(product);
-
                 return (
                   <Link
                     key={product._id}
