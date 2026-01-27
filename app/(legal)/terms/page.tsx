@@ -38,7 +38,7 @@ export default function TermsPage() {
           </p>
         </section>
 
-        {/* Section 1: Brand Philosophy - Fixed H1 to H2 */}
+        
         <section className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 border-t border-stone-50 pt-10">
           <h2 className="text-[14px] uppercase font-vogue tracking-[0.25em] font-bold text-stone-900">
             Brand Philosophy
@@ -58,7 +58,7 @@ export default function TermsPage() {
           </div>
         </section>
 
-        {/* Section 2: Orders - Fixed H1 to H2 */}
+ 
         <section className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 border-t border-stone-50 pt-10">
           <h2 className="text-[14px] uppercase tracking-[0.25em] font-vogue font-bold text-stone-900">
             Orders & Production
@@ -91,7 +91,7 @@ export default function TermsPage() {
           </div>
         </section>
 
-        {/* Section 3: Returns - Fixed H1 to H2 */}
+       
         <section className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 border-t border-stone-50 pt-10">
           <h2 className="text-[14px] uppercase tracking-[0.25em] font-vogue font-bold text-stone-900">
             Returns & Refunds

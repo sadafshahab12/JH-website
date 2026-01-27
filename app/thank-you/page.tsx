@@ -57,7 +57,6 @@ const ThankYouContent = () => {
 
     const currency = getCurrencySymbol(order.currencyMode);
 
-    // --- Header (Fixed Brand Name to Junhae Studio) ---
     doc.setFont("helvetica", "bold");
     doc.setFontSize(22);
     doc.setTextColor(accentColor[0], accentColor[1], accentColor[2]);

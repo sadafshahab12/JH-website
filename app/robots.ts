@@ -7,6 +7,6 @@ export default function robots(): MetadataRoute.Robots {
       allow: "/",
       disallow: ["/admin", "/private/"], // Disallow sensitive routes
     },
-    sitemap: "https://www.junhaestudio.com/sitemap.xml",
+    sitemap: "https:www.junhaestudio.com/sitemap.xml",
   };
 }

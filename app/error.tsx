@@ -10,7 +10,7 @@ type ErrorProps = {
 
 export default function GlobalError({ error, reset }: ErrorProps) {
   useEffect(() => {
-    // Optional: log error to monitoring service
+
     console.error("Global error:", error);
   }, [error]);
 

@@ -38,7 +38,7 @@ export default function PrivacyPage() {
           </p>
         </section>
 
-        {/* Section 1: Collection - Fixed H1 to H2 */}
+       
         <section className="grid md:grid-cols-3 gap-8 border-t border-stone-100 pt-10">
           <h2 className="text-[14px] font-vogue uppercase tracking-[0.25em] font-bold text-stone-900">
             01. Information Collection
@@ -70,7 +70,7 @@ export default function PrivacyPage() {
           </div>
         </section>
 
-        {/* Section 2: Usage - Fixed H1 to H2 */}
+  
         <section className="grid md:grid-cols-3 gap-8 border-t border-stone-100 pt-10">
           <h2 className="text-[14px] font-vogue uppercase tracking-[0.25em] font-bold text-stone-900">
             02. Data Usage
@@ -86,7 +86,7 @@ export default function PrivacyPage() {
           </div>
         </section>
 
-        {/* Section 3: Sharing - Fixed H1 to H2 */}
+
         <section className="grid md:grid-cols-3 gap-8 border-t border-stone-100 pt-10">
           <h2 className="text-[14px] uppercase font-vogue tracking-[0.25em] font-bold text-stone-900">
             03. Third Parties
@@ -103,7 +103,7 @@ export default function PrivacyPage() {
           </div>
         </section>
 
-        {/* Section 4: Rights - Fixed H1 to H2 */}
+        
         <section className="grid md:grid-cols-3 gap-8 border-t border-stone-100 pt-10">
           <h2 className="text-[14px] uppercase font-vogue tracking-[0.25em] font-bold text-stone-900">
             04. Your Rights

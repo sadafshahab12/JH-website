@@ -6,7 +6,7 @@ import { sanityClient } from "@/app/lib/sanityClient";
 
 export async function POST(req: Request) {
   try {
-    // Make sure request is multipart/form-data
+
     const contentType = req.headers.get("content-type") || "";
     if (!contentType.includes("multipart/form-data")) {
       return NextResponse.json(

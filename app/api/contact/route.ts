@@ -54,9 +54,6 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Optional: Add basic phone validation if desired
-    // if (body.phone && body.phone.length < 5) { ... }
-
     if (!body.customization || body.customization.trim().length < 5) {
       return NextResponse.json(
         { error: "Please describe your customization idea." },
@@ -76,7 +73,7 @@ export async function POST(req: NextRequest) {
       _type: "contactForm",
       name: body.name,
       email: body.email,
-      phone: body.phone, // Map phone to the Sanity document
+      phone: body.phone, 
       customization: body.customization,
       message: body.message,
     };

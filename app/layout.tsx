@@ -17,11 +17,7 @@ const outfit = Outfit({
 });
 
 export const metadata: Metadata = {
-  // 1. Updated Title (matches report) [cite: 53, 70]
   title: "Junhae Studio | Minimalist Print-On-Demand Apparel",
-
-  // 2. FIXED: Shortened Description
-  // Your previous description was 175 characters; search engines truncate at 160.
   description:
     "Shop minimalist, trendy print-on-demand apparel at Junhae Studio. Premium t-shirts and hoodies designed with modern aesthetics and ethical crafting.",
 
@@ -40,13 +36,10 @@ export const metadata: Metadata = {
     "minimalist clothing Pakistan",
   ],
 
-  // 3. FIXED: Canonical URL [cite: 95, 99]
-  // The report noted the missing canonical tag.
   alternates: {
     canonical: "https://www.junhaestudio.com",
   },
 
-  // 4. FIXED: Complete OpenGraph Tags [cite: 136, 137]
   openGraph: {
     title: "Junhae Studio | Minimalist Print-On-Demand Apparel",
     description:
@@ -65,7 +58,6 @@ export const metadata: Metadata = {
     ],
   },
 
-  // 5. ADDED: Robots.txt instruction [cite: 107, 163]
   robots: {
     index: true,
     follow: true,
