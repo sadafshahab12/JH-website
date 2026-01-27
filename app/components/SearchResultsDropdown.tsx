@@ -34,6 +34,7 @@ export default function SearchResultsDropdown() {
                     alt={product.name}
                     width={1000}
                     height={1000}
+                      loading="lazy"
                     className="object-cover"
                   />
                 )}

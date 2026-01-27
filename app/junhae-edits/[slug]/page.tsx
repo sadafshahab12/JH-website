@@ -287,6 +287,7 @@ const ProductDetailsPage = () => {
               className="w-full h-full object-cover animate-fade-in"
               width={1000}
               height={1000}
+              loading="lazy"
               priority
             />
           </div>
@@ -311,6 +312,7 @@ const ProductDetailsPage = () => {
                     className="w-full h-full object-cover"
                     width={1000}
                     height={1000}
+                    loading="lazy"
                   />
                 </button>
               );
@@ -644,6 +646,7 @@ const ProductDetailsPage = () => {
                       alt={rp.name}
                       width={1000}
                       height={1000}
+                      loading="lazy"
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                     />
                   )}

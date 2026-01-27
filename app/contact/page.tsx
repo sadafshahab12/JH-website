@@ -264,6 +264,7 @@ const Contact = () => {
                     alt="Preview"
                     width={500}
                     height={500}
+                      loading="lazy"
                     className="w-28 h-28 object-cover rounded-xl mb-3"
                   />
                   <p className="text-sm text-stone-700 font-medium text-center">

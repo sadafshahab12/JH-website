@@ -9,8 +9,9 @@ const FeaturedCard = () => {
           <Image
             src="/outstory image/our story.png"
             alt="Junhae Studio's journey into minimalist and sustainable fashion"
-            width={600}
-            height={400}
+            width={1000}
+            height={1000}
+            loading="lazy"
             className="object-cover hover:scale-105 transition-transform duration-500"
           />
         </div>
@@ -34,8 +35,9 @@ const FeaturedCard = () => {
           <Image
             src="/outstory image/how its made.png"
             alt="The ethical print-on-demand process at Junhae Studio"
-            width={600}
-            height={400}
+            width={1000}
+            height={1000}
+            loading="lazy"
             className="object-cover hover:scale-105 transition-transform duration-500"
           />
         </div>
@@ -72,8 +74,9 @@ const FeaturedCard = () => {
           <Image
             src="/outstory image/why choose us.png"
             alt="Why Junhae Studio is the choice for minimalist streetwear"
-            width={600}
-            height={400}
+            width={1000}
+            height={1000}
+            loading="lazy"
             className="object-cover hover:scale-105 transition-transform duration-500"
           />
         </div>

@@ -59,6 +59,7 @@ const CartDrawer = () => {
                     alt={item.product.name}
                     width={1000}
                     height={1000}
+                      loading="lazy"
                     className="w-full h-full object-cover"
                   />
                 </div>

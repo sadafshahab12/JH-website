@@ -67,6 +67,7 @@ const Home = () => {
             alt="Junhae Studio Collection"
             width={1000}
             height={1000}
+            loading="lazy"
             priority
             className="w-full h-full object-cover opacity-80"
           />
@@ -169,6 +170,7 @@ const Home = () => {
                         alt={product.name}
                         width={1000}
                         height={1000}
+                        loading="lazy"
                         className="..."
                       />
                     )}

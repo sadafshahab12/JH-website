@@ -76,8 +76,34 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // Schema data to help Google identify your brand
+  const organizationSchema = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    name: "Junhae Studio",
+    url: "https://www.junhaestudio.com",
+    logo: "https://www.junhaestudio.com/logo.png", // Ensure this path is correct
+    description: "Premium minimalist print-on-demand apparel brand.",
+    address: {
+      "@type": "PostalAddress",
+      addressCountry: "PK",
+    },
+    sameAs: [
+      "https://instagram.com/junhaestudio", // Apne real social links yahan dalein
+      "https://facebook.com/junhaestudioco",
+    ],
+  };
   return (
     <html lang="en">
+      <head>
+        {/* Schema Markup injection */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(organizationSchema),
+          }}
+        />
+      </head>
       <body className={`${outfit.className} ${outfit.style}  antialiased`}>
         <ShopProvider>
           <SearchProvider>

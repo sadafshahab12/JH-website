@@ -437,6 +437,7 @@ const CheckoutPage = () => {
                           alt={item.product.name}
                           width={100}
                           height={100}
+                            loading="lazy"
                           className="object-cover w-full h-full"
                         />
                       </div>

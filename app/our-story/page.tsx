@@ -64,14 +64,14 @@ const OurStoryPage: React.FC = () => {
               expression, crafted with intentionality.`}
             </p>
           </div>
-          <div className="relative h-125 w-full rounded-2xl overflow-hidden shadow-xl">
+          <div className="w-full rounded-2xl overflow-hidden shadow-xl">
             <Image
               src="/outstory image/arirang purple.jpg"
               alt="Junhae Studio aesthetic apparel - Minimalist Streetwear inspired designs made in Pakistan"
-              fill
+              width={1200}
+              height={700}
               priority
-              className="object-cover"
-              sizes="(max-width: 768px) 100vw, 50vw"
+              className="w-full h-auto object-cover rounded-2xl"
             />
           </div>
         </div>
