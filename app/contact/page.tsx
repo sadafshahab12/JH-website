@@ -1,8 +1,8 @@
 "use client";
 
-import { Mail, Phone } from "lucide-react"; // Added Phone icon
+import { Mail, Phone, BsInstagram } from "../exports/homeExports";
 import Link from "next/link";
-import { BsInstagram } from "react-icons/bs";
+
 import { useState, useRef } from "react";
 import Image from "next/image";
 import toast, { Toaster } from "react-hot-toast";
@@ -10,7 +10,7 @@ import toast, { Toaster } from "react-hot-toast";
 type FormState = {
   name: string;
   email: string;
-  phone: string; // Added phone
+  phone: string;
   customization: string;
   message: string;
   file?: File | null;
@@ -262,8 +262,8 @@ const Contact = () => {
                   <Image
                     src={URL.createObjectURL(form.file)}
                     alt="Preview"
-                    width={112}
-                    height={112}
+                    width={500}
+                    height={500}
                     className="w-28 h-28 object-cover rounded-xl mb-3"
                   />
                   <p className="text-sm text-stone-700 font-medium text-center">

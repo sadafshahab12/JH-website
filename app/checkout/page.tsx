@@ -3,7 +3,12 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useShop } from "@/app/context/ShopContext";
 import Image from "next/image";
+import { v4 as uuidv4 } from "uuid";
+import toast, { Toaster } from "react-hot-toast";
+import { useRouter } from "next/navigation";
 import {
+  client,
+  groq,
   Plus,
   Minus,
   Upload,
@@ -11,12 +16,9 @@ import {
   MapPin,
   ShoppingBag,
   CheckCircle2,
-} from "lucide-react";
-import { client } from "@/sanity/lib/client";
-import { groq } from "next-sanity";
-import { v4 as uuidv4 } from "uuid";
-import toast, { Toaster } from "react-hot-toast";
-import { useRouter } from "next/navigation";
+} from "../exports/homeExports";
+import { ShippingCostQuery } from "../lib/shippingCostQuery";
+import Link from "next/link";
 
 const CheckoutPage = () => {
   const { cart, cartTotal, updateQuantity, clearCart } = useShop();
@@ -95,15 +97,9 @@ const CheckoutPage = () => {
 
       setIsLoadingShipping(true);
       try {
-        const query = groq`
-          *[_type == "shippingCost" && lower(country) == lower($country)][0]{
-            shippingFee,
-            freeShippingMinOrder,
-            note
-          }
-        `;
-
-        const result = await client.fetch(query, { country: trimmedCountry });
+        const result = await client.fetch(ShippingCostQuery, {
+          country: trimmedCountry,
+        });
 
         if (result) {
           const threshold = result.freeShippingMinOrder || 0;
@@ -255,18 +251,21 @@ const CheckoutPage = () => {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <input
                       value={fullname}
+                      aria-label="Full Name"
                       onChange={(e) => setFullname(e.target.value)}
                       className="border border-stone-200 rounded-xl p-3 text-sm focus:ring-2 focus:ring-stone-200 outline-none"
                       placeholder="Full Name"
                     />
                     <input
                       value={phone}
+                      aria-label="Phone Number"
                       onChange={(e) => setPhone(e.target.value)}
                       className="border border-stone-200 rounded-xl p-3 text-sm focus:ring-2 focus:ring-stone-200 outline-none"
                       placeholder="Phone Number"
                     />
                     <input
                       value={email}
+                      aria-label="Email Address"
                       onChange={(e) => setEmail(e.target.value)}
                       className="border border-stone-200 rounded-xl p-3 text-sm focus:ring-2 focus:ring-stone-200 outline-none"
                       placeholder="Email Address"
@@ -274,6 +273,7 @@ const CheckoutPage = () => {
 
                     <div className="relative" ref={suggestionRef}>
                       <input
+                        aria-label="Country"
                         value={country}
                         onChange={(e) => {
                           setCountry(e.target.value);
@@ -319,6 +319,7 @@ const CheckoutPage = () => {
 
                     <input
                       value={city}
+                      aria-label="City"
                       onChange={(e) => setCity(e.target.value)}
                       className="border border-stone-200 rounded-xl p-3 text-sm focus:ring-2 focus:ring-stone-200 outline-none"
                       placeholder="City"
@@ -376,6 +377,7 @@ const CheckoutPage = () => {
                       accept="image/*,application/pdf"
                       onChange={handleReceiptUpload}
                       className="hidden"
+                      aria-label="File/Image"
                     />
                     <Upload className="w-10 h-10 text-stone-400 mb-2" />
                     <p className="text-sm font-medium text-stone-800">
@@ -529,7 +531,60 @@ const CheckoutPage = () => {
             </div>
           )}
         </div>
+        <footer className="mt-20 py-8 border-t border-stone-100 bg-white/50 backdrop-blur-sm">
+          <div className="max-w-6xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-4">
+            <div className="text-center md:text-left">
+              <span className="font-vogue text-lg tracking-tighter text-stone-900">
+                JUNHAE STUDIO
+              </span>
+              <p className="text-[10px] uppercase tracking-[0.2em] text-stone-400 mt-1">
+                Ethically Crafted • Minimalist Aesthetic
+              </p>
+            </div>
+
+            <div className="flex gap-6 text-[10px] uppercase tracking-widest text-stone-500">
+              <Link
+                href="/privacy-policy"
+                className="hover:text-stone-900 transition-colors"
+              >
+                Privacy
+              </Link>
+              <Link
+                href="/terms"
+                className="hover:text-stone-900 transition-colors"
+              >
+                Terms
+              </Link>
+              <Link
+                href="/care-instructions"
+                className="hover:text-stone-900 transition-colors"
+              >
+                Care Guide
+              </Link>
+            </div>
+
+            <div className="text-[10px] text-stone-300 tracking-widest">
+              © 2026 DEFINED BY SILENCE
+            </div>
+          </div>
+        </footer>
       </div>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "CheckoutPage",
+            name: "Secure Checkout | Junhae Studio",
+            description:
+              "Finalize your order for ethically crafted minimalist apparel.",
+            provider: {
+              "@type": "Organization",
+              name: "Junhae Studio",
+            },
+          }),
+        }}
+      />
     </div>
   );
 };

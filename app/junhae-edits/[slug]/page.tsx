@@ -2,17 +2,24 @@
 
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
-import { Truck, Ruler, X } from "lucide-react";
+import {
+  Truck,
+  Ruler,
+  X,
+  useShop,
+  urlFor,
+  client,
+  Product,
+  ProductSize,
+  ProductVariant,
+  Review,
+} from "../../exports/homeExports";
 
-import { useShop } from "@/app/context/ShopContext";
-import { Product, ProductVariant } from "@/app/types/productType";
-import { urlFor } from "@/sanity/lib/image";
-import { ProductSize } from "@/app/types/cartItems";
-import { client } from "@/sanity/lib/client";
-import { query } from "@/app/lib/query";
 import Image from "next/image";
 import Link from "next/link";
-import { Review } from "@/app/types/reviewType";
+import { productDetailRelatedQuery } from "@/app/lib/productDetailRelatedQuery";
+import { productDetailPageReview } from "@/app/lib/reviewDataQuery";
+import { productDetailBySlugQuery } from "@/app/lib/productDetailBySlugQuery";
 
 const getPrices = (product: Product) => {
   const pk = product.pricing?.pkPrice;
@@ -108,7 +115,9 @@ const ProductDetailsPage = () => {
 
       setLoadingProduct(true);
       try {
-        const res: Product = await client.fetch(query, { slug });
+        const res: Product = await client.fetch(productDetailBySlugQuery, {
+          slug,
+        });
         setProduct(res);
       } catch (error) {
         console.error("Failed to fetch product:", error);
@@ -126,25 +135,9 @@ const ProductDetailsPage = () => {
     async function fetchRelatedProducts() {
       setLoadingRelated(true);
       try {
-        const res: Product[] = await client.fetch(
-          `*[_type == "product" && slug.current != $slug][0..7]{
-    _id,
-    name,
-    slug,
-    baseImage,
-    pricing{
-      pkPrice{
-        original,
-        discount
-      },
-      intlPrice{
-        original,
-        discount
-      }
-    }
-  }`,
-          { slug },
-        );
+        const res: Product[] = await client.fetch(productDetailRelatedQuery, {
+          slug,
+        });
 
         const shuffled = res.sort(() => Math.random() - 0.5);
         setRelatedProducts(shuffled.slice(0, 4));
@@ -164,16 +157,9 @@ const ProductDetailsPage = () => {
     async function fetchReviews() {
       setLoadingReviews(true);
       try {
-        const res = await client.fetch(
-          `*[_type == "review" && product._ref == $productId] | order(createdAt desc){
-            _id,
-            name,
-            rating,
-            comment,
-            createdAt
-          }`,
-          { productId: product?._id },
-        );
+        const res = await client.fetch(productDetailPageReview, {
+          productId: product?._id,
+        });
 
         setReviews(res);
       } catch (error) {
@@ -191,13 +177,13 @@ const ProductDetailsPage = () => {
     const firstVariant = product.variants[0];
     setSelectedVariant(firstVariant);
     if (firstVariant.images?.[0]) {
-      setMainImage(urlFor(firstVariant.images[0]).width(900).url());
+      setMainImage(urlFor(firstVariant.images[0]).width(1000).url());
     }
   }, [product]);
 
   useEffect(() => {
     if (selectedVariant?.images?.[0]) {
-      setMainImage(urlFor(selectedVariant.images[0]).width(900).url());
+      setMainImage(urlFor(selectedVariant.images[0]).width(1000).url());
     }
   }, [selectedVariant]);
 
@@ -217,7 +203,7 @@ const ProductDetailsPage = () => {
           product.pricing.intlPrice.original);
 
     const image =
-      mainImage || urlFor(selectedVariant.images[0]).width(900).url();
+      mainImage || urlFor(selectedVariant.images[0]).width(1000).url();
 
     addToCart(
       product,
@@ -299,16 +285,16 @@ const ProductDetailsPage = () => {
               src={mainImage}
               alt={product.name}
               className="w-full h-full object-cover animate-fade-in"
-              width={800}
-              height={800}
+              width={1000}
+              height={1000}
               priority
             />
           </div>
 
           <div className="grid grid-cols-4 gap-4">
             {selectedVariant.images.map((img) => {
-              const imgUrl = urlFor(img).width(300).url();
-              const fullUrl = urlFor(img).width(900).url();
+              const imgUrl = urlFor(img).width(10300).url();
+              const fullUrl = urlFor(img).width(1000).url();
               return (
                 <button
                   key={img._key}
@@ -323,8 +309,8 @@ const ProductDetailsPage = () => {
                     src={imgUrl}
                     alt="Thumbnail"
                     className="w-full h-full object-cover"
-                    width={300}
-                    height={300}
+                    width={1000}
+                    height={1000}
                   />
                 </button>
               );
@@ -461,7 +447,7 @@ const ProductDetailsPage = () => {
 
             <button
               onClick={handleAddToCart}
-              className="w-full bg-stone-900 text-white py-4 px-8 text-sm font-bold tracking-widest uppercase hover:bg-stone-800 transition-colors shadow-lg active:transform active:scale-[0.99]"
+              className="w-full bg-stone-900 text-white py-4 px-8 text-sm font-bold tracking-widest uppercase hover:bg-stone-1000 transition-colors shadow-lg active:transform active:scale-[0.99]"
             >
               Add to Cart
             </button>
@@ -656,8 +642,8 @@ const ProductDetailsPage = () => {
                     <Image
                       src={urlFor(rp.baseImage).width(600).url()}
                       alt={rp.name}
-                      width={800}
-                      height={800}
+                      width={1000}
+                      height={1000}
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                     />
                   )}

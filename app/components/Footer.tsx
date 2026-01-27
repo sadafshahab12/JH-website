@@ -1,5 +1,4 @@
 import Link from "next/link";
-import React from "react";
 
 const Footer = () => {
   return (
@@ -11,10 +10,10 @@ const Footer = () => {
               Junhae Studio
             </h3>
             <p className="text-sm font-light leading-relaxed max-w-sm">
-              Junhae Studio is a global print-on-demand clothing brand offering
-              minimalist and aesthetic apparel. Designed for modern creatives,
-              our sustainable, ethically crafted pieces are available for
-              worldwide shipping.
+              <span className="font-vogue">Junhae Studio</span> is a global
+              print-on-demand clothing brand offering minimalist and aesthetic
+              apparel. Designed for modern creatives, our sustainable, ethically
+              crafted pieces are available for worldwide shipping.
             </p>
           </div>
 
@@ -101,8 +100,9 @@ const Footer = () => {
 
         <div className="border-t border-stone-800 pt-8 flex flex-col md:flex-row justify-between items-center text-xs font-light">
           <p>
-            &copy; {new Date().getFullYear()} Junhae Studio. Minimalist fashion
-            brand with worldwide shipping & ethical production.
+            &copy; {new Date().getFullYear()}{" "}
+            <span className="font-vogue">Junhae Studio</span>. Minimalist
+            fashion brand with worldwide shipping & ethical production.
           </p>
 
           <div className="flex space-x-6 mt-4 md:mt-0">
@@ -113,7 +113,7 @@ const Footer = () => {
               Terms
             </Link>
             <Link
-              href="/privacy"
+              href="/privacy-policy"
               className="hover:text-stone-100 transition-colors"
             >
               Privacy

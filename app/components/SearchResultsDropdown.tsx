@@ -3,31 +3,15 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import { useSearch } from "../context/searchContext";
-import { Product } from "../types/productType";
-import { urlFor } from "@/sanity/lib/image";
-import { client } from "@/sanity/lib/client";
+import { urlFor, client, Product, useSearch } from "../exports/homeExports";
+import { searchResultQuery } from "../lib/searchResultQuery";
 
 export default function SearchResultsDropdown() {
   const { searchTerm, setSearchTerm } = useSearch();
   const [products, setProducts] = useState<Product[]>([]);
 
   useEffect(() => {
-    client
-      .fetch(
-        `*[_type=="product" && name match $q][0..4]{
-          _id,
-          name,
-          slug,
-          baseImage,
-          pricing {
-            pkPrice { discount, original },
-            intlPrice { discount, original }
-          }
-        }`,
-        { q: `${searchTerm}*` },
-      )
-      .then(setProducts);
+    client.fetch(searchResultQuery, { q: `${searchTerm}*` }).then(setProducts);
   }, [searchTerm]);
 
   if (!searchTerm) return null;
@@ -48,8 +32,8 @@ export default function SearchResultsDropdown() {
                   <Image
                     src={urlFor(product.baseImage).width(200).url()}
                     alt={product.name}
-                    width={800}
-                    height={800}
+                    width={1000}
+                    height={1000}
                     className="object-cover"
                   />
                 )}
@@ -96,7 +80,7 @@ export default function SearchResultsDropdown() {
           <Link
             href="/junhae-edits"
             onClick={() => setSearchTerm("")}
-            className="block text-center text-xs tracking-widest uppercase py-3 bg-stone-900 text-white hover:bg-stone-800 transition"
+            className="block text-center text-xs tracking-widest uppercase py-3 bg-stone-900 text-white hover:bg-stone-1000 transition"
           >
             View all results
           </Link>

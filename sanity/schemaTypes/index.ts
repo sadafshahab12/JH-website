@@ -8,6 +8,7 @@ import review from "../schemas/review";
 import shippingCost from "../schemas/shippingCost";
 import { sizeGuide } from "../schemas/sizeGuide";
 
+
 export const schema: { types: SchemaTypeDefinition[] } = {
   types: [
     product,

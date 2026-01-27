@@ -11,8 +11,7 @@ import React, {
 import { Product, ProductColor } from "../types/productType";
 import { CartItem, ProductSize } from "../types/cartItems";
 import { client } from "@/sanity/lib/client";
-
-import { shopContextQuery } from "../lib/query";
+import { shopContextQuery } from "../lib/shopContextQuery";
 
 interface ShopContextType {
   products: Product[];
@@ -143,7 +142,7 @@ export const ShopProvider = ({ children }: { children: ReactNode }) => {
     variantId: string,
     size: ProductSize,
     colorCode: string,
-      priceMode: "pk" | "intl"
+    priceMode: "pk" | "intl",
   ) => {
     setCart((prev) =>
       prev.filter(

@@ -5,9 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { SlidersHorizontal } from "lucide-react";
 
-import { client } from "@/sanity/lib/client";
-import { urlFor } from "@/sanity/lib/image";
-import { useSearch } from "../context/searchContext";
+import { client, urlFor, useSearch } from "../exports/homeExports";
 import { Product, ProductVariant, ProductBadge } from "../types/productType";
 
 /* ----------------------------------
@@ -191,8 +189,8 @@ const Shop = () => {
             <Image
               src="/junhae-edits-image/junhaestudio header background image.png"
               alt="Junhae Studio collection background"
-              width={800}
-              height={800}
+              width={1000}
+              height={1000}
               className="object-cover w-full h-full"
               priority
             />
@@ -204,13 +202,10 @@ const Shop = () => {
           {/* Overlay Content */}
           <div className="relative z-10 p-6 sm:p-8 rounded-3xl">
             <h1 className="text-3xl sm:text-4xl font-vogue text-white mb-4 text-center sm:text-left">
-              Shop Junhae Studio Collection
+              Minimalist Streetwear & Apparel | Junhae Studio Collection
             </h1>
             <p className="text-stone-200 text-sm sm:text-[16px] font-light max-w-2xl text-center sm:text-left">
-              Explore our premium print-on-demand essentials — ethically
-              crafted, minimalist apparel designed for modern creatives. Shop
-              our best-selling tees, hoodies, and sweatshirts with global
-              shipping and effortless style.
+              {`  Explore our premium minimalist streetwear essentials — ethically crafted, sustainable print-on-demand apparel designed for modern creatives. Shop our best-selling minimalist tees, hoodies, and sweatshirts with fast global shipping and effortless aesthetic style.`}
             </p>
           </div>
         </div>
@@ -291,11 +286,11 @@ const Shop = () => {
                     <div className="aspect-3/4 bg-stone-50 overflow-hidden mb-3 relative">
                       {product.baseImage && (
                         <Image
-                          src={urlFor(product.baseImage).width(800).url()}
+                          src={urlFor(product.baseImage).width(1000).url()}
                           alt={product.name}
-                          fill
-                          sizes="(max-width: 768px) 50vw, 25vw"
-                          className="object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
+                          width={1500}
+                          height={1500}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
                         />
                       )}
 
@@ -373,6 +368,83 @@ const Shop = () => {
           </div>
         )}
       </div>
+      {/* SEO Optimized Collection Info Section */}
+      <section className="mt-16 sm:mt-24 md:mt-32 py-12 sm:py-20 border-t border-stone-100 bg-[#FCFCFC]">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 text-center">
+          {/* Screen Reader Only Heading for SEO */}
+          <h2 className="sr-only">About Junhae Studio Minimalist Fashion</h2>
+
+          {/* Decorative Line - Responsive width */}
+          <div className="w-8 sm:w-12 h-px bg-stone-300 mx-auto mb-6 sm:mb-10" />
+
+          <div className="space-y-4 sm:space-y-8">
+            {/* Responsive Heading */}
+            <h3 className="text-lg sm:text-xl md:text-2xl font-vogue text-stone-900 tracking-[0.15em] sm:tracking-wide">
+              The Essence of Junhae Studio
+            </h3>
+
+            {/* Main Description - Adjusted leading and text size for mobile */}
+            <p className="text-stone-500 text-xs sm:text-sm md:text-base font-light leading-relaxed sm:leading-loose max-w-3xl mx-auto px-2">
+              Welcome to{" "}
+              <span className="text-stone-900 font-vogue font-medium">Junhae Studio</span>,
+              your destination for premium
+              <strong className="font-medium text-stone-800">
+                {" "}
+                minimalist clothing
+              </strong>{" "}
+              and
+              <strong className="font-medium text-stone-800">
+                {" "}
+                aesthetic streetwear
+              </strong>
+              . Our collection features
+              <strong className="font-medium text-stone-800">
+                {" "}
+                ethically made hoodies
+              </strong>
+              ,
+              <strong className="font-medium text-stone-800">
+                {" "}
+                oversized tees
+              </strong>
+              , and
+              <strong className="font-medium text-stone-800">
+                {" "}
+                sustainable fashion
+              </strong>{" "}
+              pieces that define modern simplicity.
+            </p>
+
+            {/* Sub-text - Italicized and subtle */}
+            <p className="text-stone-400 text-[10px] sm:text-xs md:text-sm font-light leading-relaxed max-w-2xl mx-auto italic px-4">
+              Based on a print-on-demand model, we reduce waste while delivering
+              high-quality
+              <span className="border-b border-stone-200">
+                {" "}
+                minimalist apparel
+              </span>{" "}
+              to creatives worldwide.
+              <br className="hidden sm:block" /> Defined by silence, crafted for
+              you.
+            </p>
+          </div>
+
+          {/* Responsive Brand Tagline - Wraps on small screens if needed */}
+          <div className="mt-8 sm:mt-12 flex flex-wrap justify-center items-center gap-3 sm:gap-6 text-[9px] sm:text-[10px] tracking-[0.2em] sm:tracking-[0.3em] text-stone-400 uppercase">
+            <span className="hover:text-stone-600 transition-colors">
+              Ethical
+            </span>
+            <span className="w-1 h-1 bg-stone-200 rounded-full hidden xs:block" />
+            <span className="hover:text-stone-600 transition-colors">
+              Sustainable
+            </span>
+            <span className="w-1 h-1 bg-stone-200 rounded-full hidden xs:block" />
+            <span className="hover:text-stone-600 transition-colors">
+              Minimalist
+            </span>
+          </div>
+        </div>
+      </section>
     </div>
   );
 };

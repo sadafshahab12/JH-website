@@ -1,8 +1,6 @@
 "use client";
 
-import React from "react";
-import { X, Minus, Plus } from "lucide-react";
-import { useShop } from "../context/ShopContext";
+import { useShop, X, Minus, Plus } from "../exports/homeExports";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -29,7 +27,7 @@ const CartDrawer = () => {
       {/* Drawer */}
       <div className="relative w-full max-w-md bg-white h-full shadow-2xl flex flex-col animate-slide-in-right">
         <div className="p-6 border-b border-stone-100 flex justify-between items-center">
-          <h2 className="text-lg font-vogue tracking-wide">Your Cart</h2>
+          <h1 className="text-lg font-vogue tracking-wide">Your Cart</h1>
           <button
             onClick={() => toggleCart(false)}
             className="p-2 hover:bg-stone-100 rounded-full transition-colors"
@@ -59,8 +57,8 @@ const CartDrawer = () => {
                   <Image
                     src={item.selectedImage}
                     alt={item.product.name}
-                    width={800}
-                    height={800}
+                    width={1000}
+                    height={1000}
                     className="w-full h-full object-cover"
                   />
                 </div>
@@ -160,7 +158,7 @@ const CartDrawer = () => {
             <Link href="/checkout" className="w-full">
               <button
                 onClick={() => toggleCart(false)}
-                className="w-full bg-stone-900 text-white py-4 text-sm font-medium tracking-widest hover:bg-stone-800 transition-colors uppercase"
+                className="w-full bg-stone-900 text-white py-4 text-sm font-medium tracking-widest hover:bg-stone-1000 transition-colors uppercase"
               >
                 Checkout
               </button>

@@ -3,11 +3,15 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ShoppingBag, Menu, X, Search } from "lucide-react";
-
-import { useShop } from "../context/ShopContext";
-import { useSearch } from "../context/searchContext";
-import SearchResultsDropdown from "./SearchResultsDropdown";
+import {
+  ShoppingBag,
+  Menu,
+  X,
+  Search,
+  useShop,
+  useSearch,
+  SearchResultsDropdown,
+} from "../exports/homeExports";
 
 /* ----------------------------------
  Types

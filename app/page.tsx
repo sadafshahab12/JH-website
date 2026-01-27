@@ -1,15 +1,20 @@
 "use client";
 
-import { ArrowRight, Box, PenTool, Truck } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import Image from "next/image";
 
-import { client } from "@/sanity/lib/client";
-import { Product } from "./types/productType";
-import { groq } from "next-sanity";
-import { urlFor } from "@/sanity/lib/image";
-import { ReviewWithProduct } from "./types/reviewType";
+import {
+  Product,
+  urlFor,
+  ReviewWithProduct,
+  BrandHighlights,
+  client,
+  FeaturedCard,
+} from "./exports/homeExports";
+import { homeProductQuery } from "./lib/homeProductQuery";
+import { reviewDataQuery } from "./lib/reviewDataQuery";
 
 const Home = () => {
   const [products, setProducts] = useState<Product[]>([]);
@@ -24,41 +29,9 @@ const Home = () => {
       setLoading(true);
       const start = Date.now();
 
-      const data: Product[] = await client.fetch(groq`
-  *[_type == "product"] | order(_createdAt desc) {
-    _id,
-    _createdAt,
-    name,
-    slug,
-    baseImage,
-    pricing{
-      pkPrice{original, discount},
-      intlPrice{original, discount}
-    },
-    badges[]->{
-      _key,
-      title,
-      value
-    }
-  }
-`);
-
-      const reviewsData: ReviewWithProduct[] = await client.fetch(groq`
-        *[_type == "review"] | order(_createdAt desc)[0..2]{
-          _id,
-          _createdAt,
-          name,
-          rating,
-          comment,
-          createdAt,
-          product->{
-            _id,
-            name,
-            slug
-          }
-        }
-      `);
-
+      const data: Product[] = await client.fetch(homeProductQuery);
+      const reviewsData: ReviewWithProduct[] =
+        await client.fetch(reviewDataQuery);
       const elapsedTime = Date.now() - start;
       const remaining = MIN_LOADING_TIME - elapsedTime;
 
@@ -94,6 +67,7 @@ const Home = () => {
             alt="Junhae Studio Collection"
             width={1000}
             height={1000}
+            priority
             className="w-full h-full object-cover opacity-80"
           />
           <div className="absolute inset-0 bg-stone-900/10" />
@@ -102,21 +76,22 @@ const Home = () => {
         {/* Centered Text */}
         <div className="absolute inset-0 flex items-center justify-center p-8 md:p-20 w-full text-center">
           <div className="max-w-4xl">
-            <span className="inline-block py-1 px-4 border border-stone-800 rounded-full text-[10px] md:text-xs font-semibold tracking-[0.2em] mb-6 backdrop-blur-sm text-stone-900 uppercase whitespace-normal max-w-xs md:max-w-md text-center">
+            <span className="inline-block py-1 px-4 border border-stone-1000 rounded-full text-[10px] md:text-xs font-semibold tracking-[0.2em] mb-6 backdrop-blur-sm text-stone-900 uppercase whitespace-normal max-w-xs md:max-w-md text-center">
               Ethically Crafted • Defined by Silence • 2025
             </span>
 
-            <h1 className="text-4xl  sm:text-7xl font-extrabold text-crimson sm:text-stone-950 leading-[1.1] mb-8 tracking-tight">
-              Silence is the <br />
-              <span className="text-stone-800 font-vogue italic font-medium">
-                Ultimate Sophistication.
+            <h1 className="text-[2rem] sm:text-7xl font-extrabold text-crimson sm:text-stone-950 leading-[1.1] mb-8 tracking-tight">
+              Minimalist Apparel for <br />
+              <span className="text-stone-1000 font-vogue italic font-medium">
+                Modern Creatives.
               </span>
             </h1>
 
             <p className="max-w-xl mx-auto mb-10 text-stone-700 text-sm md:text-base leading-relaxed font-light">
-              Discover **Junhae Studio’s** signature capsule of premium,
-              minimalist essentials. Redefining global streetwear through the
-              lens of quiet luxury and sustainable design.
+              {`    Discover **Junhae Studio’s** signature collection of premium
+              **minimalist apparel**. Redefining **global streetwear** through
+              ethically crafted designs and **sustainable print-on-demand**
+              fashion.`}
             </p>
 
             <Link
@@ -139,14 +114,14 @@ const Home = () => {
       {/* Brand Story Snippet */}
       <section className="py-24 px-6 bg-white">
         <div className="max-w-3xl mx-auto text-center">
-          <h2 className="text-4xl sm:text-5xl font-vogue  text-stone-900 tracking-wider mb-6">
-            Designed with Intention
+          <h2 className="text-3xl sm:text-5xl font-vogue  text-stone-900  mb-6">
+            Ethically Crafted Minimalist Clothing
           </h2>
           <p className="text-stone-600 leading-relaxed font-light text-lg">
-            Junhae Studio exists at the intersection of minimalism and art. We
-            believe in clothing that speaks softly but carries weight. Each
-            piece is printed to order, reducing waste and ensuring that what we
-            create is truly wanted.
+            <span className="font-vogue">Junhae Studio</span> exists at the
+            intersection of minimalism and art. We believe in clothing that
+            speaks softly but carries weight. Each piece is printed to order,
+            reducing waste and ensuring that what we create is truly wanted.
           </p>
         </div>
       </section>
@@ -154,8 +129,8 @@ const Home = () => {
       {/* Featured Products */}
       <section className="py-20 px-6 max-w-7xl mx-auto">
         <div className="flex justify-between items-end mb-12">
-          <h2 className="text-3xl font-vogue tracking-wider">
-            Curated Essentials
+          <h2 className="text-3xl font-vogue ">
+            Curated Minimalist Essentials
           </h2>
           <Link
             href="/junhae-edits"
@@ -192,8 +167,8 @@ const Home = () => {
                       <Image
                         src={urlFor(product.baseImage).url()}
                         alt={product.name}
-                        width={800}
-                        height={800}
+                        width={1000}
+                        height={1000}
                         className="..."
                       />
                     )}
@@ -263,151 +238,45 @@ const Home = () => {
           </div>
 
           {/* Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
-            {/* Brand Story */}
-            <div className="bg-stone-50 border border-stone-200 rounded-3xl p-6">
-              <div className="relative w-full h-44 mb-6 rounded-2xl overflow-hidden">
-                <Image
-                  src="/outstory image/our story.png"
-                  alt="Junhae Studio Brand Story"
-                  width={800}
-                  height={800}
-                  className="object-cover"
-                />
-              </div>
-              <h3 className="text-xl font-vogue text-stone-900 mb-3">
-                Our Story
-              </h3>
-              <p className="text-stone-600 font-light leading-relaxed">
-                Junhae Studio was created for the modern minimalist — a brand
-                that values quiet luxury, timeless design, and sustainable
-                fashion.
-              </p>
-            </div>
-
-            {/* Processing Method */}
-            <div className="bg-stone-50 border border-stone-200 rounded-3xl p-6">
-              <div className="relative w-full h-44 mb-6 rounded-2xl overflow-hidden">
-                <Image
-                  src="/outstory image/how its made.png"
-                  alt="Junhae Studio Process"
-                  width={800}
-                  height={800}
-                  className="object-cover"
-                />
-              </div>
-              <h3 className="text-xl font-vogue text-stone-900 mb-3">
-                How It’s Made
-              </h3>
-              <p className="text-stone-600 font-light leading-relaxed">
-                We print each item on demand to reduce waste. Every order is
-                checked for quality, packed carefully, and shipped globally.
-              </p>
-              <ul className="mt-4 space-y-2 text-stone-500 text-sm font-light">
-                <li>✓ Designed in-house</li>
-                <li>✓ Made-to-order printing</li>
-                <li>✓ Premium materials & quality checks</li>
-                <li>✓ Worldwide shipping</li>
-              </ul>
-            </div>
-
-            {/* Trust / Benefits */}
-            <div className="bg-stone-50 border border-stone-200 rounded-3xl p-6">
-              <div className="relative w-full h-44 mb-6 rounded-2xl overflow-hidden">
-                <Image
-                  src="/outstory image/why choose us.png"
-                  alt="Junhae Studio Quality"
-                  width={800}
-                  height={800}
-                  className="object-cover"
-                />
-              </div>
-              <h3 className="text-xl font-vogue text-stone-900 mb-3">
-                Why Choose Us
-              </h3>
-              <p className="text-stone-600 font-light leading-relaxed">
-                Minimal designs, premium quality, and sustainable practices —
-                built for people who want style without compromise.
-              </p>
-              <div className="mt-4 space-y-2 text-stone-500 text-sm font-light">
-                <div className="flex items-start gap-3">
-                  <span className="text-crimson font-bold">•</span>
-                  <span>Ethically crafted, limited production</span>
-                </div>
-                <div className="flex items-start gap-3">
-                  <span className="text-crimson font-bold">•</span>
-                  <span>High-quality print & material</span>
-                </div>
-                <div className="flex items-start gap-3">
-                  <span className="text-crimson font-bold">•</span>
-                  <span>Minimalist aesthetic, modern fit</span>
-                </div>
-              </div>
-            </div>
-          </div>
+          <FeaturedCard />
         </div>
       </section>
 
       {/* Process / Trust */}
-      <section className="py-24 bg-stone-50 border-t border-stone-200">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-12 text-center">
-            <div className="flex flex-col items-center">
-              <div className="w-16 h-16 bg-crimson text-white rounded-full flex items-center justify-center mb-6 shadow-sm ">
-                <PenTool strokeWidth={1} size={30} />
-              </div>
-              <h3 className="text-xl font-vogue mb-3 tracking-wider">
-                Artistic Minimalism
-              </h3>
-              <p className="text-sm font-light text-stone-500 max-w-xs">
-                Junhae Studio creates minimalist, aesthetic designs with
-                hand-crafted typography and modern graphics — perfect for
-                streetwear, casual wear, and art-inspired fashion.
-              </p>
-            </div>
-
-            <div className="flex flex-col items-center">
-              <div className="w-16 h-16 bg-crimson text-white rounded-full flex items-center justify-center mb-6 shadow-sm ">
-                <Box strokeWidth={1} size={30} />
-              </div>
-              <h3 className="text-xl font-vogue mb-3 tracking-wider">
-                Print-on-Demand Quality
-              </h3>
-              <p className="text-sm font-light text-stone-500 max-w-xs">
-                Our made-to-order model reduces waste and overproduction,
-                delivering high-quality POD apparel that’s ethically crafted and
-                sustainably printed.
-              </p>
-            </div>
-
-            <div className="flex flex-col items-center">
-              <div className="w-16 h-16 bg-crimson text-white rounded-full flex items-center justify-center mb-6 shadow-sm ">
-                <Truck size={30} strokeWidth={1} />
-              </div>
-              <h3 className="text-xl font-vogue mb-3 tracking-wider">
-                Worldwide Shipping
-              </h3>
-              <p className="text-sm font-light text-stone-500 max-w-xs">
-                Fast and reliable global shipping from trusted production
-                partners — ensuring your Junhae Studio order arrives safely, on
-                time, and in perfect condition.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
+      <BrandHighlights />
 
       {/* TESTIMONIALS - BEAUTIFUL UI + LOADING */}
-      <section className="py-24 bg-[#FAFAFA]">
+      {/* TESTIMONIALS - SEO & TRUST OPTIMIZED */}
+      <section className="py-24 bg-[#FAFAFA]" aria-labelledby="reviews-title">
         <div className="max-w-7xl mx-auto px-6">
           <div className="flex flex-col items-center text-center mb-16">
             <span className="text-sm font-semibold tracking-[0.2em] text-stone-400 uppercase mb-3">
-              Testimonials
+              Real Experiences
             </span>
-            <h2 className="text-4xl md:text-5xl font-vogue tracking-tight text-stone-900">
-              What People Are Saying
+            <h2
+              id="reviews-title"
+              className="text-4xl md:text-5xl font-vogue tracking-tight text-stone-900"
+            >
+              Community <span className="italic text-stone-500">Feedback</span>
             </h2>
-            <div className="h-1 w-12 bg-stone-900 mt-6 rounded-full" />
+
+            {/* Average Rating Summary Badge */}
+            <div className="mt-6 flex items-center gap-2 bg-white px-4 py-2 rounded-full border border-stone-200 shadow-sm">
+              <div className="flex text-amber-400">
+                {[...Array(5)].map((_, i) => (
+                  <svg
+                    key={i}
+                    className="w-3 h-3 fill-current"
+                    viewBox="0 0 20 20"
+                  >
+                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                  </svg>
+                ))}
+              </div>
+              <span className="text-xs font-medium text-stone-600">
+                4.9/5 Based on Recent Drops
+              </span>
+            </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -415,38 +284,22 @@ const Home = () => {
               ? Array.from({ length: 3 }).map((_, idx) => (
                   <div
                     key={idx}
-                    className="h-64 bg-stone-100 rounded-3xl animate-pulse"
+                    className="h-72 bg-stone-100 rounded-3xl animate-pulse"
                   />
                 ))
               : reviews.map((review) => (
-                  <div
+                  <figure
                     key={review._id}
-                    className="group relative bg-white border border-stone-100 p-8 rounded-4xl shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-500 ease-out"
+                    className="group relative bg-white border border-stone-100 p-8 rounded-4xl shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-500 ease-out flex flex-col justify-between"
                   >
-                    {/* Decorative Quote Mark */}
-                    <div className="absolute top-6 right-8 text-stone-100 group-hover:text-stone-200 transition-colors">
-                      <svg
-                        width="40"
-                        height="30"
-                        viewBox="0 0 40 30"
-                        fill="currentColor"
-                      >
-                        <path d="M10.5 0L14 3.5C10.5 7 8 11.5 8 16H15V30H0V16C0 6.5 4.5 0 10.5 0ZM35.5 0L39 3.5C35.5 7 33 11.5 33 16H40V30H25V16C25 6.5 29.5 0 35.5 0Z" />
-                      </svg>
-                    </div>
-
-                    <div className="flex flex-col h-full justify-between">
-                      <div>
-                        {/* Modern Star Rating */}
-                        <div className="flex gap-0.5 mb-6">
+                    {/* Top Section: Rating & Quote Icon */}
+                    <div>
+                      <div className="flex justify-between items-start mb-6">
+                        <div className="flex gap-0.5">
                           {Array.from({ length: 5 }).map((_, i) => (
                             <svg
                               key={i}
-                              className={`w-4 h-4 ${
-                                i < review.rating
-                                  ? "text-amber-400"
-                                  : "text-stone-200"
-                              }`}
+                              className={`w-4 h-4 ${i < review.rating ? "text-amber-400" : "text-stone-200"}`}
                               fill="currentColor"
                               viewBox="0 0 20 20"
                             >
@@ -454,27 +307,47 @@ const Home = () => {
                             </svg>
                           ))}
                         </div>
+                        <svg
+                          width="24"
+                          height="18"
+                          viewBox="0 0 40 30"
+                          className="text-stone-100 group-hover:text-stone-200 transition-colors"
+                        >
+                          <path
+                            fill="currentColor"
+                            d="M10.5 0L14 3.5C10.5 7 8 11.5 8 16H15V30H0V16C0 6.5 4.5 0 10.5 0ZM35.5 0L39 3.5C35.5 7 33 11.5 33 16H40V30H25V16C25 6.5 29.5 0 35.5 0Z"
+                          />
+                        </svg>
+                      </div>
 
-                        <p className="text-stone-700 leading-relaxed text-[1.05rem] font-light italic mb-8">
-                          {` "${review.comment}"`}
+                      <blockquote>
+                        <p className="text-stone-700 leading-relaxed text-[1rem] font-light italic mb-8">
+                          &ldquo;{review.comment}&rdquo;
                         </p>
-                      </div>
-
-                      <div className="flex items-center gap-4 border-t border-stone-50 pt-6">
-                        <div className="h-12 w-12 rounded-full bg-stone-100 flex items-center justify-center text-stone-500 font-medium border border-stone-200 uppercase">
-                          {review.name.charAt(0)}
-                        </div>
-                        <div>
-                          <h3 className="text-sm font-bold text-stone-900 tracking-wide uppercase">
-                            {review.name}
-                          </h3>
-                          <p className="text-xs text-stone-400 mt-0.5">
-                            Verified Buyer — {review.product.name}
-                          </p>
-                        </div>
-                      </div>
+                      </blockquote>
                     </div>
-                  </div>
+
+                    {/* Bottom Section: User Info */}
+                    <figcaption className="flex items-center gap-4 border-t border-stone-50 pt-6 mt-auto">
+                      <div className="h-12 w-12 rounded-full bg-stone-50 flex items-center justify-center text-stone-400 font-medium border border-stone-200 text-xs shadow-inner">
+                        {review.name.charAt(0)}
+                      </div>
+                      <div>
+                        <h3 className="text-sm font-bold text-stone-900 tracking-wide uppercase flex items-center gap-1.5">
+                          {review.name}
+                          <span className="inline-block bg-blue-50 text-[8px] text-blue-500 px-1.5 py-0.5 rounded-full border border-blue-100 font-bold">
+                            VERIFIED
+                          </span>
+                        </h3>
+                        <Link
+                          href={`/junhae-edits/${review.product.slug.current}`}
+                          className="text-xs text-stone-400 mt-0.5 hover:text-crimson transition-colors underline underline-offset-2 decoration-stone-200"
+                        >
+                          Purchased: {review.product.name}
+                        </Link>
+                      </div>
+                    </figcaption>
+                  </figure>
                 ))}
           </div>
         </div>
@@ -482,15 +355,39 @@ const Home = () => {
 
       {/* CTA */}
       <section className="py-32 px-6 bg-crimson text-stone-200 text-center">
-        <h2 className="text-4xl md:text-5xl font-vogue mb-8 text-white">
-          Elevate your daily uniform.
-        </h2>
-        <Link
-          href="/junhae-edits"
-          className="inline-block bg-white text-stone-900 px-8 py-4 text-sm font-medium tracking-widest hover:bg-stone-200 transition-colors"
-        >
-          SHOP THE DROP
-        </Link>
+        <div className="max-w-4xl mx-auto">
+          {/* SEO Header: Target specific niche keywords */}
+          <h2 className="text-4xl md:text-5xl font-vogue mb-6 text-white leading-tight">
+            Elevate Your Style with <br />
+            <span className="italic">Premium Minimalist Streetwear</span>
+          </h2>
+
+          {/* Added context for search engines to crawl */}
+          <p className="text-stone-100/80 mb-10 max-w-lg mx-auto font-light leading-relaxed">
+            Experience the perfect blend of sustainable quality and modern
+            aesthetics. Join the{" "}
+            <span className="font-vogue">Junhae Studio</span> collective today.
+          </p>
+
+          <Link
+            href="/junhae-edits"
+            aria-label="Shop the latest Junhae Studio minimalist collection"
+            className="group inline-block bg-white text-stone-900 px-10 py-4 text-xs md:text-sm font-bold tracking-[0.2em] hover:bg-stone-100 hover:shadow-2xl transition-all duration-300 rounded-sm"
+          >
+            <span className="flex items-center gap-2">
+              SHOP THE EXCLUSIVE DROP
+              <ArrowRight
+                size={16}
+                className="group-hover:translate-x-1 transition-transform"
+              />
+            </span>
+          </Link>
+
+          {/* Micro-copy for trust */}
+          <p className="mt-6 text-[10px] uppercase tracking-[0.15em] text-stone-300/60 font-medium">
+            Ethically Crafted • Limited Production • Global Delivery
+          </p>
+        </div>
       </section>
     </div>
   );

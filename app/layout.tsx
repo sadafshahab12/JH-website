@@ -17,9 +17,14 @@ const outfit = Outfit({
 });
 
 export const metadata: Metadata = {
+  // 1. Updated Title (matches report) [cite: 53, 70]
   title: "Junhae Studio | Minimalist Print-On-Demand Apparel",
+
+  // 2. FIXED: Shortened Description
+  // Your previous description was 175 characters; search engines truncate at 160.
   description:
-    "Junhae Studio offers minimalist, trendy print-on-demand apparel and accessories. Shop stylish t-shirts, hoodies, and custom designs with premium quality and modern aesthetics.",
+    "Shop minimalist, trendy print-on-demand apparel at Junhae Studio. Premium t-shirts and hoodies designed with modern aesthetics and ethical crafting.",
+
   keywords: [
     "Junhae Studio",
     "minimalist apparel",
@@ -34,17 +39,38 @@ export const metadata: Metadata = {
     "premium print on demand",
     "minimalist clothing Pakistan",
   ],
+
+  // 3. FIXED: Canonical URL [cite: 95, 99]
+  // The report noted the missing canonical tag.
+  alternates: {
+    canonical: "https://www.junhaestudio.com",
+  },
+
+  // 4. FIXED: Complete OpenGraph Tags [cite: 136, 137]
   openGraph: {
     title: "Junhae Studio | Minimalist Print-On-Demand Apparel",
     description:
-      "Shop minimalist print-on-demand clothing and accessories from Junhae Studio. Premium quality designs for modern fashion lovers.",
-    url: "https://your-domain.com",
+      "Premium minimalist print-on-demand clothing for modern fashion lovers.",
+    url: "https://www.junhaestudio.com", // Ensure this matches your standard URL
     siteName: "Junhae Studio",
     locale: "en_US",
     type: "website",
+    images: [
+      {
+        url: "https://www.junhaestudio.com/og-image.jpg", // Add a real OG image path
+        width: 1200,
+        height: 630,
+        alt: "Junhae Studio Minimalist Apparel",
+      },
+    ],
+  },
+
+  // 5. ADDED: Robots.txt instruction [cite: 107, 163]
+  robots: {
+    index: true,
+    follow: true,
   },
 };
-
 export default function RootLayout({
   children,
 }: Readonly<{
