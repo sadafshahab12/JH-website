@@ -8,6 +8,7 @@ import Footer from "./components/Footer";
 import CartDrawer from "./components/CartDrawer";
 import { SearchProvider } from "./context/searchContext";
 import { GoogleAnalytics } from "@next/third-parties/google";
+import ScrollToTop from "./components/ScrollToTop";
 
 const outfit = Outfit({
   weight: ["400", "800"],
@@ -97,6 +98,7 @@ export default function RootLayout({
         />
       </head>
       <body className={`${outfit.className} ${outfit.style}  antialiased`}>
+        <ScrollToTop />
         <ShopProvider>
           <SearchProvider>
             <Navbar />

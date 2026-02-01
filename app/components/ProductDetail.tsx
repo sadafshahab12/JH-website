@@ -21,61 +21,10 @@ import { productDetailRelatedQuery } from "@/app/lib/productDetailRelatedQuery";
 import { productDetailPageReview } from "@/app/lib/reviewDataQuery";
 import { productDetailBySlugQuery } from "@/app/lib/productDetailBySlugQuery";
 import { Check, Share2 } from "lucide-react";
-
-const getPrices = (product: Product) => {
-  const pk = product.pricing?.pkPrice;
-  const intl = product.pricing?.intlPrice;
-
-  return {
-    pk: {
-      original: pk?.original ?? 0,
-      discount: pk?.discount ?? pk?.original ?? 0,
-    },
-    intl: {
-      original: intl?.original ?? 0,
-      discount: intl?.discount ?? intl?.original ?? 0,
-    },
-  };
-};
-
-// --- REUSABLE COLOR PICKER COMPONENT ---
-const ColorPicker = ({
-  product,
-  selectedVariant,
-  setSelectedVariant,
-  setErrorMsg,
-}: {
-  product: Product;
-  selectedVariant: ProductVariant;
-  setSelectedVariant: (v: ProductVariant) => void;
-  setErrorMsg: (msg: string) => void;
-}) => (
-  <div>
-    <span className="text-xs font-bold tracking-widest text-stone-400 uppercase mb-3 block">
-      Color: {selectedVariant.color}
-    </span>
-    <div className="flex space-x-3">
-      {product.variants?.map((variant) => (
-        <button
-          key={variant.id}
-          onClick={() => {
-            setSelectedVariant(variant);
-            setErrorMsg("");
-          }}
-          className={`w-10 h-10 rounded-full border border-stone-200 focus:outline-none ring-1 ring-offset-2 transition-all ${
-            selectedVariant.id === variant.id
-              ? "ring-stone-900 scale-110"
-              : "ring-transparent hover:scale-105"
-          }`}
-          style={{
-            backgroundColor: variant.colorCode || variant.color,
-          }}
-          title={variant.color}
-        />
-      ))}
-    </div>
-  </div>
-);
+import { getEstimatedDelivery } from "../utils/getEstimatedDelivery";
+import { getPrices } from "../utils/getPrices";
+import ColorPicker from "./ColorPicker";
+import { BreadCrumbs } from "./BreadCrumbs";
 
 const ProductDetail = () => {
   const { addToCart } = useShop();
@@ -188,6 +137,9 @@ const ProductDetail = () => {
       setMainImage(urlFor(selectedVariant.images[0]).width(800).url());
     }
   }, [selectedVariant]);
+
+
+
 
   const handleAddToCart = () => {
     if (!product || !selectedVariant) return;
@@ -316,25 +268,7 @@ const ProductDetail = () => {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(productSchema) }}
       />
       <div className="pt-20 sm:pt-32 pb-24 min-h-screen bg-white animate-fade-in">
-        <div className="max-w-7xl mx-auto px-6 mb-6">
-          <nav className="text-sm text-stone-500 font-light tracking-wide">
-            <ol className="flex flex-wrap items-center gap-2">
-              <li>
-                <Link href="/" className="hover:text-stone-900">
-                  Home
-                </Link>
-              </li>
-              <li>/</li>
-              <li>
-                <Link href="/junhae-edits" className="hover:text-stone-900">
-                  Junhae Edits
-                </Link>
-              </li>
-              <li>/</li>
-              <li className="text-stone-900 font-medium">{product.name}</li>
-            </ol>
-          </nav>
-        </div>
+        <BreadCrumbs productName={product.name} />
 
         <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 sm:grid-cols-2 gap-12 lg:gap-20">
           {/* Images Column */}
@@ -504,7 +438,27 @@ const ProductDetail = () => {
                   </p>
                 )}
               </div>
+              {product.inventory !== undefined &&
+                product.inventory > 0 &&
+                product.inventory < 6 && (
+                  <div className="flex items-center gap-2 mb-3 text-orange-600 animate-pulse">
+                    <span className="h-2 w-2 rounded-full bg-orange-600"></span>
+                    <p className="text-xs font-bold uppercase tracking-wider">
+                      Only {product.inventory} left in stock!
+                    </p>
+                  </div>
+                )}
 
+              {/* Delivery Estimator */}
+              <div className="mb-6 p-3 bg-stone-50 border border-stone-100 rounded flex items-center gap-3">
+                <Truck size={16} className="text-stone-400" />
+                <p className="text-xs text-stone-600">
+                  Want it soon? Get it by{" "}
+                  <span className="font-bold text-stone-900">
+                    {getEstimatedDelivery()}
+                  </span>
+                </p>
+              </div>
               <button
                 onClick={handleAddToCart}
                 className="w-full bg-stone-900 text-white py-4 px-8 text-sm font-bold tracking-widest uppercase hover:bg-stone-800 transition-colors shadow-lg active:transform active:scale-[0.99]"
@@ -848,6 +802,96 @@ const ProductDetail = () => {
             </div>
           )}
         </div>
+        {product.completeTheLook && product.completeTheLook.length > 0 && (
+          <section className="bg-stone-50 py-8 sm:py-24 px-6 border-y border-stone-100 mt-20">
+            <div className="max-w-7xl mx-auto">
+              <div className="text-center mb-12">
+                <span className="text-[10px] uppercase tracking-[0.3em] text-stone-400 font-bold">
+                  Shop the aesthetic
+                </span>
+                <h2 className="text-3xl md:text-4xl font-vogue text-stone-900 mt-2">
+                  Complete the Look
+                </h2>
+              </div>
+
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-10">
+                {product.completeTheLook?.map((item) => (
+                  <Link
+                    key={item._id}
+                    href={`/junhae-edits/${item.slug.current}`}
+                    className="group"
+                  >
+                    <div className="aspect-3/4 overflow-hidden rounded-2xl bg-white mb-4 shadow-sm group-hover:shadow-xl transition-all duration-500 border border-stone-100">
+                      <Image
+                        src={
+                          item.baseImage
+                            ? urlFor(item.baseImage)
+                                .width(400)
+                                .height(533)
+                                .url()
+                            : ""
+                        }
+                        alt={item.name}
+                        width={400}
+                        height={533}
+                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000"
+                      />
+                    </div>
+
+                    <div className="text-center">
+                      <h3 className="text-xs font-bold text-stone-800 uppercase tracking-wider truncate px-2">
+                        {item.name}
+                      </h3>
+
+                      {/* PKR + USD Pricing, Related Products Style */}
+                      <div className="flex flex-col gap-1 mt-1">
+                        {/* PKR */}
+                        <div className="flex items-center justify-center gap-2 text-sm text-stone-500">
+                          {item.pricing.pkPrice.discount ? (
+                            <>
+                              <span className="line-through text-stone-400">
+                                PKR {item.pricing.pkPrice.original}
+                              </span>
+                              <span className="font-medium text-stone-900">
+                                PKR {item.pricing.pkPrice.discount}
+                              </span>
+                            </>
+                          ) : (
+                            <span className="font-medium text-stone-900">
+                              PKR {item.pricing.pkPrice.original}
+                            </span>
+                          )}
+                        </div>
+
+                        {/* USD */}
+                        <div className="flex items-center justify-center gap-2 text-sm text-stone-500">
+                          {item.pricing.intlPrice.discount ? (
+                            <>
+                              <span className="line-through text-stone-400">
+                                USD {item.pricing.intlPrice.original.toFixed(2)}
+                              </span>
+                              <span className="font-medium text-stone-900">
+                                USD {item.pricing.intlPrice.discount.toFixed(2)}
+                              </span>
+                            </>
+                          ) : (
+                            <span className="font-medium text-stone-900">
+                              USD {item.pricing.intlPrice.original.toFixed(2)}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+
+                      <span className="inline-block mt-2 text-[10px] border-b border-stone-900 pb-0.5 font-bold uppercase opacity-0 group-hover:opacity-100 transition-opacity">
+                        View Detail
+                      </span>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            </div>
+          </section>
+        )}
         {/* Trust Section / Product Footer */}
         <div className="max-w-7xl mx-auto px-6 mt-24 border-t border-stone-100 pt-16 pb-12">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-12">

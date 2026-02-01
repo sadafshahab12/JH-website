@@ -40,7 +40,7 @@ export interface ProductBadge {
   _id: string;
   title: string;
   value: string;
-  color?: string; 
+  color?: string;
 }
 
 export interface RegionalPrice {
@@ -54,16 +54,33 @@ export interface ProductSpecs {
   dimensions?: string;
   other?: string;
 }
+export interface UpsellProduct {
+  _id: string;
+  name: string;
+  slug: {
+    current: string;
+  };
+  baseImage?: {
+    _type: "image";
+    asset: {
+      _ref: string;
+    };
+  };
+  pricing: {
+    pkPrice: RegionalPrice;
+    intlPrice: RegionalPrice;
+  };
+}
 
 export interface Product {
   _id: string;
   _type: "product";
   _createdAt: string;
   name: string;
-
+  inventory?: number;
   // 💡 NEW: Product Type Field
   productType: "apparel" | "stationery";
-
+  completeTheLook?: UpsellProduct[];
   description: string;
   slug: { _type: "slug"; current: string };
   category: Category;

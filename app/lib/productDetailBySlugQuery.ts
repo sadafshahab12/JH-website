@@ -21,7 +21,7 @@ export const productDetailBySlugQuery = groq`
       discount
     }
   },
-
+inventory,
   description,
   
   // 💡 Apparel Fields
@@ -72,7 +72,16 @@ export const productDetailBySlugQuery = groq`
       length
     }
   },
-
+"completeTheLook": completeTheLook[]-> {
+    _id,
+    name,
+    slug,
+    "baseImage": baseImage.asset->url,
+    pricing {
+      pkPrice { original, discount },
+      intlPrice { original, discount }
+    }
+  },
   variants[]{
     _key,
     id,

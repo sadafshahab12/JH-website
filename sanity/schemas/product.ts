@@ -134,7 +134,22 @@ export const product = defineType({
       hidden: ({ parent }) => parent?.productType === "stationery",
       of: [{ type: "string" }],
     }),
-
+    {
+      name: "inventory",
+      title: "Stock Quantity",
+      type: "number",
+      description: "How many items are in stock?",
+      validation: (Rule) => Rule.min(0),
+    },
+    {
+      name: "completeTheLook",
+      title: "Complete the Look",
+      type: "array",
+      description:
+        "Select matching products that will look good with this item.",
+      of: [{ type: "reference", to: [{ type: "product" }] }],
+      validation: (Rule) => Rule.max(4),
+    },
     defineField({
       name: "sizeGuide",
       title: "Size Guide",
