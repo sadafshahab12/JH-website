@@ -20,6 +20,7 @@ import Link from "next/link";
 import { productDetailRelatedQuery } from "@/app/lib/productDetailRelatedQuery";
 import { productDetailPageReview } from "@/app/lib/reviewDataQuery";
 import { productDetailBySlugQuery } from "@/app/lib/productDetailBySlugQuery";
+import { Check, Share2 } from "lucide-react";
 
 const getPrices = (product: Product) => {
   const pk = product.pricing?.pkPrice;
@@ -104,6 +105,7 @@ const ProductDetail = () => {
   const [loadingProduct, setLoadingProduct] = useState(true);
   const [loadingReviews, setLoadingReviews] = useState(true);
   const [loadingRelated, setLoadingRelated] = useState(true);
+  const [copied, setCopied] = useState(false);
   const avgRating =
     reviews.length > 0
       ? reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length
@@ -217,7 +219,26 @@ const ProductDetail = () => {
       product.productType,
     );
   };
+  const handleShare = async () => {
+    const shareData = {
+      title: product?.name,
+      text: `Check out this ${product?.name} at Junhae Studio`,
+      url: window.location.href,
+    };
 
+    if (navigator.share) {
+      try {
+        await navigator.share(shareData);
+      } catch (err) {
+        console.log("Error sharing", err);
+      }
+    } else {
+      // Fallback: Copy to clipboard
+      navigator.clipboard.writeText(window.location.href);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    }
+  };
   // ✅ FULL LOADING SKELETON
   if (loadingProduct || !product || !selectedVariant) {
     return (
@@ -490,7 +511,31 @@ const ProductDetail = () => {
               >
                 Add to Cart
               </button>
-
+              <div className="flex items-center justify-center py-4 border-b border-stone-100">
+                <button
+                  onClick={handleShare}
+                  className="flex items-center gap-2 text-stone-500 hover:text-stone-900 transition-colors group"
+                >
+                  {copied ? (
+                    <>
+                      <Check size={16} className="text-green-600" />
+                      <span className="text-xs font-medium uppercase tracking-widest text-green-600">
+                        Link Copied
+                      </span>
+                    </>
+                  ) : (
+                    <>
+                      <Share2
+                        size={16}
+                        className="group-hover:scale-110 transition-transform"
+                      />
+                      <span className="text-xs font-medium uppercase tracking-widest">
+                        Share this product
+                      </span>
+                    </>
+                  )}
+                </button>
+              </div>
               {/* Tabs */}
               <div className="pt-8">
                 <div className="flex border-b border-stone-200 space-x-8 mb-4">
