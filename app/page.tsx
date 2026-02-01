@@ -173,10 +173,9 @@ const Home = () => {
                         className="..."
                       />
                     )}
-
-                    {product.badges?.map((badge) => (
+                    {product.badges?.map((badge, index) => (
                       <span
-                        key={badge._id}
+                        key={badge._id || index}
                         className="absolute top-4 right-4 bg-white/90 backdrop-blur px-2 py-1 text-[10px] tracking-widest uppercase font-medium"
                       >
                         {badge.value}
