@@ -12,7 +12,7 @@ export const featuredProductsQuery = groq`
   name,
   description,
   slug,
-
+  productType,
   pricing{
     pkPrice{
       original,
@@ -38,8 +38,8 @@ export const featuredProductsQuery = groq`
   badges[]->{
     _id,
     title,
-    slug,
-    value
+    value,
+    color
   },
 
   variants[]{

@@ -125,7 +125,15 @@ const ThankYouContent = () => {
     doc.text(`${currency} ${order.subtotal.toLocaleString()}`, 540, finalY, {
       align: "right",
     });
-
+    doc.text("Shipping Fee:", 350, finalY + 15);
+    doc.text(
+      `${currency} ${order.shippingFee.toLocaleString()}`,
+      540,
+      finalY + 15,
+      {
+        align: "right",
+      },
+    );
     doc.setFontSize(14);
     doc.setFont("helvetica", "bold");
     doc.setTextColor(accentColor[0], accentColor[1], accentColor[2]);

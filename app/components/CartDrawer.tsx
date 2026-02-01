@@ -57,8 +57,8 @@ const CartDrawer = () => {
                   <Image
                     src={item.selectedImage}
                     alt={item.product.name}
-                    width={1000}
-                    height={1000}
+                    width={800}
+                    height={800}
                       loading="lazy"
                     className="w-full h-full object-cover"
                   />

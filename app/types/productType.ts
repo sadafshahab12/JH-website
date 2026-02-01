@@ -35,33 +35,60 @@ export interface ProductVariant {
     asset: { _ref: string; _type: "reference" };
   }[];
 }
+
 export interface ProductBadge {
-  _key: string;
+  _id: string;
   title: string;
   value: string;
+  color?: string; 
 }
+
 export interface RegionalPrice {
   original: number;
-  discount?: number; // Optional kyunke har waqt discount nahi hota
+  discount?: number;
 }
+
+// 💡 NEW: Stationery Specs Interface
+export interface ProductSpecs {
+  material?: string;
+  dimensions?: string;
+  other?: string;
+}
+
 export interface Product {
   _id: string;
   _type: "product";
   _createdAt: string;
   name: string;
+
+  // 💡 NEW: Product Type Field
+  productType: "apparel" | "stationery";
+
   description: string;
   slug: { _type: "slug"; current: string };
   category: Category;
-  baseImage?: { _type: "image"; asset: { _ref: string } }; // optional
-  badges?: ProductBadge[]; // optional
-  variants: ProductVariant[];
-  availableSizes: ("S" | "M" | "L" | "XL")[];
-  fit: "Regular" | "Slim" | "Oversized";
-  details?: string[]; // optional
+  baseImage?: { _type: "image"; asset: { _ref: string } };
+  badges?: ProductBadge[];
+
+  // 💡 Note: Variants ab optional hain kyunke stationery mein shayad na hon
+  variants?: ProductVariant[];
+
+  careInstructions?: string[];
+  shippingDetails?: string;
+
+  // 💡 Apparel Fields (Optional for Stationery)
+  availableSizes?: ("XS" | "S" | "M" | "L" | "XL" | "XXL")[];
+  fit?: string[];
+  sizeGuide?: SizeGuide;
+
+  // 💡 NEW: Stationery Only Field
+  productSpecs?: ProductSpecs;
+
   pricing: {
     pkPrice: RegionalPrice;
     intlPrice: RegionalPrice;
   };
-  fabricDetails?: string[]; // optional
-  sizeGuide?: SizeGuide; // optional
+
+  fabricDetails?: string[];
+  details?: string[];
 }

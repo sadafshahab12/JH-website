@@ -5,8 +5,8 @@ export default function robots(): MetadataRoute.Robots {
     rules: {
       userAgent: "*",
       allow: "/",
-      disallow: ["/admin", "/private/"], // Disallow sensitive routes
+      disallow: [ "/cart", "/checkout"],
     },
-    sitemap: "https:www.junhaestudio.com/sitemap.xml",
+    sitemap: "https://www.junhaestudio.com/sitemap.xml",
   };
 }

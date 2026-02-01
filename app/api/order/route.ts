@@ -54,32 +54,42 @@ export async function POST(req: Request) {
       order.orderNumber ||
       `P-${Date.now().toString().slice(-6)}-${Math.floor(Math.random() * 1000)}`;
 
-    const sanityOrder = {
-      _type: "order",
-      orderNumber,
-      customer: order.customer,
-      currencyMode: order.currencyMode,
-      items: order.items.map((item) => ({
-        ...item,
-        _key: item._key || uuidv4(),
-      })),
-      subtotal: order.subtotal,
-      shippingFee: order.shippingFee,
-      total: order.total,
-      status: "pending",
-      payment: {
-        method: order.payment?.method || "EasyPaisa",
-        ...(receiptAssetRef && {
-          receipt: {
-            _type: "file",
-            asset: {
-              _type: "reference",
-              _ref: receiptAssetRef,
-            },
-          },
-        }),
+/* ---------- CREATE ORDER ---------- */
+const sanityOrder = {
+  _type: "order",
+  orderNumber,
+  customer: order.customer,
+  currencyMode: order.currencyMode,
+  items: order.items.map((item) => ({
+    _key: item._key || uuidv4(),
+    _type: "item", // 💡 Sanity schema mein agar item ka name 'item' hai toh ye zaroori hai
+    product: item.product,
+    productType: item.productType, // 💡 Yeh line aapka productType save karegi
+    variantId: item.variantId,
+    size: item.size,
+    color: item.color,
+    colorCode: item.colorCode,
+    quantity: item.quantity,
+    price: item.price,
+    priceMode: item.priceMode,
+  })),
+  subtotal: order.subtotal,
+  shippingFee: order.shippingFee,
+  total: order.total,
+  status: "pending",
+  payment: {
+    method: order.payment?.method || "EasyPaisa",
+    ...(receiptAssetRef && {
+      receipt: {
+        _type: "file",
+        asset: {
+          _type: "reference",
+          _ref: receiptAssetRef,
+        },
       },
-    };
+    }),
+  },
+};
 
     const createdOrder = await sanityClient.create(sanityOrder);
 

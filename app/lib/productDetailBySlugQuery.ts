@@ -7,6 +7,9 @@ export const productDetailBySlugQuery = groq`
   _updatedAt,
   name,
   slug,
+  
+  // 💡 NEW: Product Type fetch karna zaroori hai logic handle karne ke liye
+  productType,
 
   pricing{
     pkPrice{
@@ -20,9 +23,20 @@ export const productDetailBySlugQuery = groq`
   },
 
   description,
-  fit,
+  
+  // 💡 Apparel Fields
+  fit, 
   fabricDetails,
+  careInstructions,
+  shippingDetails,
   availableSizes,
+
+  // 💡 NEW: Stationery Specific Fields
+  productSpecs{
+    material,
+    dimensions,
+    other
+  },
 
   category->{
     _id,

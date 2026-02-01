@@ -5,6 +5,12 @@ export const productDetailRelatedQuery = groq`*[_type == "product" && slug.curre
     name,
     slug,
     baseImage,
+      badges[]->{
+    _id,
+    title,
+    color,
+    value
+  },
     pricing{
       pkPrice{
         original,

@@ -134,7 +134,7 @@ const CheckoutPage = () => {
 
     const timer = setTimeout(fetchShipping, 600);
     return () => clearTimeout(timer);
-  }, [country, totalQuantity]); // Re-run when country OR total quantity changes
+  }, [country, totalQuantity]);
 
   useEffect(() => {
     setTotal(cartTotal + shippingFee);
@@ -162,6 +162,7 @@ const CheckoutPage = () => {
       const orderItems = cart.map((item) => ({
         _key: uuidv4(),
         product: { _type: "reference", _ref: item.productId },
+        productType: item.productType,
         variantId: item.variantId,
         size: item.size,
         color: item.color,
@@ -204,18 +205,13 @@ const CheckoutPage = () => {
         method: "POST",
         body: formData,
       });
-
       const data = await response.json();
-
       if (!response.ok) throw new Error(data?.error || "Order failed");
-
       toast.success("Order placed successfully!");
-
       router.push(`/thank-you?order=${data.orderNumber}`);
-
       setTimeout(() => {
         clearCart();
-      }, 2000);
+      }, 5000);
     } catch (err) {
       console.log(err);
       toast.error("Failed to place order. Check your connection.");
@@ -437,7 +433,7 @@ const CheckoutPage = () => {
                           alt={item.product.name}
                           width={100}
                           height={100}
-                            loading="lazy"
+                          loading="lazy"
                           className="object-cover w-full h-full"
                         />
                       </div>

@@ -32,8 +32,8 @@ export default function SearchResultsDropdown() {
                   <Image
                     src={urlFor(product.baseImage).width(200).url()}
                     alt={product.name}
-                    width={1000}
-                    height={1000}
+                    width={800}
+                    height={800}
                       loading="lazy"
                     className="object-cover"
                   />

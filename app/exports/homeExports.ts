@@ -14,6 +14,7 @@ import {
   Upload,
   Loader2,
   MapPin,
+  ChevronDown,
   Mail,
   Phone,
   ShoppingBag,
@@ -46,6 +47,7 @@ export {
   Minus,
   Upload,
   Globe,
+  ChevronDown,
   Recycle,
   Loader2,
   BsInstagram,
@@ -62,7 +64,15 @@ export {
 
 export { client, groq, urlFor, useShop, useSearch, jsPDF, autoTable };
 //types
-export type { Color, ReviewWithProduct, Product, ProductVariant, ProductSize, Review , PopulatedOrder};
+export type {
+  Color,
+  ReviewWithProduct,
+  Product,
+  ProductVariant,
+  ProductSize,
+  Review,
+  PopulatedOrder,
+};
 
 //comp
 export { SearchResultsDropdown, FeaturedCard, BrandHighlights };

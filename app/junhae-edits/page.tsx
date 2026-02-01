@@ -7,10 +7,7 @@ import { SlidersHorizontal } from "lucide-react";
 
 import { client, urlFor, useSearch } from "../exports/homeExports";
 import { Product, ProductVariant, ProductBadge } from "../types/productType";
-
-/* ----------------------------------
- Helpers
----------------------------------- */
+import { useSearchParams } from "next/navigation";
 
 type SortOption = {
   label: string;
@@ -39,21 +36,23 @@ const isNewProduct = (createdAt: string) => {
   return diffDays <= 7;
 };
 
-/* ----------------------------------
- Component
----------------------------------- */
-
 const Shop = () => {
   const { searchTerm } = useSearch();
+  const searchParams = useSearchParams();
+
+  // 💡 URL se parameters read karna
+  const queryCategory = searchParams.get("category");
+  const querySearch = searchParams.get("search"); // Navbar wala search yahan aayega
 
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<string[]>(["All"]);
+
   const [filterCategory, setFilterCategory] = useState("All");
   const [sortOption, setSortOption] = useState("newest");
   const [loading, setLoading] = useState(true);
   const [elapsed, setElapsed] = useState<number>(0);
   const [currentPage, setCurrentPage] = useState(1);
-  const productsPerPage = 12; // Adjusted for even grid rows
+  const productsPerPage = 12;
 
   const fetchedRef = useRef(false);
 
@@ -63,9 +62,16 @@ const Shop = () => {
     { label: "Price: High to Low", value: "price-high" },
   ]);
 
-  /* ----------------------------------
- Fetch Products + Badges
----------------------------------- */
+  useEffect(() => {
+    if (queryCategory) {
+      const formatted =
+        queryCategory.charAt(0).toUpperCase() + queryCategory.slice(1);
+      setFilterCategory(formatted);
+    } else {
+      setFilterCategory("All");
+    }
+  }, [queryCategory]);
+
   useEffect(() => {
     if (fetchedRef.current) return;
     fetchedRef.current = true;
@@ -74,39 +80,67 @@ const Shop = () => {
       setLoading(true);
       setElapsed(0);
       const data: Product[] = await client.fetch(`
-        *[_type == "product"] | order(_createdAt desc) {
-          _id,
-          _createdAt,
-          name,
-          slug,
-          baseImage,
-          badges[]->{title,value},
-          variants,
-          availableSizes,
-          fit,
-          pricing,
-          category->{title,slug}
-        }
-      `);
+  *[_type == "product"] | order(_createdAt desc) {
+    _id,
+    _createdAt,
+    _updatedAt,
+    name,
+    slug,
+    productType,
+    pricing {
+      pkPrice {
+        original,
+        discount
+      },
+      intlPrice {
+        original,
+        discount
+      }
+    },
+    baseImage,
+    badges[]->{
+      _id,
+      title,
+      value,
+      color
+    },
+    variants,
+    availableSizes,
+    fit,
+    category->{
+      title,
+      slug
+    },
+    productSpecs {
+      material,
+      dimensions,
+      other
+    }
+  }
+`);
 
       setProducts(data);
 
       const uniqueCats = Array.from(
-        new Set(data.map((p) => p.category?.title).filter(Boolean)),
-      ) as string[];
+        new Set(
+          data
+            .map((p) => p.category?.title)
+            .filter((title): title is string => !!title),
+        ),
+      );
 
       setCategories(["All", ...uniqueCats]);
       setLoading(false);
     };
 
     const fetchBadges = async () => {
-      const badges = await client.fetch(`
+      const badges: ProductBadge[] = await client.fetch(`
         *[_type == "badge"]{title,value}
       `);
 
       setSortOptions((prev) => [
         ...prev,
-        ...badges.map((b: ProductBadge) => ({
+        ...badges.map((b) => ({
           label: b.title,
           value: b.value,
         })),
@@ -125,22 +159,27 @@ const Shop = () => {
     return () => clearInterval(timer);
   }, [loading]);
 
-  /* ----------------------------------
- Filtering + Sorting
----------------------------------- */
   const filteredProducts = useMemo(() => {
     let result = [...products];
 
+    // 1. Filter by Category
     if (filterCategory !== "All") {
       result = result.filter((p) => p.category?.title === filterCategory);
     }
 
-    if (searchTerm.trim()) {
-      result = result.filter((p) =>
-        p.name.toLowerCase().includes(searchTerm.toLowerCase()),
+    // 2. 💡 Updated Search Logic: Priority to URL Param (querySearch) then context (searchTerm)
+    const activeSearch = querySearch || searchTerm;
+
+    if (activeSearch && activeSearch.trim()) {
+      const term = activeSearch.toLowerCase();
+      result = result.filter(
+        (p) =>
+          p.name.toLowerCase().includes(term) ||
+          p.category?.title?.toLowerCase().includes(term),
       );
     }
 
+    // 3. Sorting Logic
     if (sortOption === "price-low") {
       result.sort(
         (a, b) => getPrices(a).pk.discount - getPrices(b).pk.discount,
@@ -158,11 +197,8 @@ const Shop = () => {
     }
 
     return result;
-  }, [products, filterCategory, sortOption, searchTerm]);
+  }, [products, filterCategory, sortOption, searchTerm, querySearch]);
 
-  /* ----------------------------------
- Pagination
----------------------------------- */
   const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
 
   const paginatedProducts = useMemo(() => {
@@ -175,7 +211,7 @@ const Shop = () => {
       setCurrentPage(1);
     };
     setPage();
-  }, [filterCategory, sortOption, searchTerm]);
+  }, [filterCategory, sortOption, searchTerm, querySearch]);
 
   /* ----------------------------------
  Render
@@ -189,8 +225,8 @@ const Shop = () => {
             <Image
               src="/junhae-edits-image/junhaestudio header background image.png"
               alt="Junhae Studio collection background"
-              width={1000}
-              height={1000}
+              width={800}
+              height={800}
               className="object-cover w-full h-full"
               priority
             />
@@ -202,16 +238,20 @@ const Shop = () => {
           {/* Overlay Content */}
           <div className="relative z-10 p-6 sm:p-8 rounded-3xl">
             <h1 className="text-3xl sm:text-4xl font-vogue text-white mb-4 text-center sm:text-left">
-              Minimalist Streetwear & Apparel | Junhae Studio Collection
+              {querySearch
+                ? `Results for "${querySearch}"`
+                : "Minimalist Streetwear & Apparel | Junhae Studio Collection"}
             </h1>
             <p className="text-stone-200 text-sm sm:text-[16px] font-light max-w-2xl text-center sm:text-left">
-              {`  Explore our premium minimalist streetwear essentials — ethically crafted, sustainable print-on-demand apparel designed for modern creatives. Shop our best-selling minimalist tees, hoodies, and sweatshirts with fast global shipping and effortless aesthetic style.`}
+              Explore our premium minimalist streetwear essentials — ethically
+              crafted, sustainable print-on-demand apparel designed for modern
+              creatives.
             </p>
           </div>
         </div>
+
         {/* Filters */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-12 border-b border-stone-100 pb-6">
-          {/* Category Tabs - Optimized for Mobile Scroll */}
           <nav className="relative overflow-hidden group">
             <div className="flex items-center gap-8 overflow-x-auto pb-1 scrollbar-hide -mb-1">
               {categories.map((cat) => (
@@ -225,7 +265,6 @@ const Shop = () => {
                   }`}
                 >
                   {cat}
-                  {/* Animated Underline */}
                   <span
                     className={`absolute bottom-0 left-0 w-full h-[1.5px] bg-stone-900 transition-transform duration-300 ${
                       filterCategory === cat ? "scale-x-100" : "scale-x-0"
@@ -236,7 +275,6 @@ const Shop = () => {
             </div>
           </nav>
 
-          {/* Filter/Sort Section */}
           <div className="flex items-center justify-between md:justify-end gap-6 border-t md:border-t-0 border-stone-100 pt-4 md:pt-0">
             <div className="flex items-center gap-2 group cursor-pointer">
               <SlidersHorizontal
@@ -260,11 +298,11 @@ const Shop = () => {
             </div>
           </div>
         </div>
+
         {/* Content Wrapper */}
         <div className="min-h-150">
           {loading ? (
             <div className="space-y-10">
-              {/* Loader Status */}
               <div className="flex flex-col items-center justify-center gap-3 py-10">
                 <div className="w-10 h-10 border-2 border-stone-200 border-t-stone-900 rounded-full animate-spin" />
                 <p className="text-stone-400 text-sm font-light italic">
@@ -272,7 +310,6 @@ const Shop = () => {
                 </p>
               </div>
 
-              {/* Skeleton Grid */}
               <div className="grid grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-12">
                 {Array.from({ length: 8 }).map((_, idx) => (
                   <div key={idx} className="animate-pulse">
@@ -304,24 +341,37 @@ const Shop = () => {
                         <Image
                           src={urlFor(product.baseImage).width(1000).url()}
                           alt={product.name}
-                          width={1500}
-                          height={1500}
+                          width={800}
+                          height={800}
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
                         />
                       )}
 
-                      {isNewProduct(product._createdAt) && (
-                        <span className="absolute top-3 right-3 bg-black text-white text-[10px] px-2 py-1 tracking-widest font-bold">
-                          NEW
-                        </span>
-                      )}
+                      <div className="absolute top-3 left-3 flex flex-col items-start gap-1">
+                        {/* 1. Static NEW Badge (Jo 7 din purane products par aata hai) */}
+                        {isNewProduct(product._createdAt) && (
+                          <span className="bg-black text-white text-[9px] px-3 py-1.5 tracking-[0.2em] font-bold uppercase shadow-sm">
+                            NEW
+                          </span>
+                        )}
+
+                        {/* 2. Dynamic Sanity Badges (Best Seller, Popular, etc.) */}
+                        {product.badges?.map((badge) => (
+                          <span
+                            key={badge._id}
+                            className="bg-white/90 backdrop-blur-sm text-[7px] sm:text-[9px] px-2 sm:px-3 py-1.5 tracking-widest font-bold uppercase shadow-sm border border-stone-100"
+                            style={{ color: badge.color || "#1c1917" }} // Stone-900 as default
+                          >
+                            {badge.value} 
+                          </span>
+                        ))}
+                      </div>
                     </div>
 
                     <h3 className="text-sm text-stone-900 font-normal">
                       {product.name}
                     </h3>
 
-                    {/* Prices */}
                     <div className="mt-1.5 space-y-0.5">
                       <div className="flex items-center gap-2">
                         {prices.pk.discount < prices.pk.original && (
@@ -344,7 +394,6 @@ const Shop = () => {
                       </div>
                     </div>
 
-                    {/* Colors */}
                     <div className="flex gap-1.5 mt-3">
                       {product.variants?.map((v: ProductVariant) => (
                         <span
@@ -358,6 +407,13 @@ const Shop = () => {
                   </Link>
                 );
               })}
+            </div>
+          )}
+          {!loading && paginatedProducts.length === 0 && (
+            <div className="text-center py-20">
+              <p className="text-stone-400 italic">
+                No products found matching your search.
+              </p>
             </div>
           )}
         </div>
@@ -384,82 +440,45 @@ const Shop = () => {
           </div>
         )}
       </div>
-      {/* SEO Optimized Collection Info Section */}
+
       <section className="mt-16 sm:mt-24 md:mt-32 py-12 sm:py-20 border-t border-stone-100 bg-[#FCFCFC]">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 text-center">
-          {/* Screen Reader Only Heading for SEO */}
           <h2 className="sr-only">About Junhae Studio Minimalist Fashion</h2>
-
-          {/* Decorative Line - Responsive width */}
           <div className="w-8 sm:w-12 h-px bg-stone-300 mx-auto mb-6 sm:mb-10" />
-
           <div className="space-y-4 sm:space-y-8">
-            {/* Responsive Heading */}
             <h3 className="text-lg sm:text-xl md:text-2xl font-vogue text-stone-900 tracking-[0.15em] sm:tracking-wide">
               The Essence of Junhae Studio
             </h3>
-
-            {/* Main Description - Adjusted leading and text size for mobile */}
             <p className="text-stone-500 text-xs sm:text-sm md:text-base font-light leading-relaxed sm:leading-loose max-w-3xl mx-auto px-2">
               Welcome to{" "}
               <span className="text-stone-900 font-vogue font-medium">
                 Junhae Studio
               </span>
-              , your destination for premium
+              , your destination for premium{" "}
               <strong className="font-medium text-stone-800">
-                {" "}
                 minimalist clothing
               </strong>{" "}
-              and
+              and{" "}
               <strong className="font-medium text-stone-800">
-                {" "}
                 aesthetic streetwear
               </strong>
-              . Our collection features
-              <strong className="font-medium text-stone-800">
-                {" "}
-                ethically made hoodies
-              </strong>
-              ,
-              <strong className="font-medium text-stone-800">
-                {" "}
-                oversized tees
-              </strong>
-              , and
-              <strong className="font-medium text-stone-800">
-                {" "}
-                sustainable fashion
-              </strong>{" "}
-              pieces that define modern simplicity.
+              .
             </p>
-
-            {/* Sub-text - Italicized and subtle */}
             <p className="text-stone-400 text-[10px] sm:text-xs md:text-sm font-light leading-relaxed max-w-2xl mx-auto italic px-4">
               Based on a print-on-demand model, we reduce waste while delivering
-              high-quality
+              high-quality{" "}
               <span className="border-b border-stone-200">
-                {" "}
                 minimalist apparel
               </span>{" "}
               to creatives worldwide.
-              <br className="hidden sm:block" /> Defined by silence, crafted for
-              you.
             </p>
           </div>
-
-          {/* Responsive Brand Tagline - Wraps on small screens if needed */}
           <div className="mt-8 sm:mt-12 flex flex-wrap justify-center items-center gap-3 sm:gap-6 text-[9px] sm:text-[10px] tracking-[0.2em] sm:tracking-[0.3em] text-stone-400 uppercase">
-            <span className="hover:text-stone-600 transition-colors">
-              Ethical
-            </span>
+            <span>Ethical</span>
             <span className="w-1 h-1 bg-stone-200 rounded-full hidden xs:block" />
-            <span className="hover:text-stone-600 transition-colors">
-              Sustainable
-            </span>
+            <span>Sustainable</span>
             <span className="w-1 h-1 bg-stone-200 rounded-full hidden xs:block" />
-            <span className="hover:text-stone-600 transition-colors">
-              Minimalist
-            </span>
+            <span>Minimalist</span>
           </div>
         </div>
       </section>

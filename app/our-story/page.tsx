@@ -71,7 +71,8 @@ const OurStoryPage: React.FC = () => {
             <Image
               src="/outstory image/latest arirang collection.jpg" // Replace with your dxdssfsf.png style image
               alt="Junhae Studio Latest Design"
-              fill
+              width={800}
+              height={800}
               className="object-cover hover:scale-110 transition-all duration-1000"
             />
             <div className="absolute inset-0 bg-linear-to-r from-white via-transparent to-transparent hidden md:block"></div>
@@ -127,8 +128,7 @@ const OurStoryPage: React.FC = () => {
       <section className="relative py-24 md:py-40 px-4 text-center">
         <div className="max-w-3xl mx-auto">
           <h2 className="text-5xl md:text-8xl font-vogue mb-10 tracking-tighter leading-tight">
-            Wear Your <br />{" "}
-            <span className="text-crimson italic">Truth.</span>
+            Wear Your <br /> <span className="text-crimson italic">Truth.</span>
           </h2>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
             <Link

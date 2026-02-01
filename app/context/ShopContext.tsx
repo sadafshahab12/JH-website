@@ -1,6 +1,6 @@
 "use client";
 
-import React, {
+import {
   createContext,
   useContext,
   useState,
@@ -27,6 +27,7 @@ interface ShopContextType {
     selectedImage: string,
     selectedPrice: number,
     priceMode: "pk" | "intl", // NEW
+    productType: "apparel" | "stationery",
   ) => void;
 
   removeFromCart: (
@@ -92,6 +93,7 @@ export const ShopProvider = ({ children }: { children: ReactNode }) => {
     selectedImage: string,
     selectedPrice: number,
     priceMode: "pk" | "intl",
+    productType: "apparel" | "stationery",
   ) => {
     setCart((prev) => {
       const existingItem = prev.find(
@@ -101,7 +103,8 @@ export const ShopProvider = ({ children }: { children: ReactNode }) => {
           item.color === color &&
           item.variantId === variantId &&
           item.colorCode === colorCode &&
-          item.priceMode === priceMode,
+          item.priceMode === priceMode &&
+          item.productType === productType,
       );
 
       if (existingItem) {
@@ -111,9 +114,12 @@ export const ShopProvider = ({ children }: { children: ReactNode }) => {
           item.color === color &&
           item.variantId === variantId &&
           item.colorCode === colorCode &&
+          item.productType === productType &&
           item.priceMode === priceMode
             ? { ...item, quantity: item.quantity + 1 }
-            : item,
+            : item && item.productType === productType
+              ? { ...item, quantity: item.quantity + 1 }
+              : item,
         );
       }
 
@@ -121,6 +127,7 @@ export const ShopProvider = ({ children }: { children: ReactNode }) => {
         ...prev,
         {
           productId: product._id,
+          productType,
           variantId,
           size,
           color,

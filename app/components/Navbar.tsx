@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import {
   ShoppingBag,
   Menu,
@@ -11,175 +11,169 @@ import {
   useShop,
   useSearch,
   SearchResultsDropdown,
+  ChevronDown,
+  client,
 } from "../exports/homeExports";
 
-/* ----------------------------------
- Types
------------------------------------*/
-interface NavLink {
-  label: string;
-  href: string;
-}
-
-/* ----------------------------------
- Navigation Links
------------------------------------*/
-const NAV_LINKS: NavLink[] = [
-  { label: "HOME", href: "/" },
-  { label: "JUNHAE EDITS", href: "/junhae-edits" },
-  { label: "OUR STORY", href: "/our-story" },
-  { label: "CONTACT", href: "/contact" },
-];
-
 const Navbar: React.FC = () => {
+  const router = useRouter();
   const { toggleCart, cartCount } = useShop();
   const { searchTerm, setSearchTerm } = useSearch();
-
+  
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
+  const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
+  const [dynamicCategories, setDynamicCategories] = useState<{ title: string; slug: string }[]>([]);
 
   const pathname = usePathname();
-
-  // Hide navbar in Sanity Studio
   const hideNavbar = pathname?.startsWith("/studio");
 
-  /* ----------------------------------
-   Effects
-  -----------------------------------*/
+  useEffect(() => {
+    const fetchCats = async () => {
+      try {
+        const data = await client.fetch(`*[_type == "category"]{ title, "slug": slug.current }`);
+        setDynamicCategories(data);
+      } catch (error) {
+        console.error("Failed to fetch categories:", error);
+      }
+    };
+    fetchCats();
+  }, []);
+
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 10);
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Close menus on route change
   useEffect(() => {
-    const toggle = () => {
-      setIsMobileMenuOpen(false);
-      setIsMobileSearchOpen(false);
-      setSearchTerm("");
-    };
-    toggle();
-  }, [pathname, setSearchTerm]);
+    setIsMobileMenuOpen(false);
+    setIsMobileSearchOpen(false);
+  }, [pathname]);
 
-  // Escape key closes search
-  useEffect(() => {
-    const esc = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        setIsMobileSearchOpen(false);
-        setSearchTerm("");
-      }
-    };
-    window.addEventListener("keydown", esc);
-    return () => window.removeEventListener("keydown", esc);
-  }, [setSearchTerm]);
+  // 💡 Enter Key Handler with Auto-Close Results
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter" && searchTerm.trim() !== "") {
+      const query = searchTerm; 
+      setSearchTerm(""); // 💡 Close dropdown & clear bar
+      setIsMobileSearchOpen(false);
+      setIsMobileMenuOpen(false);
+      router.push(`/junhae-edits?search=${encodeURIComponent(query)}`);
+    }
+  };
+
+  const NAV_LINKS = [
+    { label: "HOME", href: "/" },
+    {
+      label: "SHOP",
+      href: "/junhae-edits",
+      subLinks: [
+        { label: "All Products", href: "/junhae-edits" },
+        ...dynamicCategories.map((cat) => ({
+          label: cat.title,
+          href: `/junhae-edits?category=${encodeURIComponent(cat.title)}`,
+        })),
+      ],
+    },
+    { label: "OUR STORY", href: "/our-story" },
+    { label: "CONTACT", href: "/contact" },
+  ];
+
   if (hideNavbar) return null;
+
   return (
     <>
-      {/* ================= NAVBAR ================= */}
-      <nav
-        className={`fixed top-0 w-full z-50 transition-all duration-300 border-b ${
-          isScrolled
-            ? "bg-white/90 backdrop-blur-md border-stone-200 py-3"
-            : "bg-transparent border-transparent py-4 sm:py-6"
-        }`}
-      >
-        <div className="max-w-7xl mx-auto px-3 sm:px-6 flex justify-between items-center">
-          {/* Logo */}
-          <Link
-            href="/"
-            className="text-2xl font-vogue tracking-tight font-medium text-stone-900 z-50"
-          >
+      <nav className={`fixed top-0 w-full z-50 transition-all duration-300 border-b ${isScrolled ? "bg-white/95 backdrop-blur-md border-stone-200 py-3" : "bg-transparent border-transparent py-4 sm:py-6"}`}>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 flex justify-between items-center">
+          <Link href="/" className="text-2xl font-vogue tracking-tight font-medium text-stone-900 z-50">
             Junhae Studio
           </Link>
 
-          {/* Desktop Search */}
-          <div className="relative hidden md:block w-72">
-            <input
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              placeholder="Search essentials..."
-              className="w-full rounded-full border border-stone-200 bg-white/80 backdrop-blur px-5 py-2 text-sm text-stone-700 placeholder:text-stone-400 focus:outline-none focus:border-stone-900 transition"
-            />
-            {searchTerm && <SearchResultsDropdown />}
-          </div>
-
-          {/* Desktop Links */}
-          <div className="hidden md:flex items-center space-x-12 text-sm font-medium tracking-wide text-stone-600">
+          <div className="hidden md:flex items-center space-x-8 text-sm font-medium tracking-wide text-stone-600">
             {NAV_LINKS.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className="hover:text-stone-900 transition-colors"
-              >
-                {link.label}
-              </Link>
+              <div key={link.label} className="relative group" onMouseEnter={() => setActiveDropdown(link.label)} onMouseLeave={() => setActiveDropdown(null)}>
+                <Link href={link.href} className="hover:text-stone-900 transition-colors flex items-center gap-1 py-2">
+                  {link.label}
+                  {link.subLinks && link.subLinks.length > 0 && (
+                    <ChevronDown size={14} className={`transition-transform duration-200 ${activeDropdown === link.label ? "rotate-180" : ""}`} />
+                  )}
+                </Link>
+
+                {link.subLinks && activeDropdown === link.label && (
+                  <div className="absolute top-full left-0 w-56 bg-white border border-stone-100 shadow-xl rounded-lg py-3 animate-in fade-in slide-in-from-top-2">
+                    {link.subLinks.map((sub) => (
+                      <Link key={sub.label} href={sub.href} className="block px-6 py-2 hover:bg-stone-50 text-stone-600 hover:text-stone-900 transition">
+                        {sub.label}
+                      </Link>
+                    ))}
+                  </div>
+                )}
+              </div>
             ))}
           </div>
 
-          {/* Icons */}
-          <div className="flex items-center  z-50">
-            {/* Mobile Search Icon */}
-            <button
-              onClick={() => setIsMobileSearchOpen((prev) => !prev)}
-              className="md:hidden p-2 text-stone-800"
-              aria-label="Search"
-            >
-              <Search size={22} />
+          <div className="flex items-center gap-2 z-50">
+            <div className="relative hidden lg:block w-48 xl:w-64 mr-4">
+              <input
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                onKeyDown={handleKeyDown}
+                placeholder="Search..."
+                className="w-full rounded-full border border-stone-200 bg-white/80 px-4 py-1.5 text-xs focus:outline-none focus:border-stone-900"
+              />
+              {searchTerm && <SearchResultsDropdown />}
+            </div>
+
+            <button onClick={() => setIsMobileSearchOpen(!isMobileSearchOpen)} className="md:hidden p-2 text-stone-800">
+              <Search size={20} />
             </button>
 
-            {/* Cart */}
-            <button
-              onClick={() => toggleCart(true)}
-              className="relative p-1 text-stone-800 hover:text-stone-600 transition-colors"
-              aria-label="Cart"
-            >
+            <button onClick={() => toggleCart(true)} className="relative p-2 text-stone-800">
               <ShoppingBag size={22} strokeWidth={1.5} />
               {cartCount > 0 && (
-                <span className="absolute top-1 right-0 bg-stone-800 text-white text-[10px] w-4 h-4 flex items-center justify-center rounded-full">
+                <span className="absolute top-1 right-1 bg-stone-800 text-white text-[10px] w-4 h-4 flex items-center justify-center rounded-full shadow-sm">
                   {cartCount}
                 </span>
               )}
             </button>
 
-            {/* Mobile Menu */}
-            <button
-              className="md:hidden p-2 text-stone-800"
-              onClick={() => setIsMobileMenuOpen((prev) => !prev)}
-              aria-label="Menu"
-            >
+            <button className="md:hidden p-2 text-stone-800" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
               {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
             </button>
           </div>
         </div>
 
-        {/* ================= MOBILE SEARCH BAR ================= */}
         {isMobileSearchOpen && (
-          <div className="md:hidden px-6 pb-4 pt-2 bg-white border-t border-stone-200 relative">
+          <div className="md:hidden px-6 pb-4 pt-2 bg-white border-t border-stone-200 shadow-sm animate-in slide-in-from-top">
             <input
               autoFocus
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              placeholder="Search essentials..."
-              className="w-full rounded-full border border-stone-200 px-5 py-2 text-sm focus:outline-none focus:border-stone-900"
+              onKeyDown={handleKeyDown}
+              placeholder="Search products..."
+              className="w-full rounded-full border border-stone-200 px-5 py-2 text-sm focus:border-stone-900 outline-none"
             />
             {searchTerm && <SearchResultsDropdown />}
           </div>
         )}
       </nav>
 
-      {/* ================= MOBILE MENU ================= */}
-      <div
-        className={`fixed inset-0 z-40 bg-white transform transition-transform duration-300 ease-in-out md:hidden ${
-          isMobileMenuOpen ? "translate-y-0" : "-translate-y-full"
-        }`}
-      >
-        <div className="flex flex-col items-center justify-center h-full space-y-8 text-xl font-light tracking-widest text-stone-900">
+      <div className={`fixed inset-0 z-40 bg-white transform transition-transform duration-300 ease-in-out md:hidden ${isMobileMenuOpen ? "translate-y-0" : "-translate-y-full"}`}>
+        <div className="flex flex-col pt-32 px-10 space-y-6 overflow-y-auto h-full pb-10">
           {NAV_LINKS.map((link) => (
-            <Link key={link.href} href={link.href}>
-              {link.label}
-            </Link>
+            <div key={link.label} className="border-b border-stone-100 pb-4">
+              <Link href={link.href} className="text-xl font-medium text-stone-900 block mb-2">
+                {link.label}
+              </Link>
+              <div className="flex flex-wrap gap-x-4 gap-y-2">
+                {link.subLinks?.map((sub) => (
+                  <Link key={sub.label} href={sub.href} className="text-sm text-stone-500 hover:text-stone-900">
+                    {sub.label}
+                  </Link>
+                ))}
+              </div>
+            </div>
           ))}
         </div>
       </div>

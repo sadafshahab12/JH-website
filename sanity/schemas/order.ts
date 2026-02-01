@@ -156,7 +156,18 @@ export const order = defineType({
         }),
       ],
     }),
-
+    defineField({
+      name: "productType",
+      title: "Product Type",
+      type: "string",
+      options: {
+        list: [
+          { title: "Apparel", value: "apparel" },
+          { title: "Stationery", value: "stationery" },
+        ],
+      },
+      validation: (Rule) => Rule.required(),
+    }),
     /* ---------- PAYMENT ---------- */
     defineField({
       name: "payment",

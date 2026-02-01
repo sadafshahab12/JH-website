@@ -45,6 +45,7 @@ export type CurrencyMode = "pk" | "intl";
 export interface OrderItem {
   _key: string;
   product: SanityReference;
+  productType: "apparel" | "stationery";
   variantId: string;
   size: OrderSize;
   color: string;
@@ -101,6 +102,7 @@ export interface CreateOrderPayload {
     quantity: number;
     price: number;
     priceMode: CurrencyMode;
+    productType: "apparel" | "stationery";
   }[];
 
   subtotal: number;
