@@ -176,7 +176,7 @@ const Home = () => {
 
                     {product.badges?.map((badge) => (
                       <span
-                        key={badge._key}
+                        key={badge._id}
                         className="absolute top-4 right-4 bg-white/90 backdrop-blur px-2 py-1 text-[10px] tracking-widest uppercase font-medium"
                       >
                         {badge.value}
