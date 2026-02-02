@@ -201,7 +201,7 @@ const OurStoryPage: React.FC = () => {
           </div>
         </section>
         <section className="py-24 px-6 max-w-7xl mx-auto">
-          {/* Note: Maine max-w-7xl kiya hai taake baki sections ke saath align rahe */}
+
           <div className="text-center mb-16">
             <h3 className="text-[10px] tracking-[0.4em] font-bold text-stone-400 uppercase mb-4">
               Our Conscious Cycle

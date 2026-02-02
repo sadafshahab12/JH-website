@@ -457,6 +457,36 @@ const ProductDetail = () => {
                   </span>
                 </p>
               </div>
+              <div className="my-6 py-4 border-y border-stone-100">
+                <div className="flex items-center gap-4 bg-crimson p-5 rounded-xl shadow-sm">
+                  <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center shrink-0 border border-white/20">
+                    <svg
+                      width="18"
+                      height="18"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      className="text-white"
+                    >
+                      <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z" />
+                    </svg>
+                  </div>
+
+                  <div>
+                    <p className="text-[10px] uppercase tracking-[0.2em] text-white/70 font-bold mb-0.5">
+                      Eco-Conscious Choice
+                    </p>
+                    <p className="text-xs text-white leading-relaxed">
+                      Your choice saves{" "}
+                      <span className="font-bold text-white underline decoration-white/30 underline-offset-4">
+                        2,700L of water
+                      </span>{" "}
+                      compared to mass production.
+                    </p>
+                  </div>
+                </div>
+              </div>
               <button
                 onClick={handleAddToCart}
                 className="w-full bg-stone-900 text-white py-4 px-8 text-sm font-bold tracking-widest uppercase hover:bg-stone-800 transition-colors shadow-lg active:transform active:scale-[0.99]"
@@ -465,9 +495,9 @@ const ProductDetail = () => {
               </button>
               {showModal && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-                  {/* Added "relative" here to anchor the close button */}
+    
                   <div className="relative bg-white rounded-2xl p-8 max-w-sm w-full text-center shadow-2xl transform transition-all scale-100">
-                    {/* --- Close Button (X) --- */}
+   
                     <button
                       onClick={() => setShowModal(false)}
                       className="absolute top-4 right-4 text-stone-400 hover:text-stone-900 transition-colors p-1"
@@ -624,7 +654,7 @@ const ProductDetail = () => {
                         className="text-stone-400 mt-1 shrink-0"
                       />
                       <div className="space-y-2">
-                        {/* Agar Sanity mein custom shipping info hai toh wo dikhao, warna default */}
+
                         {product.shippingDetails ? (
                           <p className="whitespace-pre-line text-stone-700 leading-relaxed">
                             {product.shippingDetails}
@@ -673,7 +703,7 @@ const ProductDetail = () => {
                           👕 Product Care Guide
                         </h3>
                         <ul className="list-disc pl-4 space-y-1 text-sm text-stone-600">
-                          {/* Agar Sanity mein list hai toh wo dikhao, warna default universal instructions */}
+
                           {product.careInstructions &&
                           product.careInstructions.length > 0 ? (
                             product.careInstructions.map((instruction, idx) => (
@@ -790,7 +820,7 @@ const ProductDetail = () => {
                   href={`/junhae-edits/${rp.slug.current}`}
                   className="group block"
                 >
-                  {/* Container ko 'relative' kiya badges ke liye */}
+
                   <div className="aspect-3/4 bg-stone-100 overflow-hidden mb-3 relative">
                     {/* 💡 Badges Section */}
                     {rp.badges && rp.badges.length > 0 && (
@@ -992,35 +1022,42 @@ const ProductDetail = () => {
         {/* Size Guide Modal */}
         {showSizeGuide && (
           <div
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm"
             onClick={() => setShowSizeGuide(false)}
           >
             <div
-              className="bg-white p-8 max-w-lg w-full shadow-2xl relative"
+              className="bg-white p-8 max-w-lg w-full shadow-2xl relative animate-in fade-in zoom-in duration-300"
               onClick={(e) => e.stopPropagation()}
             >
               <button
                 onClick={() => setShowSizeGuide(false)}
-                className="absolute top-4 right-4 text-stone-400 hover:text-stone-900"
+                className="absolute top-4 right-4 text-stone-400 hover:text-stone-900 transition-colors"
               >
                 <X size={20} />
               </button>
-              <h3 className="text-2xl font-vogue mb-6">
+
+              <h3 className="text-2xl font-vogue mb-6 text-stone-900">
                 {product.sizeGuide?.title || "Size Guide"}
               </h3>
-              <div className="overflow-x-auto">
-                <table className="w-full text-sm text-left">
-                  <thead className="bg-stone-50 text-stone-900">
+
+              <div className="overflow-x-auto mb-8">
+                <table className="w-full text-sm text-left border-collapse">
+                  <thead className="bg-stone-50 text-stone-900 border-b border-stone-200">
                     <tr>
-                      <th className="p-3">Size</th>
-                      <th className="p-3">Chest (in)</th>
-                      <th className="p-3">Length (in)</th>
+                      <th className="p-3 font-semibold">Size</th>
+                      <th className="p-3 font-semibold">Chest (in)</th>
+                      <th className="p-3 font-semibold">Length (in)</th>
                     </tr>
                   </thead>
                   <tbody className="text-stone-600">
                     {product.sizeGuide?.sizes?.map((sizeRow) => (
-                      <tr key={sizeRow.size} className="border-b">
-                        <td className="p-3">{sizeRow.size}</td>
+                      <tr
+                        key={sizeRow.size}
+                        className="border-b border-stone-100"
+                      >
+                        <td className="p-3 font-medium text-stone-900">
+                          {sizeRow.size}
+                        </td>
                         <td className="p-3">{sizeRow.chest}</td>
                         <td className="p-3">{sizeRow.length}</td>
                       </tr>
@@ -1028,6 +1065,57 @@ const ProductDetail = () => {
                   </tbody>
                 </table>
               </div>
+
+              {/* 💡 DYNAMIC MODEL CONTEXT SECTION */}
+              {product.sizeGuide?.modelStats && (
+                <div className="space-y-4 border-t border-stone-100 pt-6">
+                  <div className="flex items-start gap-3 bg-stone-50 p-4 rounded-lg">
+                    <div className="mt-1">
+                      <svg
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        className="text-stone-400"
+                      >
+                        <circle cx="12" cy="8" r="5" />
+                        <path d="M20 21a8 8 0 1 0-16 0" />
+                      </svg>
+                    </div>
+                    <div>
+                      <p className="text-[10px] uppercase tracking-widest text-stone-400 font-bold mb-1">
+                        Model Context
+                      </p>
+                      <p className="text-xs text-stone-600 leading-relaxed italic">
+                        Our model is{" "}
+                        <strong className="text-stone-900">
+                          {product.sizeGuide.modelStats.height}
+                        </strong>{" "}
+                        {product.sizeGuide.modelStats.weight &&
+                          `and ${product.sizeGuide.modelStats.weight}`}
+                        , wearing a{" "}
+                        <strong className="text-stone-900 font-bold">
+                          Size {product.sizeGuide.modelStats.sizeWorn}
+                        </strong>{" "}
+                        for a{" "}
+                        <strong className="text-stone-900 underline underline-offset-4 decoration-stone-200">
+                          {product.sizeGuide.modelStats.fitDescription}
+                        </strong>
+                        .
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* 💡 DYNAMIC SIZE TIP */}
+                  {product.sizeGuide.sizeTip && (
+                    <div className="text-[11px] text-stone-500 flex items-center justify-center gap-2 italic text-center">
+                      <span>{product.sizeGuide.sizeTip}</span>
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
           </div>
         )}

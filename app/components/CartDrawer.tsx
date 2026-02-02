@@ -146,7 +146,6 @@ const CartDrawer = () => {
             <div className="flex justify-between text-sm">
               <span className="text-stone-500">Subtotal</span>
               <span className="font-medium">
-                {/* 💡 You can show currency here too */}
                 {cart[0].priceMode === "pk" ? "PKR" : "USD"} {cartTotal}
               </span>
             </div>

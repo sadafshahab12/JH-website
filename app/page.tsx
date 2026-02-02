@@ -152,11 +152,7 @@ const Home = () => {
           </div>
         </section>
         <section className="relative py-20 sm:py-32 px-6 bg-[#F9F8F6] border-y border-stone-200 overflow-hidden">
-          {/* Decorative Element - hidden on small mobile for performance */}
-
           <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
-            {/* Left Side: Editorial Branding */}
-            {/* LG:sticky desktop par stack karega, mobile par normal flow rahega */}
             <div className="lg:col-span-5 lg:sticky lg:top-24 order-1">
               <div className="flex items-center gap-4 mb-6 sm:mb-8">
                 <span className="h-px w-8 sm:w-12 bg-stone-300" />
@@ -171,8 +167,6 @@ const Home = () => {
                 <br />
                 Intentions.
               </h2>
-
-              {/* Trust Badges - Mobile Optimized Grid */}
               <div className="grid grid-cols-2 gap-6 py-8 border-t border-stone-200">
                 <div className="space-y-1">
                   <p className="text-[10px] font-bold uppercase tracking-widest text-stone-900">

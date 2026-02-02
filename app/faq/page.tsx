@@ -88,7 +88,7 @@ const FAQ = () => {
               <h2 className="text-xl font-medium text-stone-800 mb-4 leading-snug group-hover:text-black">
                 {item.q}
               </h2>
-              {/* Ab yahan 'item.a' direct render hoga as a React Element */}
+
               <div className="text-stone-500 font-light leading-relaxed max-w-2xl">
                 {item.a}
               </div>

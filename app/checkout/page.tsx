@@ -187,7 +187,7 @@ const CheckoutPage = () => {
           customization: customization || undefined,
         },
 
-        currencyMode: currencyMode, 
+        currencyMode: currencyMode,
 
         items: orderItems,
         subtotal: cartTotal,
@@ -469,7 +469,27 @@ const CheckoutPage = () => {
                     </div>
                   ))}
                 </div>
+                <div className="bg-crimson p-5 rounded-xl mb-6 shadow-md border border-white/10">
+                  <div className="flex items-center gap-2 mb-2">
+                    <span className="relative flex h-2 w-2">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
+                      <span className="relative inline-flex rounded-full h-2 w-2 bg-white"></span>
+                    </span>
+                    <p className="text-[10px] uppercase tracking-widest text-white/80 font-bold">
+                      Environmental Impact
+                    </p>
+                  </div>
 
+                  <p className="text-xs text-white leading-relaxed">
+                    By choosing{" "}
+                    <span className="font-semibold italic">Junhae&apos;s</span>{" "}
+                    print-on-demand model, you have saved approx.{" "}
+                    <span className="text-white font-bold border-b border-white/40 pb-0.5">
+                      {(totalQuantity * 2700).toLocaleString()} Liters
+                    </span>{" "}
+                    of water compared to mass-produced fast fashion.
+                  </p>
+                </div>
                 <div className="border-t border-stone-100 pt-4 space-y-3">
                   <div className="flex justify-between text-stone-600">
                     <span className="text-sm">Subtotal</span>
@@ -490,6 +510,7 @@ const CheckoutPage = () => {
                       *{shippingNote}
                     </p>
                   )}
+
                   <div className="flex justify-between text-lg font-bold text-stone-900 pt-3 border-t border-stone-100">
                     <span>Total</span>
                     <span>{formatCurrency(currencyMode, total)}</span>
@@ -539,7 +560,7 @@ const CheckoutPage = () => {
                 Terms
               </Link>
               <Link
-                href="/care-instructions"
+                href="/care-instruction"
                 className="hover:text-stone-900 transition-colors"
               >
                 Care Guide
@@ -547,7 +568,7 @@ const CheckoutPage = () => {
             </div>
 
             <div className="text-[10px] text-stone-300 tracking-widest">
-              © 2026 DEFINED BY SILENCE
+              © 2025 DEFINED BY SILENCE
             </div>
           </div>
         </footer>

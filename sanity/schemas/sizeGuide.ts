@@ -57,6 +57,47 @@ export const sizeGuide = defineType({
         },
       ],
     }),
+    defineField({
+      name: "modelStats",
+      title: "Model Context (Optional)",
+      type: "object",
+      description:
+        "Details about the model wearing this specific product category",
+      fields: [
+        defineField({
+          name: "height",
+          title: "Model Height",
+          type: "string",
+          description: "e.g. 6'1\" (185cm)",
+        }),
+        defineField({
+          name: "weight",
+          title: "Model Weight",
+          type: "string",
+          description: "e.g. 75kg",
+        }),
+        defineField({
+          name: "sizeWorn",
+          title: "Size Worn by Model",
+          type: "string",
+          description: "e.g. Large",
+        }),
+        defineField({
+          name: "fitDescription",
+          title: "Fit Style",
+          type: "string",
+          description: "e.g. signature oversized silhouette",
+        }),
+      ],
+    }),
+
+    defineField({
+      name: "sizeTip",
+      title: "Sizing Tip",
+      type: "string",
+      description:
+        "e.g. For a more relaxed streetwear fit, we recommend sizing up.",
+    }),
   ],
 
   preview: {

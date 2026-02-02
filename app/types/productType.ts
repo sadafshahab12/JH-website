@@ -1,3 +1,10 @@
+export interface ModelStats {
+  height?: string;
+  weight?: string;
+  sizeWorn?: string;
+  fitDescription?: string;
+}
+
 export interface SizeGuideSize {
   size: string;
   chest: number | string;
@@ -15,6 +22,8 @@ export interface SizeGuide {
     };
   };
   sizes: SizeGuideSize[];
+  modelStats?: ModelStats;
+  sizeTip?: string;
 }
 
 export type ProductColor = string;

@@ -351,7 +351,6 @@ const JunhaeEdits = () => {
                       )}
 
                       <div className="absolute top-3 left-3 flex flex-col items-start gap-1">
-                        {/* 1. Static NEW Badge (Jo 7 din purane products par aata hai) */}
                         {isNewProduct(product._createdAt) && (
                           <span className="bg-black text-white text-[9px] px-3 py-1.5 tracking-[0.2em] font-bold uppercase shadow-sm">
                             NEW

@@ -67,7 +67,14 @@ inventory,
       size,
       chest,
       length
-    }
+    },
+    modelStats{
+      height,
+      weight,
+      sizeWorn,
+      fitDescription
+    },
+    sizeTip
   },
 "completeTheLook": completeTheLook[]-> {
     _id,

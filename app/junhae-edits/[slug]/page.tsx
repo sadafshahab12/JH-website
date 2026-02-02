@@ -55,7 +55,7 @@ export default async function Page({ params }: Props) {
 
   return (
     <>
-      {/* Is script tag se Google ko table format mein data milta hai */}
+
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
