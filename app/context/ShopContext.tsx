@@ -141,7 +141,7 @@ export const ShopProvider = ({ children }: { children: ReactNode }) => {
       ];
     });
 
-    setIsCartOpen(true);
+    // setIsCartOpen(true);
   };
 
   const removeFromCart = (

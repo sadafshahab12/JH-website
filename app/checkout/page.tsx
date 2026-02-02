@@ -14,11 +14,11 @@ import {
   Upload,
   Loader2,
   MapPin,
-  ShoppingBag,
   CheckCircle2,
 } from "../exports/homeExports";
 import { ShippingCostQuery } from "../lib/shippingCostQuery";
 import Link from "next/link";
+import EmptyCart from "../components/EmptyCart";
 
 const CheckoutPage = () => {
   const { cart, cartTotal, updateQuantity, clearCart } = useShop();
@@ -32,7 +32,7 @@ const CheckoutPage = () => {
   const [shippingNote, setShippingNote] = useState<string>("");
   const [total, setTotal] = useState<number>(0);
   const [isLoadingShipping, setIsLoadingShipping] = useState(false);
-
+  const [isMounted, setIsMounted] = useState(false);
   // Form State
   const [fullname, setFullname] = useState("");
   const [country, setCountry] = useState("");
@@ -58,7 +58,9 @@ const CheckoutPage = () => {
       ? `PKR ${value.toLocaleString()}`
       : `USD ${value.toFixed(2)}`;
   };
-
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
   // 1. Fetch unique countries
   useEffect(() => {
     const fetchCountries = async () => {
@@ -185,7 +187,7 @@ const CheckoutPage = () => {
           customization: customization || undefined,
         },
 
-        currencyMode: currencyMode, // <-- IMPORTANT (fix)
+        currencyMode: currencyMode, 
 
         items: orderItems,
         subtotal: cartTotal,
@@ -235,9 +237,20 @@ const CheckoutPage = () => {
           </header>
         )}
 
-        <div className="flex flex-col lg:flex-row gap-8">
+        <div className="flex flex-col justify-center lg:flex-row gap-8">
           <div className="lg:w-7/12 space-y-6">
-            {cart.length > 0 ? (
+            {!isMounted ? (
+              <div className="flex flex-col items-center justify-center p-20 gap-4">
+                {/* Minimalist Spinner */}
+                <div className="relative w-12 h-12">
+                  <div className="absolute inset-0 border-2 border-stone-100 rounded-full"></div>
+                  <div className="absolute inset-0 border-2 border-stone-900 rounded-full border-t-transparent animate-spin"></div>
+                </div>
+                <p className="text-[10px] uppercase tracking-[0.3em] text-stone-400 animate-pulse">
+                  Loading Experience
+                </p>
+              </div>
+            ) : cart.length > 0 ? (
               <>
                 <section className="p-6 bg-white border border-stone-200 rounded-2xl shadow-sm">
                   <h2 className="text-xl font-semibold text-stone-900 mb-6 flex items-center gap-2">
@@ -386,34 +399,7 @@ const CheckoutPage = () => {
                 </section>
               </>
             ) : (
-              <div className="group relative w-full overflow-hidden rounded-4xl border border-stone-100 py-24 text-center transition-all ">
-                {/* Subtle Background Accent */}
-                <div className="absolute -right-20 -top-20 h-64 w-64 rounded-full bg-stone-50/50 blur-3xl" />
-
-                <div className="relative z-10 flex flex-col items-center">
-                  {/* Animated Icon Container */}
-                  <div className="mb-6 inline-flex transform rounded-full bg-stone-50 p-6 text-stone-400 transition-transform duration-500 group-hover:scale-110 group-hover:bg-stone-100 group-hover:text-stone-600">
-                    <ShoppingBag size={48} strokeWidth={1.5} />
-                  </div>
-
-                  {/* Typography */}
-                  <h2 className="text-3xl font-medium tracking-tight text-stone-900">
-                    Your cart is lonely
-                  </h2>
-                  <p className="mt-2 text-stone-500 max-w-xs mx-auto text-balance">
-                    {`            Looks like you haven't added anything to your bag yet. Let's
-                    find something special.`}
-                  </p>
-
-                  {/* Refined Button */}
-                  <button
-                    onClick={() => router.push("/shop")}
-                    className="mt-10 inline-flex items-center gap-2 rounded-full bg-stone-900 px-12 py-4 text-xs font-bold uppercase tracking-[0.2em] text-white transition-all hover:bg-stone-800 hover:shadow-lg active:scale-95"
-                  >
-                    Start Shopping
-                  </button>
-                </div>
-              </div>
+              <EmptyCart />
             )}
           </div>
 

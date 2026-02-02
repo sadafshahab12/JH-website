@@ -7,10 +7,7 @@ export const productDetailBySlugQuery = groq`
   _updatedAt,
   name,
   slug,
-  
-  // 💡 NEW: Product Type fetch karna zaroori hai logic handle karne ke liye
   productType,
-
   pricing{
     pkPrice{
       original,

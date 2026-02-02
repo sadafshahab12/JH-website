@@ -111,7 +111,6 @@ export interface CreateOrderPayload {
 
   payment: {
     method: "EasyPaisa";
-    // Use this only if you upload receipt separately
     receiptAssetId?: string;
   };
 }

@@ -62,9 +62,9 @@ const sanityOrder = {
   currencyMode: order.currencyMode,
   items: order.items.map((item) => ({
     _key: item._key || uuidv4(),
-    _type: "item", // 💡 Sanity schema mein agar item ka name 'item' hai toh ye zaroori hai
+    _type: "item",
     product: item.product,
-    productType: item.productType, // 💡 Yeh line aapka productType save karegi
+    productType: item.productType, 
     variantId: item.variantId,
     size: item.size,
     color: item.color,

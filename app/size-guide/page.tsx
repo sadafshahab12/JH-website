@@ -1,5 +1,6 @@
 import { Metadata } from "next";
 import Link from "next/link";
+import Script from "next/script";
 
 export const metadata: Metadata = {
   title: "Size Guide | Junhae Studio | Find Your Perfect Minimalist Fit",
@@ -68,102 +69,140 @@ const Table = <T extends { [key: string]: string }>(props: {
 };
 
 const SizeGuide = () => {
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    name: "Junhae Studio Apparel Size Guide",
+    description:
+      "Measurement charts for oversized and regular minimalist streetwear.",
+    breadcrumb: "Home > Size Guide",
+    mainEntity: {
+      "@type": "Table",
+      name: "Clothing Size Chart",
+      about: "T-shirts, Hoodies, and Sweatshirts dimensions in inches",
+    },
+  };
   return (
-    <main className="pt-32 pb-20 px-6 max-w-5xl mx-auto min-h-screen">
-      <header className="mb-12">
-        <h1 className="text-4xl md:text-5xl font-vogue text-stone-900 mb-6 tracking-tight">
-          Find Your Fit
-        </h1>
-        <p className="text-sm md:text-base text-stone-500 leading-relaxed max-w-2xl font-light">
-          <span className="font-vogue text-stone-900">Junhae Studio</span>{" "}
-          apparel is designed with a
-          <strong className="text-stone-800 font-medium">
-            {" "}
-            modern, relaxed aesthetic
-          </strong>
-          . Measurements are in inches. For an{" "}
-          <span className="italic">oversized silhouette</span>, consider sizing
-          up.
-        </p>
-      </header>
-
-      <div className="space-y-8">
-        <Table
-          title="Minimalist Tee Measurements"
-          headers={["Size", "Chest (Half)", "Body Length", "Shoulder"]}
-          rows={shirtSizes}
-        />
-
-        <Table
-          title="Premium Hoodie Measurements"
-          headers={["Size", "Chest", "Length", "Shoulder"]}
-          rows={hoodieSizes}
-        />
-
-        <Table
-          title="Classic Sweatshirt Measurements"
-          headers={["Size", "Chest", "Length", "Shoulder"]}
-          rows={sweatshirtSizes}
-        />
-      </div>
-
-      <section className="mt-16 grid grid-cols-1 md:grid-cols-2 gap-8 p-8 bg-stone-50 rounded-2xl border border-stone-100">
-        <div>
-          <h2 className="text-lg font-vogue text-stone-900 mb-4 italic uppercase tracking-widest">
-            Measurement Guide
-          </h2>
-          <ul className="text-sm text-stone-500 space-y-4 font-light">
-            <li>
-              <span className="font-medium text-stone-800 uppercase block text-[10px] tracking-widest mb-1">
-                Chest
-              </span>
-              Measure around the fullest part of the chest, keeping the tape
-              level under the arms.
-            </li>
-            <li>
-              <span className="font-medium text-stone-800 uppercase block text-[10px] tracking-widest mb-1">
-                Length
-              </span>
-              Measure from the high point of the shoulder to the bottom opening
-              of the garment.
-            </li>
-          </ul>
-        </div>
-        <div className="items-center justify-center border-l border-stone-200 pl-8 hidden sm:flex">
-          <p className="text-xs text-stone-400 italic leading-relaxed">
-            {`      "Our garments are pre-shrunk to maintain their minimalist shape and
-            premium feel after washing."`}
-          </p>
-        </div>
-      </section>
-
-      <footer className="mt-12 text-center text-[11px] uppercase tracking-[0.2em] text-stone-400">
-        Still unsure? Contact{" "}
-        <Link
-          href="mailto:junhaestudio@gmail.com"
-          className="text-stone-900 font-bold border-b border-stone-900"
-        >
-          Support
-        </Link>
-      </footer>
-
-      {/* Structured Data for Google Dataset/Table Recognition */}
-      <script
+    <>
+      <Script
+        id="size-guide-schema"
         type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "WebPage",
-            name: "Junhae Studio Size Guide",
-            description: "Size charts for T-shirts, Hoodies, and Sweatshirts.",
-            mainEntity: {
-              "@type": "Table",
-              about: "Clothing size measurements in inches",
-            },
-          }),
-        }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-    </main>
+      <main className="pt-32 pb-20 px-6 max-w-5xl mx-auto min-h-screen">
+        <header className="mb-12">
+          <h1 className="text-4xl md:text-5xl font-vogue text-stone-900 mb-6 tracking-tight">
+            Find Your Fit
+          </h1>
+          <div className="bg-stone-50 border-l-2 border-stone-900 p-6 mb-10">
+            <p className="text-sm md:text-base text-stone-600 leading-relaxed font-light">
+              <span className="font-vogue text-stone-900 uppercase tracking-tighter mr-2">
+                Fit Note:
+              </span>
+              Our collection is curated for a{" "}
+              <strong className="text-stone-900 font-medium ">
+                relaxed, boxy silhouette
+              </strong>
+              . If you prefer a standard fit, we recommend your true size. For a
+              signature{" "}
+              <strong className="text-stone-900 font-medium ">
+                minimalist oversized look
+              </strong>
+              , consider sizing up one level.
+            </p>
+          </div>
+          <p className="text-sm md:text-base text-stone-500 leading-relaxed max-w-2xl font-light">
+            <span className="font-vogue text-stone-900">Junhae Studio</span>{" "}
+            apparel is designed with a
+            <strong className="text-stone-800 font-medium">
+              {" "}
+              modern, relaxed aesthetic
+            </strong>
+            . Measurements are in inches. For an{" "}
+            <span className="italic">oversized silhouette</span>, consider
+            sizing up.
+          </p>
+        </header>
+
+        <div className="space-y-8">
+          <Table
+            title="Minimalist Tee Measurements"
+            headers={["Size", "Chest (Half)", "Body Length", "Shoulder"]}
+            rows={shirtSizes}
+          />
+
+          <Table
+            title="Premium Hoodie Measurements"
+            headers={["Size", "Chest", "Length", "Shoulder"]}
+            rows={hoodieSizes}
+          />
+
+          <Table
+            title="Classic Sweatshirt Measurements"
+            headers={["Size", "Chest", "Length", "Shoulder"]}
+            rows={sweatshirtSizes}
+          />
+        </div>
+
+        <section className="mt-16 grid grid-cols-1 md:grid-cols-2 gap-8 p-8 bg-stone-50 rounded-2xl border border-stone-100">
+          <div>
+            <h2 className="text-lg font-vogue text-stone-900 mb-4 italic uppercase tracking-widest">
+              Measurement Guide
+            </h2>
+            <ul className="text-sm text-stone-500 space-y-4 font-light">
+              <li>
+                <span className="font-medium text-stone-800 uppercase block text-[10px] tracking-widest mb-1">
+                  Chest
+                </span>
+                Measure around the fullest part of the chest, keeping the tape
+                level under the arms.
+              </li>
+              <li>
+                <span className="font-medium text-stone-800 uppercase block text-[10px] tracking-widest mb-1">
+                  Length
+                </span>
+                Measure from the high point of the shoulder to the bottom
+                opening of the garment.
+              </li>
+            </ul>
+          </div>
+          <div className="items-center justify-center border-l border-stone-200 pl-8 hidden sm:flex">
+            <p className="text-xs text-stone-400 italic leading-relaxed">
+              {`      "Our garments are pre-shrunk to maintain their minimalist shape and
+            premium feel after washing."`}
+            </p>
+          </div>
+        </section>
+
+        <footer className="mt-12 text-center text-[11px] uppercase tracking-[0.2em] text-stone-400">
+          Still unsure? Contact{" "}
+          <Link
+            href="mailto:junhaestudio@gmail.com"
+            className="text-stone-900 font-bold border-b border-stone-900"
+          >
+            Support
+          </Link>
+        </footer>
+
+        {/* Structured Data for Google Dataset/Table Recognition */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "WebPage",
+              name: "Junhae Studio Size Guide",
+              description:
+                "Size charts for T-shirts, Hoodies, and Sweatshirts.",
+              mainEntity: {
+                "@type": "Table",
+                about: "Clothing size measurements in inches",
+              },
+            }),
+          }}
+        />
+      </main>{" "}
+    </>
   );
 };
 

@@ -1,6 +1,5 @@
 import { sendGAEvent } from "@next/third-parties/google";
 
-// Define a strict type for your events
 type GAEvent = {
   action: "button_click" | "add_to_cart" | "search";
   category: "ecommerce" | "engagement";
