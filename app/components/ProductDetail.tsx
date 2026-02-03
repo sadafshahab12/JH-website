@@ -321,7 +321,7 @@ const ProductDetail = () => {
 
           {/* Details Column */}
           <div className="flex flex-col">
-            <div className="border-b border-stone-200 pb-6 mb-8">
+            <div className={`border-b border-stone-200 pb-6 ${product.productType === "stationery" ? "mb-0" : "mb-8"}`}>
               <h1 className="text-2xl sm:text-4xl font-vogue text-stone-900 mb-2">
                 {product.name}
               </h1>
@@ -699,7 +699,7 @@ const ProductDetail = () => {
                     <div className="space-y-4 animate-fade-in">
                       <div>
                         <h3 className="text-sm font-medium text-stone-900 mb-2">
-                          👕 Product Care Guide
+                          Product Care Guide
                         </h3>
                         <ul className="list-disc pl-4 space-y-1 text-sm text-stone-600">
                           {product.careInstructions &&
