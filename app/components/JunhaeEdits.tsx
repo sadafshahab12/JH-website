@@ -40,9 +40,8 @@ const JunhaeEdits = () => {
   const { searchTerm } = useSearch();
   const searchParams = useSearchParams();
 
-
   const queryCategory = searchParams.get("category");
-  const querySearch = searchParams.get("search"); 
+  const querySearch = searchParams.get("search");
 
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<string[]>(["All"]);
@@ -362,7 +361,7 @@ const JunhaeEdits = () => {
                           <span
                             key={badge._id}
                             className="bg-white/90 backdrop-blur-sm text-[7px] sm:text-[9px] px-2 sm:px-3 py-1.5 tracking-widest font-bold uppercase shadow-sm border border-stone-100"
-                            style={{ color: badge.color || "#1c1917" }} 
+                            style={{ color: badge.color || "#1c1917" }}
                           >
                             {badge.value}
                           </span>
