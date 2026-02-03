@@ -401,17 +401,19 @@ const ProductDetail = () => {
             <div className="space-y-8">
               {/* Size Selection */}
               <div>
-                <div className="flex justify-between items-center mb-3">
-                  <span className="text-xs font-bold tracking-widest text-stone-400 uppercase">
-                    Size
-                  </span>
-                  <button
-                    onClick={() => setShowSizeGuide(true)}
-                    className="text-xs text-stone-500 underline hover:text-stone-900 flex items-center gap-1"
-                  >
-                    <Ruler size={12} /> Size Guide
-                  </button>
-                </div>
+                {product.productType !== "stationery" && (
+                  <div className="flex justify-between items-center mb-3">
+                    <span className="text-xs font-bold tracking-widest text-stone-400 uppercase">
+                      Size
+                    </span>
+                    <button
+                      onClick={() => setShowSizeGuide(true)}
+                      className="text-xs text-stone-500 underline hover:text-stone-900 flex items-center gap-1"
+                    >
+                      <Ruler size={12} /> Size Guide
+                    </button>
+                  </div>
+                )}
                 <div className="grid grid-cols-3 sm:grid-cols-6 gap-2">
                   {product.availableSizes?.map((size) => (
                     <button
@@ -495,9 +497,7 @@ const ProductDetail = () => {
               </button>
               {showModal && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-    
                   <div className="relative bg-white rounded-2xl p-8 max-w-sm w-full text-center shadow-2xl transform transition-all scale-100">
-   
                     <button
                       onClick={() => setShowModal(false)}
                       className="absolute top-4 right-4 text-stone-400 hover:text-stone-900 transition-colors p-1"
@@ -555,11 +555,11 @@ const ProductDetail = () => {
                   </div>
                 </div>
               )}
-              <div className="flex items-center justify-center py-4 border-b border-stone-100">
-                <button
-                  onClick={handleShare}
-                  className="flex items-center gap-2 text-stone-500 hover:text-stone-900 transition-colors group"
-                >
+              <div
+                className="flex items-center justify-center py-4 border-b border-stone-100 cursor-pointer"
+                onClick={handleShare}
+              >
+                <button className="flex items-center gap-2 text-stone-500 hover:text-stone-900 transition-colors group cursor-pointer">
                   {copied ? (
                     <>
                       <Check size={16} className="text-green-600" />
@@ -654,7 +654,6 @@ const ProductDetail = () => {
                         className="text-stone-400 mt-1 shrink-0"
                       />
                       <div className="space-y-2">
-
                         {product.shippingDetails ? (
                           <p className="whitespace-pre-line text-stone-700 leading-relaxed">
                             {product.shippingDetails}
@@ -703,7 +702,6 @@ const ProductDetail = () => {
                           👕 Product Care Guide
                         </h3>
                         <ul className="list-disc pl-4 space-y-1 text-sm text-stone-600">
-
                           {product.careInstructions &&
                           product.careInstructions.length > 0 ? (
                             product.careInstructions.map((instruction, idx) => (
@@ -820,7 +818,6 @@ const ProductDetail = () => {
                   href={`/junhae-edits/${rp.slug.current}`}
                   className="group block"
                 >
-
                   <div className="aspect-3/4 bg-stone-100 overflow-hidden mb-3 relative">
                     {/* 💡 Badges Section */}
                     {rp.badges && rp.badges.length > 0 && (
