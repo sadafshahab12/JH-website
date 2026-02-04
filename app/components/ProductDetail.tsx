@@ -39,7 +39,7 @@ const ProductDetail = () => {
     ProductVariant | undefined
   >();
   const [selectedSize, setSelectedSize] = useState<ProductSize>("S");
-  const [mainImage, setMainImage] = useState<string>("");
+  // const [mainImage, setMainImage] = useState<string>("");
   const [showModal, setShowModal] = useState(false);
   const [activeTab, setActiveTab] = useState<"details" | "shipping" | "care">(
     "details",
@@ -57,6 +57,53 @@ const ProductDetail = () => {
   const [loadingReviews, setLoadingReviews] = useState(true);
   const [loadingRelated, setLoadingRelated] = useState(true);
   const [copied, setCopied] = useState(false);
+  const [mainImage, setMainImage] = useState(() => {
+    // Initial main image set to the first image of the selected variant, or baseImage
+    if (
+      selectedVariant &&
+      selectedVariant.images &&
+      selectedVariant.images.length > 0
+    ) {
+      return urlFor(selectedVariant.images[0]).width(800).url();
+    }
+    return product?.baseImage ? urlFor(product.baseImage).width(800).url() : "";
+  });
+
+  // 💡 Auto-slide logic
+  useEffect(() => {
+    let slideInterval: NodeJS.Timeout;
+
+    if (
+      selectedVariant &&
+      selectedVariant.images &&
+      selectedVariant.images.length > 1
+    ) {
+      // Sirf auto-slide karein agar 1 se zyada images hon
+      let currentIndex = 0;
+      slideInterval = setInterval(() => {
+        currentIndex = (currentIndex + 1) % selectedVariant.images.length;
+        const nextImageUrl = urlFor(selectedVariant.images[currentIndex])
+          .width(800)
+          .url();
+        setMainImage(nextImageUrl);
+      }, 5000); // Har 5 seconds mein image change hogi (aap isay adjust kar sakte hain)
+    }
+
+    // Cleanup function: Component unmount hone par interval clear karein
+    return () => {
+      if (slideInterval) {
+        clearInterval(slideInterval);
+      }
+    };
+  }, [selectedVariant, mainImage]); // selectedVariant ya mainImage change hone par effect re-run hoga
+
+  // 💡 Thumbnail click se auto-slide reset
+  const handleThumbnailClick = (imageUrl: string) => {
+    setMainImage(imageUrl);
+    // Jab user khud click kare to auto-slide timer reset ho jaye
+    // Iske liye hume useEffect ki dependency mein `mainImage` ko shamil karna hoga
+    // ya phir ek alag state variable `resetAutoSlide` bana kar use karein
+  };
   const avgRating =
     reviews.length > 0
       ? reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length
@@ -285,15 +332,24 @@ const ProductDetail = () => {
               />
             </div>
 
-            <div className="grid grid-cols-4 gap-4">
+            <div
+              className={`flex gap-4 pb-2 ${
+                selectedVariant.images.length > 4
+                  ? "overflow-x-auto snap-x scrollbar-hide" // 4 se zyada to scroll
+                  : "grid grid-cols-4" // 4 ya kam to grid
+              }`}
+            >
               {selectedVariant.images.map((img) => {
                 const imgUrl = urlFor(img).width(800).url();
                 const fullUrl = urlFor(img).width(800).url();
+
                 return (
                   <button
                     key={img._key}
                     onClick={() => setMainImage(fullUrl)}
-                    className={`aspect-4/5 bg-stone-100 overflow-hidden border-2 transition-all ${
+                    className={`relative shrink-0 snap-start bg-stone-100 overflow-hidden border-2 transition-all ${
+                      selectedVariant.images.length > 4 ? "w-[22%]" : "w-full"
+                    } aspect-4/5 ${
                       mainImage === fullUrl
                         ? "border-stone-900"
                         : "border-transparent"
