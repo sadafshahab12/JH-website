@@ -39,7 +39,7 @@ export interface OrderCustomer {
 
 /* ---------- ORDER ITEM ---------- */
 
-export type OrderSize = "XS" | "S" | "M" | "L" | "XL" | "XXL";
+export type OrderSize = "XS" | "S" | "M" | "L" | "XL" | "XXL" | string;
 export type CurrencyMode = "pk" | "intl";
 
 export interface OrderItem {
@@ -47,12 +47,13 @@ export interface OrderItem {
   product: SanityReference;
   productType: "apparel" | "stationery";
   variantId: string;
-  size: OrderSize;
+  size?: OrderSize;
   color: string;
   colorCode: string;
   quantity: number;
   price: number;
   priceMode: CurrencyMode;
+  pageType?: string;
 }
 
 /* ---------- PAYMENT ---------- */
@@ -100,6 +101,7 @@ export interface CreateOrderPayload {
     color: string;
     colorCode: string;
     quantity: number;
+    pageType?: string;
     price: number;
     priceMode: CurrencyMode;
     productType: "apparel" | "stationery";
@@ -128,6 +130,7 @@ export interface PopulatedOrderItem {
   size: OrderSize;
   color: string;
   colorCode: string;
+  pageType?: string;
   quantity: number;
   price: number;
   priceMode: CurrencyMode;

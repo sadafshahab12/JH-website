@@ -172,6 +172,7 @@ const CheckoutPage = () => {
         quantity: item.quantity,
         price: item.selectedPrice,
         priceMode: item.priceMode,
+        pageType: item.pageType,
       }));
 
       const payload = {
@@ -428,8 +429,14 @@ const CheckoutPage = () => {
                           {item.product.name}
                         </h3>
                         <p className="text-xs text-stone-500 mt-1">
-                          {item.color} / {item.size} × {item.quantity}
+                          {/* ✅ Conditional Rendering: Apparel ke liye Size, Stationery ke liye Page Type */}
+                          {item.productType === "apparel"
+                            ? `${item.color} / ${item.size}`
+                            : `${item.color}${item.pageType ? ` / ${item.pageType} Pages` : ""}`}
+                          {" × "}
+                          {item.quantity}
                         </p>
+
                         <div className="flex gap-2 mt-2">
                           <button
                             onClick={() =>
@@ -438,6 +445,7 @@ const CheckoutPage = () => {
                                 item.size,
                                 item.colorCode,
                                 -1,
+                                item.pageType,
                               )
                             }
                             className="p-1 border border-stone-200 rounded hover:bg-stone-50"
@@ -452,6 +460,7 @@ const CheckoutPage = () => {
                                 item.size,
                                 item.colorCode,
                                 1,
+                                item.pageType,
                               )
                             }
                             className="p-1 border border-stone-200 rounded hover:bg-stone-50"

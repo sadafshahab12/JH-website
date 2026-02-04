@@ -50,7 +50,7 @@ const CartDrawer = () => {
           ) : (
             cart.map((item) => (
               <div
-                key={`${item.variantId}-${item.size}-${item.colorCode}-${item.priceMode}`}
+                key={`${item.variantId}-${item.size}-${item.colorCode}-${item.pageType || "default"}`}
                 className="flex space-x-4"
               >
                 <div className="w-20 h-24 bg-stone-100 overflow-hidden rounded-sm shrink-0">
@@ -59,7 +59,7 @@ const CartDrawer = () => {
                     alt={item.product.name}
                     width={800}
                     height={800}
-                      loading="lazy"
+                    loading="lazy"
                     className="w-full h-full object-cover"
                   />
                 </div>
@@ -79,7 +79,17 @@ const CartDrawer = () => {
                     </p>
 
                     <p className="text-xs text-stone-500 mt-1">
-                      {item.color} / {item.size}
+                      {item.product.category?.slug.current.includes(
+                        "notebook",
+                      ) ||
+                      item.product.category?.slug.current.includes("diary") ||
+                      item.product.category?.slug.current.includes(
+                        "spiral-notebook",
+                      )
+                        ? // Stationery Case: Color / Page Type
+                          `${item.color}${item.pageType ? ` / ${item.pageType} Pages` : ""}`
+                        : // Default/Apparel Case: Color / Size
+                          `${item.color} / ${item.size}`}
                     </p>
                     <p className="text-xs text-stone-500 mt-1">
                       {item.colorCode}
@@ -95,6 +105,7 @@ const CartDrawer = () => {
                             item.size,
                             item.colorCode,
                             -1,
+                            item.pageType,
                           )
                         }
                         className="p-1 px-2 text-stone-500 hover:text-stone-900"
@@ -112,6 +123,7 @@ const CartDrawer = () => {
                             item.size,
                             item.colorCode,
                             1,
+                            item.pageType,
                           )
                         }
                         className="p-1 px-2 text-stone-500 hover:text-stone-900"
@@ -128,6 +140,7 @@ const CartDrawer = () => {
                           item.size,
                           item.colorCode,
                           item.priceMode,
+                          item.pageType,
                         )
                       }
                       className="text-xs text-stone-400 hover:text-red-500 underline transition-colors"

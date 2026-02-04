@@ -169,8 +169,10 @@ export const product = defineType({
       fields: [
         {
           name: "material",
-          type: "string",
+
           title: "Material (e.g., Ceramic / Paper 100gsm)",
+          type: "array",
+          of: [{ type: "string" }],
         },
         {
           name: "dimensions",
@@ -179,8 +181,12 @@ export const product = defineType({
         },
         {
           name: "other",
-          type: "string",
+          type: "array",
+          of: [{ type: "string" }],
           title: "Special Note (e.g., Microwave Safe)",
+          options: {
+            layout: "tags", 
+          },
         },
       ],
     }),

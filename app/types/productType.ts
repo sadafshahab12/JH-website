@@ -59,9 +59,9 @@ export interface RegionalPrice {
 
 // 💡 NEW: Stationery Specs Interface
 export interface ProductSpecs {
-  material?: string;
-  dimensions?: string;
-  other?: string;
+  material?: string[]; 
+  dimensions?: string; 
+  other?: string[]; 
 }
 export interface UpsellProduct {
   _id: string;

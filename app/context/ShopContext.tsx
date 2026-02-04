@@ -28,6 +28,7 @@ interface ShopContextType {
     selectedPrice: number,
     priceMode: "pk" | "intl", // NEW
     productType: "apparel" | "stationery",
+    pageType?: string,
   ) => void;
 
   removeFromCart: (
@@ -36,6 +37,7 @@ interface ShopContextType {
     size: ProductSize,
     colorCode: string,
     priceMode: "pk" | "intl",
+    pageType?: string,
   ) => void;
 
   updateQuantity: (
@@ -43,6 +45,7 @@ interface ShopContextType {
     size: ProductSize,
     colorCode: string,
     delta: number,
+    pageType?: string,
   ) => void;
   clearCart: () => void;
   toggleCart: (isOpen?: boolean) => void;
@@ -71,7 +74,10 @@ export const ShopProvider = ({ children }: { children: ReactNode }) => {
     const saveCart = () => {
       if (savedCart) {
         try {
-          setCart(JSON.parse(savedCart));
+          const parsedCart = JSON.parse(savedCart);
+          if (Array.isArray(parsedCart)) {
+            setCart(parsedCart);
+          }
         } catch (e) {
           console.error("Failed to parse cart", e);
         }
@@ -94,6 +100,7 @@ export const ShopProvider = ({ children }: { children: ReactNode }) => {
     selectedPrice: number,
     priceMode: "pk" | "intl",
     productType: "apparel" | "stationery",
+    pageType?: string,
   ) => {
     setCart((prev) => {
       const existingItem = prev.find(
@@ -104,7 +111,8 @@ export const ShopProvider = ({ children }: { children: ReactNode }) => {
           item.variantId === variantId &&
           item.colorCode === colorCode &&
           item.priceMode === priceMode &&
-          item.productType === productType,
+          item.productType === productType &&
+          item.pageType === pageType,
       );
 
       if (existingItem) {
@@ -115,11 +123,10 @@ export const ShopProvider = ({ children }: { children: ReactNode }) => {
           item.variantId === variantId &&
           item.colorCode === colorCode &&
           item.productType === productType &&
-          item.priceMode === priceMode
+          item.priceMode === priceMode &&
+          item.pageType === pageType // ✅ Match pageType
             ? { ...item, quantity: item.quantity + 1 }
-            : item && item.productType === productType
-              ? { ...item, quantity: item.quantity + 1 }
-              : item,
+            : item,
         );
       }
 
@@ -137,6 +144,7 @@ export const ShopProvider = ({ children }: { children: ReactNode }) => {
           selectedImage,
           selectedPrice,
           priceMode,
+          pageType,
         },
       ];
     });
@@ -150,6 +158,7 @@ export const ShopProvider = ({ children }: { children: ReactNode }) => {
     size: ProductSize,
     colorCode: string,
     priceMode: "pk" | "intl",
+    pageType?: string,
   ) => {
     setCart((prev) =>
       prev.filter(
@@ -159,7 +168,8 @@ export const ShopProvider = ({ children }: { children: ReactNode }) => {
             item.variantId === variantId &&
             item.size === size &&
             item.colorCode === colorCode &&
-            item.priceMode === priceMode
+            item.priceMode === priceMode &&
+            item.pageType === pageType
           ),
       ),
     );
@@ -170,13 +180,15 @@ export const ShopProvider = ({ children }: { children: ReactNode }) => {
     size: ProductSize,
     colorCode: string,
     delta: number,
+    pageType?: string,
   ) => {
     setCart((prev) =>
       prev.map((item) => {
         if (
           item.variantId === variantId &&
           item.size === size &&
-          item.colorCode === colorCode
+          item.colorCode === colorCode &&
+          item.pageType === pageType
         ) {
           const newQuantity = Math.max(1, item.quantity + delta);
           return { ...item, quantity: newQuantity };

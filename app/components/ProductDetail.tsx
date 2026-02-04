@@ -46,7 +46,9 @@ const ProductDetail = () => {
   );
   const [reviews, setReviews] = useState<Review[]>([]);
   const [relatedProducts, setRelatedProducts] = useState<Product[]>([]);
-
+  const [selectedPageType, setSelectedPageType] = useState<"Lined" | "Plain">(
+    "Lined",
+  );
   const [showSizeGuide, setShowSizeGuide] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
 
@@ -166,6 +168,7 @@ const ProductDetail = () => {
       price,
       priceMode,
       product.productType,
+      selectedPageType,
     );
     setShowModal(true);
   };
@@ -321,7 +324,9 @@ const ProductDetail = () => {
 
           {/* Details Column */}
           <div className="flex flex-col">
-            <div className={`border-b border-stone-200 pb-6 ${product.productType === "stationery" ? "mb-0" : "mb-8"}`}>
+            <div
+              className={`border-b border-stone-200 pb-6 ${product.productType === "stationery" ? "mb-0" : "mb-8"}`}
+            >
               <h1 className="text-2xl sm:text-4xl font-vogue text-stone-900 mb-2">
                 {product.name}
               </h1>
@@ -414,6 +419,60 @@ const ProductDetail = () => {
                     </button>
                   </div>
                 )}
+                {/* Page Type Selection - Only for Notebooks/Diaries */}
+                {product.productType === "stationery" &&
+                  (product.category.slug.current.includes("notebook") ||
+                    product.category.slug.current.includes("spiral-notebook") ||
+                    product.category.slug.current.includes("diary")) && (
+                    <div className="mt-8 p-4 bg-stone-50 rounded-lg border border-stone-100">
+                      <span className="text-xs font-bold tracking-widest text-stone-400 uppercase block mb-3">
+                        Select Page Style
+                      </span>
+                      <div className="flex flex-col sm:flex-row gap-4 sm:gap-8">
+                        <label className="flex items-center gap-3 cursor-pointer group">
+                          <input
+                            type="radio"
+                            name="pageType"
+                            value="Lined"
+                            checked={selectedPageType === "Lined"}
+                            onChange={() => setSelectedPageType("Lined")}
+                            className="w-5 h-5 accent-stone-900 cursor-pointer"
+                          />
+                          <div className="flex flex-col">
+                            <span
+                              className={`text-sm ${selectedPageType === "Lined" ? "text-stone-900 font-bold" : "text-stone-500"}`}
+                            >
+                              Lined Pages
+                            </span>
+                            <span className="text-[10px] text-stone-400">
+                              Best for writing
+                            </span>
+                          </div>
+                        </label>
+
+                        <label className="flex items-center gap-3 cursor-pointer group">
+                          <input
+                            type="radio"
+                            name="pageType"
+                            value="Plain"
+                            checked={selectedPageType === "Plain"}
+                            onChange={() => setSelectedPageType("Plain")}
+                            className="w-5 h-5 accent-stone-900 cursor-pointer"
+                          />
+                          <div className="flex flex-col">
+                            <span
+                              className={`text-sm ${selectedPageType === "Plain" ? "text-stone-900 font-bold" : "text-stone-500"}`}
+                            >
+                              Plain White Pages
+                            </span>
+                            <span className="text-[10px] text-stone-400">
+                              Best for sketching
+                            </span>
+                          </div>
+                        </label>
+                      </div>
+                    </div>
+                  )}
                 <div className="grid grid-cols-3 sm:grid-cols-6 gap-2">
                   {product.availableSizes?.map((size) => (
                     <button
@@ -603,9 +662,6 @@ const ProductDetail = () => {
                       <p>{product.description}</p>
 
                       <div>
-                        <span className="font-medium text-stone-900">
-                          Fabric:
-                        </span>
                         <ul className="list-disc list-inside mt-1">
                           {product.fabricDetails?.map((item, index) => (
                             <li key={index}>{item}</li>
@@ -629,17 +685,31 @@ const ProductDetail = () => {
                       {product.productType === "stationery" &&
                         product.productSpecs && (
                           <div className="mt-4 p-3 bg-stone-50 rounded space-y-1">
-                            <p className="text-xs">
-                              <strong>Material:</strong>{" "}
-                              {product.productSpecs.material}
-                            </p>
-                            <p className="text-xs">
-                              <strong>Size:</strong>{" "}
-                              {product.productSpecs.dimensions}
-                            </p>
+                            {/* Material Fix */}
+                            {product.productSpecs.material && (
+                              <p className="text-xs">
+                                <strong>Material:</strong>{" "}
+                                {Array.isArray(product.productSpecs.material)
+                                  ? product.productSpecs.material.join(", ")
+                                  : product.productSpecs.material}
+                              </p>
+                            )}
+
+                            {/* Size/Dimensions */}
+                            {product.productSpecs.dimensions && (
+                              <p className="text-xs">
+                                <strong>Size:</strong>{" "}
+                                {product.productSpecs.dimensions}
+                              </p>
+                            )}
+
+                            {/* Other Fix */}
                             {product.productSpecs.other && (
                               <p className="text-xs italic text-stone-400">
-                                *{product.productSpecs.other}
+                                *
+                                {Array.isArray(product.productSpecs.other)
+                                  ? product.productSpecs.other.join(" • ")
+                                  : product.productSpecs.other}
                               </p>
                             )}
                           </div>

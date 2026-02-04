@@ -109,7 +109,16 @@ export const order = defineType({
               name: "size",
               title: "Size",
               type: "string",
-              validation: (Rule) => Rule.required(),
+              // ✅ Apparel ho to show ho, Stationery ho to hide ho jaye
+              hidden: ({ parent }) => parent?.productType === "stationery",
+              validation: (Rule) =>
+                Rule.custom((value, context) => {
+                  const parent = context.parent as any;
+                  if (parent?.productType === "apparel" && !value) {
+                    return "Size is required for apparel";
+                  }
+                  return true;
+                }),
             }),
 
             defineField({
@@ -125,7 +134,19 @@ export const order = defineType({
               type: "string",
               validation: (Rule) => Rule.required(),
             }),
-
+            defineField({
+              name: "productType",
+              title: "Product Type",
+              type: "string",
+              hidden: true,
+            }),
+            defineField({
+              name: "pageType",
+              title: "Page Type (For Notebooks)",
+              type: "string",
+              description: "Lined or Plain pages",
+              hidden: ({ parent }) => parent?.productType !== "stationery",
+            }),
             defineField({
               name: "quantity",
               title: "Quantity",

@@ -6,7 +6,6 @@ import { sanityClient } from "@/app/lib/sanityClient";
 
 export async function POST(req: Request) {
   try {
-
     const contentType = req.headers.get("content-type") || "";
     if (!contentType.includes("multipart/form-data")) {
       return NextResponse.json(
@@ -54,42 +53,47 @@ export async function POST(req: Request) {
       order.orderNumber ||
       `P-${Date.now().toString().slice(-6)}-${Math.floor(Math.random() * 1000)}`;
 
-/* ---------- CREATE ORDER ---------- */
-const sanityOrder = {
-  _type: "order",
-  orderNumber,
-  customer: order.customer,
-  currencyMode: order.currencyMode,
-  items: order.items.map((item) => ({
-    _key: item._key || uuidv4(),
-    _type: "item",
-    product: item.product,
-    productType: item.productType, 
-    variantId: item.variantId,
-    size: item.size,
-    color: item.color,
-    colorCode: item.colorCode,
-    quantity: item.quantity,
-    price: item.price,
-    priceMode: item.priceMode,
-  })),
-  subtotal: order.subtotal,
-  shippingFee: order.shippingFee,
-  total: order.total,
-  status: "pending",
-  payment: {
-    method: order.payment?.method || "EasyPaisa",
-    ...(receiptAssetRef && {
-      receipt: {
-        _type: "file",
-        asset: {
-          _type: "reference",
-          _ref: receiptAssetRef,
-        },
+    /* ---------- CREATE ORDER ---------- */
+    const sanityOrder = {
+      _type: "order",
+      orderNumber,
+      customer: order.customer,
+      currencyMode: order.currencyMode,
+      items: order.items.map((item) => {
+        const isStationery = item.productType === "stationery";
+
+        return {
+          _key: item._key || uuidv4(),
+          _type: "item",
+          product: item.product,
+          productType: item.productType,
+          variantId: item.variantId,
+          size: isStationery ? "N/A" : item.size,
+          color: item.color,
+          colorCode: item.colorCode,
+          quantity: item.quantity,
+          pageType: isStationery ? item.pageType : null,
+          price: item.price,
+          priceMode: item.priceMode,
+        };
+      }),
+      subtotal: order.subtotal,
+      shippingFee: order.shippingFee,
+      total: order.total,
+      status: "pending",
+      payment: {
+        method: order.payment?.method || "EasyPaisa",
+        ...(receiptAssetRef && {
+          receipt: {
+            _type: "file",
+            asset: {
+              _type: "reference",
+              _ref: receiptAssetRef,
+            },
+          },
+        }),
       },
-    }),
-  },
-};
+    };
 
     const createdOrder = await sanityClient.create(sanityOrder);
 

@@ -15,4 +15,5 @@ export interface CartItem {
   selectedPrice: number;
   selectedImageAssetId?: string;
   priceMode: PriceMode;
+  pageType?: string;
 }
