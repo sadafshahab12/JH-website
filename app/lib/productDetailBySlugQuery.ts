@@ -28,6 +28,27 @@ inventory,
   shippingDetails,
   availableSizes,
 
+  mugCapacity,
+  mugSizeGuide->{
+    _id,
+    title,
+    image{
+      _type,
+      asset->{_id, url}
+    },
+    sizes[]{
+      sizeLabel,
+      capacity,
+      height,
+      diameter
+    },
+    materialInfo{
+      material,
+      isDishwasherSafe,
+      isMicrowaveSafe
+    },
+    usageTip
+  },
   // 💡 NEW: Stationery Specific Fields
   productSpecs{
     material,

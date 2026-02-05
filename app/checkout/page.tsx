@@ -161,19 +161,26 @@ const CheckoutPage = () => {
     try {
       setIsPlacingOrder(true);
 
-      const orderItems = cart.map((item) => ({
-        _key: uuidv4(),
-        product: { _type: "reference", _ref: item.productId },
-        productType: item.productType,
-        variantId: item.variantId,
-        size: item.size,
-        color: item.color,
-        colorCode: item.colorCode,
-        quantity: item.quantity,
-        price: item.selectedPrice,
-        priceMode: item.priceMode,
-        pageType: item.pageType,
-      }));
+      const orderItems = cart.map((item) => {
+        // Logic to decide what to send based on productType
+        const isApparel = item.productType === "apparel";
+        const isMug = item.productType === "mug";
+        const isStationery = item.productType === "stationery";
+
+        return {
+          _key: uuidv4(),
+          product: { _type: "reference", _ref: item.productId },
+          productType: item.productType,
+          variantId: item.variantId,
+          size: isApparel || isMug ? item.size : undefined,
+          color: item.color,
+          colorCode: item.colorCode,
+          quantity: item.quantity,
+          price: item.selectedPrice,
+          priceMode: item.priceMode,
+          pageType: isStationery ? item.pageType : undefined,
+        };
+      });
 
       const payload = {
         _type: "order",
@@ -187,9 +194,7 @@ const CheckoutPage = () => {
           address,
           customization: customization || undefined,
         },
-
         currencyMode: currencyMode,
-
         items: orderItems,
         subtotal: cartTotal,
         shippingFee,
@@ -429,12 +434,28 @@ const CheckoutPage = () => {
                           {item.product.name}
                         </h3>
                         <p className="text-xs text-stone-500 mt-1">
-                          {/* ✅ Conditional Rendering: Apparel ke liye Size, Stationery ke liye Page Type */}
-                          {item.productType === "apparel"
-                            ? `${item.color} / ${item.size}`
-                            : `${item.color}${item.pageType ? ` / ${item.pageType} Pages` : ""}`}
-                          {" × "}
-                          {item.quantity}
+                          {(() => {
+                            if (item.productType === "apparel") {
+                              return `${item.color} / ${item.size}`;
+                            }
+                            if (item.productType === "mug") {
+                              return `${item.color} / Cap: ${item.size}`;
+                            }
+                            const slug =
+                              item.product.category?.slug.current || "";
+                            const isNotebook = slug.match(
+                              /notebook|diary|spiral-notebook/,
+                            );
+                            if (isNotebook && item.pageType) {
+                              return `${item.color} / ${item.pageType} Pages`;
+                            }
+                            return `${item.color}`;
+                          })()}
+
+                          {/* Quantity Indicator */}
+                          <span className="ml-1 text-stone-400">
+                            × {item.quantity}
+                          </span>
                         </p>
 
                         <div className="flex gap-2 mt-2">
@@ -442,7 +463,7 @@ const CheckoutPage = () => {
                             onClick={() =>
                               updateQuantity(
                                 item.variantId,
-                                item.size,
+                                item.size as string,
                                 item.colorCode,
                                 -1,
                                 item.pageType,
@@ -457,7 +478,7 @@ const CheckoutPage = () => {
                             onClick={() =>
                               updateQuantity(
                                 item.variantId,
-                                item.size,
+                                item.size as string,
                                 item.colorCode,
                                 1,
                                 item.pageType,

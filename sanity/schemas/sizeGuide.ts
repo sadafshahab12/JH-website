@@ -14,7 +14,7 @@ export const sizeGuide = defineType({
       validation: (Rule) => Rule.required(),
     }),
 
-    // 👕 Recognition Image
+ 
     defineField({
       name: "image",
       title: "Guide Image",

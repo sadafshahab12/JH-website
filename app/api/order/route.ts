@@ -60,22 +60,31 @@ export async function POST(req: Request) {
       customer: order.customer,
       currencyMode: order.currencyMode,
       items: order.items.map((item) => {
+        const isApparel = item.productType === "apparel";
+        const isMug = item.productType === "mug";
         const isStationery = item.productType === "stationery";
 
-        return {
+        const baseItem = {
           _key: item._key || uuidv4(),
           _type: "item",
           product: item.product,
           productType: item.productType,
           variantId: item.variantId,
-          size: isStationery ? "N/A" : item.size,
           color: item.color,
           colorCode: item.colorCode,
           quantity: item.quantity,
-          pageType: isStationery ? item.pageType : null,
           price: item.price,
           priceMode: item.priceMode,
         };
+
+        if (isApparel || isMug) {
+          return { ...baseItem, size: item.size };
+        }
+
+        if (isStationery) {
+          return { ...baseItem, pageType: item.pageType };
+        }
+        return baseItem;
       }),
       subtotal: order.subtotal,
       shippingFee: order.shippingFee,
@@ -94,7 +103,6 @@ export async function POST(req: Request) {
         }),
       },
     };
-
     const createdOrder = await sanityClient.create(sanityOrder);
 
     return NextResponse.json(

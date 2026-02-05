@@ -79,17 +79,25 @@ const CartDrawer = () => {
                     </p>
 
                     <p className="text-xs text-stone-500 mt-1">
-                      {item.product.category?.slug.current.includes(
-                        "notebook",
-                      ) ||
-                      item.product.category?.slug.current.includes("diary") ||
-                      item.product.category?.slug.current.includes(
-                        "spiral-notebook",
-                      )
-                        ? // Stationery Case: Color / Page Type
-                          `${item.color}${item.pageType ? ` / ${item.pageType} Pages` : ""}`
-                        : // Default/Apparel Case: Color / Size
-                          `${item.color} / ${item.size}`}
+                      {(() => {
+                        const slug = item.product.category?.slug.current || "";
+                        const type = item.product.productType;
+
+  
+                        if (type === "mug") {
+                          return `${item.color} / ${item.size}`; 
+                        }
+
+                        if (slug.match(/notebook|diary|spiral-notebook/)) {
+                          return `${item.color}${item.pageType ? ` / ${item.pageType} Pages` : ""}`;
+                        }
+
+                        if (slug.match(/sticker|bookmark/)) {
+                          return `${item.color}`;
+                        }
+
+                        return `${item.color} / Size ${item.size}`;
+                      })()}
                     </p>
                     <p className="text-xs text-stone-500 mt-1">
                       {item.colorCode}
@@ -102,7 +110,7 @@ const CartDrawer = () => {
                         onClick={() =>
                           updateQuantity(
                             item.variantId,
-                            item.size,
+                            item.size as string,
                             item.colorCode,
                             -1,
                             item.pageType,
@@ -120,7 +128,7 @@ const CartDrawer = () => {
                         onClick={() =>
                           updateQuantity(
                             item.variantId,
-                            item.size,
+                            item.size as string,
                             item.colorCode,
                             1,
                             item.pageType,
@@ -137,7 +145,7 @@ const CartDrawer = () => {
                         removeFromCart(
                           item.productId,
                           item.variantId,
-                          item.size,
+                          item.size as string,
                           item.colorCode,
                           item.priceMode,
                           item.pageType,

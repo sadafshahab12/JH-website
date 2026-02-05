@@ -25,6 +25,7 @@ import { getEstimatedDelivery } from "../utils/getEstimatedDelivery";
 import { getPrices } from "../utils/getPrices";
 import ColorPicker from "./ColorPicker";
 import { BreadCrumbs } from "./BreadCrumbs";
+import { MugCapacity } from "../types/cartItems";
 
 const ProductDetail = () => {
   const { addToCart } = useShop();
@@ -38,8 +39,9 @@ const ProductDetail = () => {
   const [selectedVariant, setSelectedVariant] = useState<
     ProductVariant | undefined
   >();
-  const [selectedSize, setSelectedSize] = useState<ProductSize>("S");
-  // const [mainImage, setMainImage] = useState<string>("");
+  const [selectedSize, setSelectedSize] = useState<
+    ProductSize | MugCapacity | string | null
+  >(null);
   const [showModal, setShowModal] = useState(false);
   const [activeTab, setActiveTab] = useState<"details" | "shipping" | "care">(
     "details",
@@ -58,7 +60,7 @@ const ProductDetail = () => {
   const [loadingRelated, setLoadingRelated] = useState(true);
   const [copied, setCopied] = useState(false);
   const [mainImage, setMainImage] = useState(() => {
-    // Initial main image set to the first image of the selected variant, or baseImage
+
     if (
       selectedVariant &&
       selectedVariant.images &&
@@ -78,7 +80,7 @@ const ProductDetail = () => {
       selectedVariant.images &&
       selectedVariant.images.length > 1
     ) {
-      // Sirf auto-slide karein agar 1 se zyada images hon
+
       let currentIndex = 0;
       slideInterval = setInterval(() => {
         currentIndex = (currentIndex + 1) % selectedVariant.images.length;
@@ -86,24 +88,17 @@ const ProductDetail = () => {
           .width(800)
           .url();
         setMainImage(nextImageUrl);
-      }, 5000); // Har 5 seconds mein image change hogi (aap isay adjust kar sakte hain)
+      }, 5000); 
     }
 
-    // Cleanup function: Component unmount hone par interval clear karein
+
     return () => {
       if (slideInterval) {
         clearInterval(slideInterval);
       }
     };
-  }, [selectedVariant, mainImage]); // selectedVariant ya mainImage change hone par effect re-run hoga
+  }, [selectedVariant, mainImage]);
 
-  // 💡 Thumbnail click se auto-slide reset
-  const handleThumbnailClick = (imageUrl: string) => {
-    setMainImage(imageUrl);
-    // Jab user khud click kare to auto-slide timer reset ho jaye
-    // Iske liye hume useEffect ki dependency mein `mainImage` ko shamil karna hoga
-    // ya phir ek alag state variable `resetAutoSlide` bana kar use karein
-  };
   const avgRating =
     reviews.length > 0
       ? reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length
@@ -188,35 +183,54 @@ const ProductDetail = () => {
   }, [selectedVariant]);
 
   const handleAddToCart = () => {
-    if (!product || !selectedVariant) return;
-    if (!product || !selectedVariant) return;
-    if (!selectedSize) {
-      setErrorMsg("Please select a size.");
+
+    if (!product) return;
+
+    if (product.productType !== "stationery" && !selectedSize) {
+      const errorText =
+        product.productType === "mug"
+          ? "Please select a capacity."
+          : "Please select a size.";
+      setErrorMsg(errorText);
       return;
     }
+    if (product.productType !== "stationery" && !selectedVariant) {
+      setErrorMsg("Please select a color.");
+      return;
+    }
+
     setErrorMsg("");
 
+    // 4. Price Logic
     const price =
       priceMode === "pk"
         ? (product.pricing.pkPrice.discount ?? product.pricing.pkPrice.original)
         : (product.pricing.intlPrice.discount ??
           product.pricing.intlPrice.original);
 
-    const image =
-      mainImage || urlFor(selectedVariant.images[0]).width(800).url();
 
+    const cartImage =
+      mainImage ||
+      (selectedVariant?.images?.[0]
+        ? urlFor(selectedVariant.images[0]).width(800).url()
+        : "") ||
+      (product.baseImage ? urlFor(product.baseImage).width(800).url() : "");
+
+    // 6. Execute AddToCart
     addToCart(
       product,
-      selectedSize,
-      selectedVariant.color,
-      selectedVariant.colorCode,
-      selectedVariant.id,
-      image,
+      selectedSize || "",
+      selectedVariant?.color || "Default",
+      selectedVariant?.colorCode || "#000",
+      selectedVariant?.id || "base",
+      cartImage,
       price,
       priceMode,
       product.productType,
-      selectedPageType,
+      product.productType === "stationery" ? selectedPageType : undefined,
     );
+
+    // 7. Show Success Modal
     setShowModal(true);
   };
   const handleShare = async () => {
@@ -463,19 +477,36 @@ const ProductDetail = () => {
               {/* Size Selection */}
               <div>
                 {product.productType !== "stationery" && (
-                  <div className="flex justify-between items-center mb-3">
-                    <span className="text-xs font-bold tracking-widest text-stone-400 uppercase">
-                      Size
-                    </span>
-                    <button
-                      onClick={() => setShowSizeGuide(true)}
-                      className="text-xs text-stone-500 underline hover:text-stone-900 flex items-center gap-1"
-                    >
-                      <Ruler size={12} /> Size Guide
-                    </button>
+                  <div>
+                    <div className="flex justify-between items-center mb-3">
+                      <span className="text-xs font-bold tracking-widest text-stone-400 uppercase">
+                        {/* ✅ Check for Mug vs Apparel Label */}
+                        {product.productType === "mug" ? "Capacity" : "Size"}
+                      </span>
+
+                      {/* ✅ Show Size Guide only if relevant guide exists */}
+                      {(product.sizeGuide || product.mugSizeGuide) && (
+                        <button
+                          onClick={() => setShowSizeGuide(true)}
+                          className="text-xs text-stone-500 underline hover:text-stone-900 flex items-center gap-1"
+                        >
+                          <Ruler size={12} />{" "}
+                          {product.productType === "mug"
+                            ? "View Dimensions"
+                            : "Size Guide"}
+                        </button>
+                      )}
+                    </div>
+
+                    {errorMsg && (
+                      <p className="text-red-500 text-sm mt-2 animate-slide-up">
+                        {errorMsg}
+                      </p>
+                    )}
                   </div>
                 )}
-                {/* Page Type Selection - Only for Notebooks/Diaries */}
+
+                {/* Page Type Selection - Only for Stationery/Notebooks */}
                 {product.productType === "stationery" &&
                   (product.category.slug.current.includes("notebook") ||
                     product.category.slug.current.includes("spiral-notebook") ||
@@ -530,28 +561,44 @@ const ProductDetail = () => {
                     </div>
                   )}
                 <div className="grid grid-cols-3 sm:grid-cols-6 gap-2">
-                  {product.availableSizes?.map((size) => (
-                    <button
-                      key={size}
-                      onClick={() => {
-                        setSelectedSize(size);
-                        setErrorMsg("");
-                      }}
-                      className={`py-3 text-sm font-medium border transition-colors ${
-                        selectedSize === size
-                          ? "border-stone-900 bg-stone-900 text-white"
-                          : "border-stone-200 text-stone-600 hover:border-stone-400"
-                      }`}
-                    >
-                      {size}
-                    </button>
-                  ))}
+                  {/* --- 1. APPAREL SIZES --- */}
+                  {product.productType === "apparel" &&
+                    product.availableSizes?.map((size) => (
+                      <button
+                        key={size}
+                        onClick={() => {
+                          setSelectedSize(size);
+                          setErrorMsg("");
+                        }}
+                        className={`py-3 text-sm font-medium border transition-colors ${
+                          selectedSize === size
+                            ? "border-stone-900 bg-stone-900 text-white"
+                            : "border-stone-200 text-stone-600 hover:border-stone-400"
+                        }`}
+                      >
+                        {size}
+                      </button>
+                    ))}
+
+                  {/* --- 2. MUG CAPACITIES --- */}
+                  {product.productType === "mug" &&
+                    product.mugCapacity?.map((capacity) => (
+                      <button
+                        key={capacity}
+                        onClick={() => {
+                          setSelectedSize(capacity); // selectedSize variable hi use karein taake logic same rahe
+                          setErrorMsg("");
+                        }}
+                        className={`py-3 text-sm font-medium border transition-colors ${
+                          selectedSize === capacity
+                            ? "border-stone-900 bg-stone-900 text-white"
+                            : "border-stone-200 text-stone-600 hover:border-stone-400"
+                        }`}
+                      >
+                        {capacity}
+                      </button>
+                    ))}
                 </div>
-                {errorMsg && (
-                  <p className="text-red-500 text-sm mt-2 animate-slide-up">
-                    {errorMsg}
-                  </p>
-                )}
               </div>
               {product.inventory !== undefined &&
                 product.inventory > 0 &&
@@ -1143,7 +1190,7 @@ const ProductDetail = () => {
           </div>
         </div>
         {/* Size Guide Modal */}
-        {showSizeGuide && (
+        {showSizeGuide && product && (
           <div
             className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm"
             onClick={() => setShowSizeGuide(false)}
@@ -1159,86 +1206,146 @@ const ProductDetail = () => {
                 <X size={20} />
               </button>
 
+              {/* --- Dynamic Title --- */}
               <h3 className="text-2xl font-vogue mb-6 text-stone-900">
-                {product.sizeGuide?.title || "Size Guide"}
+                {product.productType === "mug"
+                  ? product.mugSizeGuide?.title || "Mug Size Guide"
+                  : product.sizeGuide?.title || "Size Guide"}
               </h3>
 
               <div className="overflow-x-auto mb-8">
                 <table className="w-full text-sm text-left border-collapse">
                   <thead className="bg-stone-50 text-stone-900 border-b border-stone-200">
                     <tr>
-                      <th className="p-3 font-semibold">Size</th>
-                      <th className="p-3 font-semibold">Chest (in)</th>
-                      <th className="p-3 font-semibold">Length (in)</th>
+                      {/* Conditional Headers */}
+                      <th className="p-3 font-semibold">
+                        {product.productType === "mug" ? "Capacity" : "Size"}
+                      </th>
+                      <th className="p-3 font-semibold">
+                        {product.productType === "mug"
+                          ? "Height"
+                          : "Chest (in)"}
+                      </th>
+                      <th className="p-3 font-semibold">
+                        {product.productType === "mug"
+                          ? "Diameter"
+                          : "Length (in)"}
+                      </th>
                     </tr>
                   </thead>
                   <tbody className="text-stone-600">
-                    {product.sizeGuide?.sizes?.map((sizeRow) => (
-                      <tr
-                        key={sizeRow.size}
-                        className="border-b border-stone-100"
-                      >
-                        <td className="p-3 font-medium text-stone-900">
-                          {sizeRow.size}
-                        </td>
-                        <td className="p-3">{sizeRow.chest}</td>
-                        <td className="p-3">{sizeRow.length}</td>
-                      </tr>
-                    ))}
+                    {/* --- MUG DATA --- */}
+                    {product.productType === "mug" &&
+                      product.mugSizeGuide?.sizes?.map((row, idx) => (
+                        <tr key={idx} className="border-b border-stone-100">
+                          <td className="p-3 font-medium text-stone-900">
+                            {row.sizeLabel}
+                          </td>
+                          <td className="p-3">{row.height || "-"}</td>
+                          <td className="p-3">{row.diameter || "-"}</td>
+                        </tr>
+                      ))}
+
+                    {/* --- APPAREL DATA --- */}
+                    {product.productType === "apparel" &&
+                      product.sizeGuide?.sizes?.map((sizeRow, idx) => (
+                        <tr key={idx} className="border-b border-stone-100">
+                          <td className="p-3 font-medium text-stone-900">
+                            {sizeRow.size}
+                          </td>
+                          <td className="p-3">{sizeRow.chest}</td>
+                          <td className="p-3">{sizeRow.length}</td>
+                        </tr>
+                      ))}
                   </tbody>
                 </table>
               </div>
 
-              {/* 💡 DYNAMIC MODEL CONTEXT SECTION */}
-              {product.sizeGuide?.modelStats && (
+              {/* --- Mug Specific Extra Info (Material & Safety) --- */}
+              {product.productType === "mug" && product.mugSizeGuide && (
                 <div className="space-y-4 border-t border-stone-100 pt-6">
-                  <div className="flex items-start gap-3 bg-stone-50 p-4 rounded-lg">
-                    <div className="mt-1">
-                      <svg
-                        width="16"
-                        height="16"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        className="text-stone-400"
-                      >
-                        <circle cx="12" cy="8" r="5" />
-                        <path d="M20 21a8 8 0 1 0-16 0" />
-                      </svg>
-                    </div>
-                    <div>
-                      <p className="text-[10px] uppercase tracking-widest text-stone-400 font-bold mb-1">
-                        Model Context
+                  <div className="grid grid-cols-2 gap-4 text-[11px]">
+                    <div className="bg-stone-50 p-2 rounded">
+                      <p className="text-stone-400 uppercase font-bold mb-1">
+                        Material
                       </p>
-                      <p className="text-xs text-stone-600 leading-relaxed italic">
-                        Our model is{" "}
-                        <strong className="text-stone-900">
-                          {product.sizeGuide.modelStats.height}
-                        </strong>{" "}
-                        {product.sizeGuide.modelStats.weight &&
-                          `and ${product.sizeGuide.modelStats.weight}`}
-                        , wearing a{" "}
-                        <strong className="text-stone-900 font-bold">
-                          Size {product.sizeGuide.modelStats.sizeWorn}
-                        </strong>{" "}
-                        for a{" "}
-                        <strong className="text-stone-900 underline underline-offset-4 decoration-stone-200">
-                          {product.sizeGuide.modelStats.fitDescription}
-                        </strong>
-                        .
+                      <p className="text-stone-900 font-medium">
+                        {product.mugSizeGuide.materialInfo?.material}
+                      </p>
+                    </div>
+                    <div className="bg-stone-50 p-2 rounded text-right">
+                      <p className="text-stone-400 uppercase font-bold mb-1">
+                        Care
+                      </p>
+                      <p className="text-stone-900 font-medium">
+                        {product.mugSizeGuide.materialInfo?.isMicrowaveSafe
+                          ? "Microwave Safe"
+                          : ""}
+                        {product.mugSizeGuide.materialInfo?.isDishwasherSafe
+                          ? " • Dishwasher Safe"
+                          : ""}
                       </p>
                     </div>
                   </div>
-
-                  {/* 💡 DYNAMIC SIZE TIP */}
-                  {product.sizeGuide.sizeTip && (
-                    <div className="text-[11px] text-stone-500 flex items-center justify-center gap-2 italic text-center">
-                      <span>{product.sizeGuide.sizeTip}</span>
-                    </div>
+                  {product.mugSizeGuide.usageTip && (
+                    <p className="text-xs text-stone-500 italic text-center">
+                      Tip: {product.mugSizeGuide.usageTip}
+                    </p>
                   )}
                 </div>
               )}
+
+              {/* --- Apparel Specific Extra Info (Model Stats) --- */}
+              {product.productType === "apparel" &&
+                product.sizeGuide?.modelStats && (
+                  <div className="space-y-4 border-t border-stone-100 pt-6">
+                    <div className="flex items-start gap-3 bg-stone-50 p-4 rounded-lg">
+                      <div className="mt-1">
+                        <svg
+                          width="16"
+                          height="16"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          className="text-stone-400"
+                        >
+                          <circle cx="12" cy="8" r="5" />
+                          <path d="M20 21a8 8 0 1 0-16 0" />
+                        </svg>
+                      </div>
+                      <div>
+                        <p className="text-[10px] uppercase tracking-widest text-stone-400 font-bold mb-1">
+                          Model Context
+                        </p>
+                        <p className="text-xs text-stone-600 leading-relaxed italic">
+                          Our model is{" "}
+                          <strong className="text-stone-900">
+                            {product.sizeGuide.modelStats.height}
+                          </strong>{" "}
+                          {product.sizeGuide.modelStats.weight &&
+                            `and ${product.sizeGuide.modelStats.weight}`}
+                          , wearing a{" "}
+                          <strong className="text-stone-900 font-bold">
+                            Size {product.sizeGuide.modelStats.sizeWorn}
+                          </strong>{" "}
+                          for a{" "}
+                          <strong className="text-stone-900 underline underline-offset-4 decoration-stone-200">
+                            {product.sizeGuide.modelStats.fitDescription}
+                          </strong>
+                          .
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* 💡 DYNAMIC SIZE TIP */}
+                    {product.sizeGuide.sizeTip && (
+                      <div className="text-[11px] text-stone-500 flex items-center justify-center gap-2 italic text-center">
+                        <span>{product.sizeGuide.sizeTip}</span>
+                      </div>
+                    )}
+                  </div>
+                )}
             </div>
           </div>
         )}

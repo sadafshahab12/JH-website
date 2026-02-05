@@ -39,13 +39,22 @@ export interface OrderCustomer {
 
 /* ---------- ORDER ITEM ---------- */
 
-export type OrderSize = "XS" | "S" | "M" | "L" | "XL" | "XXL" | string;
+export type OrderSize =
+  | "XS"
+  | "S"
+  | "M"
+  | "L"
+  | "XL"
+  | "XXL"
+  | "11oz"
+  | "15oz"
+  | string;
 export type CurrencyMode = "pk" | "intl";
 
 export interface OrderItem {
   _key: string;
   product: SanityReference;
-  productType: "apparel" | "stationery";
+  productType: "apparel" | "stationery" | "mug";
   variantId: string;
   size?: OrderSize;
   color: string;
@@ -87,9 +96,7 @@ export interface Order {
 
 export interface CreateOrderPayload {
   _type: "order";
-
   orderNumber?: string;
-
   customer: OrderCustomer;
   currencyMode: CurrencyMode;
 
@@ -97,14 +104,14 @@ export interface CreateOrderPayload {
     _key: string;
     product: SanityReference;
     variantId: string;
-    size: OrderSize;
+    size?: OrderSize;
     color: string;
     colorCode: string;
     quantity: number;
     pageType?: string;
     price: number;
     priceMode: CurrencyMode;
-    productType: "apparel" | "stationery";
+    productType: "apparel" | "stationery" | "mug";
   }[];
 
   subtotal: number;
@@ -127,13 +134,14 @@ export interface PopulatedOrderItem {
     price: number;
   };
   variantId: string;
-  size: OrderSize;
+  size?: OrderSize;
   color: string;
   colorCode: string;
   pageType?: string;
   quantity: number;
   price: number;
   priceMode: CurrencyMode;
+  productType: "apparel" | "stationery" | "mug";
 }
 
 export interface PopulatedOrder {

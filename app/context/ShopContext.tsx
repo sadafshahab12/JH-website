@@ -9,10 +9,16 @@ import {
 } from "react";
 
 import { Product, ProductColor } from "../types/productType";
-import { CartItem, ProductSize } from "../types/cartItems";
+import {
+  CartItem,
+  MugCapacity,
+  PageStyle,
+  ProductSize,
+} from "../types/cartItems";
 import { client } from "@/sanity/lib/client";
 import { shopContextQuery } from "../lib/shopContextQuery";
 
+type AnySize = ProductSize | MugCapacity | string;
 interface ShopContextType {
   products: Product[];
   cart: CartItem[];
@@ -20,21 +26,21 @@ interface ShopContextType {
 
   addToCart: (
     product: Product,
-    size: ProductSize,
+    size: AnySize,
     color: ProductColor,
     colorCode: string,
     variantId: string,
     selectedImage: string,
     selectedPrice: number,
-    priceMode: "pk" | "intl", // NEW
-    productType: "apparel" | "stationery",
-    pageType?: string,
+    priceMode: "pk" | "intl",
+    productType: "apparel" | "stationery" | "mug",
+    pageType?: PageStyle,
   ) => void;
 
   removeFromCart: (
     productId: string,
     variantId: string,
-    size: ProductSize,
+    size: AnySize,
     colorCode: string,
     priceMode: "pk" | "intl",
     pageType?: string,
@@ -42,7 +48,7 @@ interface ShopContextType {
 
   updateQuantity: (
     variantId: string,
-    size: ProductSize,
+    size: AnySize,
     colorCode: string,
     delta: number,
     pageType?: string,
@@ -92,15 +98,15 @@ export const ShopProvider = ({ children }: { children: ReactNode }) => {
 
   const addToCart = (
     product: Product,
-    size: ProductSize,
+    size: AnySize,
     color: ProductColor,
     colorCode: string,
     variantId: string,
     selectedImage: string,
     selectedPrice: number,
     priceMode: "pk" | "intl",
-    productType: "apparel" | "stationery",
-    pageType?: string,
+    productType: "apparel" | "stationery" | "mug",
+    pageType?: "Lined" | "Plain",
   ) => {
     setCart((prev) => {
       const existingItem = prev.find(
@@ -155,7 +161,7 @@ export const ShopProvider = ({ children }: { children: ReactNode }) => {
   const removeFromCart = (
     productId: string,
     variantId: string,
-    size: ProductSize,
+    size: AnySize,
     colorCode: string,
     priceMode: "pk" | "intl",
     pageType?: string,
@@ -177,7 +183,7 @@ export const ShopProvider = ({ children }: { children: ReactNode }) => {
 
   const updateQuantity = (
     variantId: string,
-    size: ProductSize,
+    size: AnySize,
     colorCode: string,
     delta: number,
     pageType?: string,

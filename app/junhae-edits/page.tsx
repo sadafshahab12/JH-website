@@ -3,7 +3,7 @@ import JunhaeEdits from "../components/JunhaeEdits";
 
 export default function Page() {
   return (
-    // This Suspense boundary fixes the build error
+
     <Suspense
       fallback={
         <div className="min-h-screen flex items-center justify-center bg-white">

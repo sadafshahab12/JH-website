@@ -57,6 +57,7 @@ const ThankYouContent = () => {
 
     const currency = getCurrencySymbol(order.currencyMode);
 
+    // --- Header Section ---
     doc.setFont("helvetica", "bold");
     doc.setFontSize(22);
     doc.setTextColor(accentColor[0], accentColor[1], accentColor[2]);
@@ -96,24 +97,45 @@ const ThankYouContent = () => {
     doc.text(order.customer.email, margin, 240);
     doc.text(order.customer.phone, margin, 255);
 
-    // --- Items Table ---
-    const rows = order.items.map((item) => [
-      item.product.name,
-      `${item.color} / ${item.size}`,
-      item.quantity.toString(),
-      `${getCurrencySymbol(item.priceMode)} ${item.price.toLocaleString()}`,
-      `${getCurrencySymbol(item.priceMode)} ${(item.price * item.quantity).toLocaleString()}`,
-    ]);
+    // --- Items Table (Dynamic Variant Logic) ---
+    const rows = order.items.map((item) => {
+      // ✅ Dynamic Detail Logic
+      let variantInfo = item.color; 
+
+      if (item.productType === "apparel") {
+
+        variantInfo += ` / Size: ${item.size || "N/A"}`;
+      } else if (item.productType === "stationery") {
+
+        if (item.pageType) {
+          variantInfo += ` / ${item.pageType}`;
+        }
+      }
+
+      return [
+        item.product.name,
+        variantInfo,
+        item.quantity.toString(),
+        `${getCurrencySymbol(item.priceMode)} ${item.price.toLocaleString()}`,
+        `${getCurrencySymbol(item.priceMode)} ${(item.price * item.quantity).toLocaleString()}`,
+      ];
+    });
 
     autoTable(doc, {
       startY: 280,
-      head: [["Product", "Variant", "Qty", "Price", "Total"]],
+      head: [["Product", "Variant Details", "Qty", "Price", "Total"]],
       body: rows,
       theme: "striped",
       headStyles: {
         fillColor: accentColor,
         textColor: [255, 255, 255],
         fontSize: 10,
+      },
+      styles: {
+        fontSize: 9,
+      },
+      columnStyles: {
+        1: { cellWidth: 160 }, 
       },
     });
 
@@ -134,6 +156,7 @@ const ThankYouContent = () => {
         align: "right",
       },
     );
+
     doc.setFontSize(14);
     doc.setFont("helvetica", "bold");
     doc.setTextColor(accentColor[0], accentColor[1], accentColor[2]);
@@ -142,6 +165,7 @@ const ThankYouContent = () => {
       align: "right",
     });
 
+    // --- Footer ---
     doc.setFontSize(9);
     doc.setFont("helvetica", "italic");
     doc.setTextColor(150);

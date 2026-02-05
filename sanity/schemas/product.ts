@@ -1,3 +1,4 @@
+import { SanityDocument } from "next-sanity";
 import { defineType, defineField } from "sanity";
 
 export const product = defineType({
@@ -15,7 +16,6 @@ export const product = defineType({
       validation: (Rule) => Rule.required(),
     }),
 
-    // 💡 NEW: Product Type (Apparel vs Stationery)
     defineField({
       name: "productType",
       title: "Product Type",
@@ -23,7 +23,11 @@ export const product = defineType({
       options: {
         list: [
           { title: "Apparel (Clothing)", value: "apparel" },
-          { title: "Stationery (Mugs, Notebooks, etc.)", value: "stationery" },
+          { title: "Mugs", value: "mug" }, 
+          {
+            title: "Stationery (Notebooks, Stickers, etc.)",
+            value: "stationery",
+          },
         ],
         layout: "radio",
       },
@@ -114,24 +118,53 @@ export const product = defineType({
         },
       ],
     }),
-
+    defineField({
+      name: "sizeGuide",
+      title: "Size Guide",
+      type: "reference",
+      to: [{ type: "sizeGuide" }],
+      hidden: ({ parent }) =>
+        (parent as SanityDocument)?.productType !== "apparel",
+    }),
     defineField({
       name: "availableSizes",
       title: "Available Sizes",
       type: "array",
-      hidden: ({ parent }) => parent?.productType === "stationery",
+      hidden: ({ parent }) => parent?.productType !== "apparel",
       of: [{ type: "string" }],
       options: {
         list: ["XS", "S", "M", "L", "XL", "XXL"],
         layout: "grid",
       },
     }),
+    defineField({
+      name: "mugSizeGuide",
+      title: "Mug Size Guide",
+      type: "reference",
+      to: [{ type: "mugSizeGuide" }],
 
+      hidden: ({ parent }) => (parent as SanityDocument)?.productType !== "mug",
+    }),
+    defineField({
+      name: "mugCapacity",
+      title: "Available Mug Sizes",
+      type: "array",
+      of: [{ type: "string" }],
+      options: {
+        list: [
+          { title: "11oz", value: "11oz" },
+          { title: "15oz", value: "15oz" },
+          { title: "12oz (Travel)", value: "12oz" },
+        ],
+        layout: "grid",
+      },
+      hidden: ({ parent }) => (parent as SanityDocument)?.productType !== "mug",
+    }),
     defineField({
       name: "fit",
       title: "Fit Options",
       type: "array",
-      hidden: ({ parent }) => parent?.productType === "stationery",
+      hidden: ({ parent }) => parent?.productType !== "apparel",
       of: [{ type: "string" }],
     }),
     {
@@ -151,21 +184,11 @@ export const product = defineType({
       validation: (Rule) => Rule.max(4),
     },
     defineField({
-      name: "sizeGuide",
-      title: "Size Guide",
-      type: "reference",
-      to: [{ type: "sizeGuide" }],
-      hidden: ({ parent }) => parent?.productType === "stationery",
-    }),
-
-    /* ------------------------------
-       STATIONERY ONLY FIELDS (New fields for Mugs/Notebooks)
-    ------------------------------ */
-    defineField({
       name: "productSpecs",
       title: "Product Specifications (Mugs/Stationery)",
       type: "object",
-      hidden: ({ parent }) => parent?.productType !== "stationery",
+      hidden: ({ parent }) =>
+        (parent as SanityDocument)?.productType !== "stationery",
       fields: [
         {
           name: "material",
@@ -185,7 +208,7 @@ export const product = defineType({
           of: [{ type: "string" }],
           title: "Special Note (e.g., Microwave Safe)",
           options: {
-            layout: "tags", 
+            layout: "tags",
           },
         },
       ],

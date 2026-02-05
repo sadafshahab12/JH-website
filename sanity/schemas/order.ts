@@ -1,5 +1,9 @@
 import { defineField, defineType } from "sanity";
-
+interface OrderItemParent {
+  productType?: "apparel" | "stationery" | "mug";
+  method?: string;
+  [key: string]: unknown;
+}
 export const order = defineType({
   name: "order",
   title: "Order",
@@ -107,20 +111,24 @@ export const order = defineType({
 
             defineField({
               name: "size",
-              title: "Size",
+              title: "Size / Capacity",
               type: "string",
-              // ✅ Apparel ho to show ho, Stationery ho to hide ho jaye
-              hidden: ({ parent }) => parent?.productType === "stationery",
+              description: "Apparel size or Mug capacity (e.g. 11oz)",
+              hidden: ({ parent }) =>
+                (parent as OrderItemParent)?.productType === "stationery",
               validation: (Rule) =>
                 Rule.custom((value, context) => {
-                  const parent = context.parent as any;
-                  if (parent?.productType === "apparel" && !value) {
-                    return "Size is required for apparel";
+                  const parent = context.parent as OrderItemParent;
+                  if (
+                    (parent?.productType === "apparel" ||
+                      parent?.productType === "mug") &&
+                    !value
+                  ) {
+                    return "Size/Capacity is required for this item";
                   }
                   return true;
                 }),
             }),
-
             defineField({
               name: "color",
               title: "Color",
@@ -138,14 +146,25 @@ export const order = defineType({
               name: "productType",
               title: "Product Type",
               type: "string",
-              hidden: true,
+              options: {
+                list: ["apparel", "stationery", "mug"],
+              },
             }),
             defineField({
               name: "pageType",
-              title: "Page Type (For Notebooks)",
+              title: "Page Type",
               type: "string",
-              description: "Lined or Plain pages",
-              hidden: ({ parent }) => parent?.productType !== "stationery",
+
+              hidden: ({ parent }) =>
+                (parent as OrderItemParent)?.productType !== "stationery",
+              validation: (Rule) =>
+                Rule.custom((value, context) => {
+                  const parent = context.parent as OrderItemParent;
+                  if (parent?.productType === "stationery" && !value) {
+                    return "Page type is required for stationery";
+                  }
+                  return true;
+                }),
             }),
             defineField({
               name: "quantity",
