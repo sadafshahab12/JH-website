@@ -206,9 +206,7 @@ export const product = defineType({
           title: "Special Note (Other) (e.g., Microwave Safe)",
           type: "array",
           of: [{ type: "string" }],
-          options: {
-            layout: "tags",
-          },
+
         },
       ],
     }),
