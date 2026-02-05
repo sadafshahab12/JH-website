@@ -71,34 +71,6 @@ const ProductDetail = () => {
     return product?.baseImage ? urlFor(product.baseImage).width(800).url() : "";
   });
 
-  // 💡 Auto-slide logic
-  useEffect(() => {
-    let slideInterval: NodeJS.Timeout;
-
-    if (
-      selectedVariant &&
-      selectedVariant.images &&
-      selectedVariant.images.length > 1
-    ) {
-
-      let currentIndex = 0;
-      slideInterval = setInterval(() => {
-        currentIndex = (currentIndex + 1) % selectedVariant.images.length;
-        const nextImageUrl = urlFor(selectedVariant.images[currentIndex])
-          .width(800)
-          .url();
-        setMainImage(nextImageUrl);
-      }, 5000); 
-    }
-
-
-    return () => {
-      if (slideInterval) {
-        clearInterval(slideInterval);
-      }
-    };
-  }, [selectedVariant, mainImage]);
-
   const avgRating =
     reviews.length > 0
       ? reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length
