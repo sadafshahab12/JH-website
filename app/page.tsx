@@ -306,7 +306,7 @@ const Home = () => {
                             .width(800)
                             .height(1000)
                             .url()}
-                          alt={product.name}
+                          alt={product.name} 
                           width={1000}
                           height={1000}
                           loading="lazy"
