@@ -302,12 +302,15 @@ const Home = () => {
                     <div className="relative aspect-4/5 overflow-hidden bg-stone-100 mb-4">
                       {product.baseImage && (
                         <Image
-                          src={urlFor(product.baseImage).url()}
+                          src={urlFor(product.baseImage)
+                            .width(800)
+                            .height(1000)
+                            .url()}
                           alt={product.name}
                           width={1000}
                           height={1000}
                           loading="lazy"
-                          className="..."
+                          className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                         />
                       )}
                       {product.badges?.map((badge, index) => (
