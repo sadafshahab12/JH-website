@@ -23,7 +23,7 @@ export const product = defineType({
       options: {
         list: [
           { title: "Apparel (Clothing)", value: "apparel" },
-          { title: "Mugs", value: "mug" }, 
+          { title: "Mugs", value: "mug" },
           {
             title: "Stationery (Notebooks, Stickers, etc.)",
             value: "stationery",
@@ -192,7 +192,6 @@ export const product = defineType({
       fields: [
         {
           name: "material",
-
           title: "Material (e.g., Ceramic / Paper 100gsm)",
           type: "array",
           of: [{ type: "string" }],
@@ -204,9 +203,9 @@ export const product = defineType({
         },
         {
           name: "other",
+          title: "Special Note (Other) (e.g., Microwave Safe)",
           type: "array",
           of: [{ type: "string" }],
-          title: "Special Note (e.g., Microwave Safe)",
           options: {
             layout: "tags",
           },

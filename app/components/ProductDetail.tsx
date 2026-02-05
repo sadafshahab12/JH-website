@@ -60,7 +60,6 @@ const ProductDetail = () => {
   const [loadingRelated, setLoadingRelated] = useState(true);
   const [copied, setCopied] = useState(false);
   const [mainImage, setMainImage] = useState(() => {
-
     if (
       selectedVariant &&
       selectedVariant.images &&
@@ -155,7 +154,6 @@ const ProductDetail = () => {
   }, [selectedVariant]);
 
   const handleAddToCart = () => {
-
     if (!product) return;
 
     if (product.productType !== "stationery" && !selectedSize) {
@@ -179,7 +177,6 @@ const ProductDetail = () => {
         ? (product.pricing.pkPrice.discount ?? product.pricing.pkPrice.original)
         : (product.pricing.intlPrice.discount ??
           product.pricing.intlPrice.original);
-
 
     const cartImage =
       mainImage ||
@@ -762,30 +759,62 @@ const ProductDetail = () => {
                           <div className="mt-4 p-3 bg-stone-50 rounded space-y-1">
                             {/* Material Fix */}
                             {product.productSpecs.material && (
-                              <p className="text-xs">
-                                <strong>Material:</strong>{" "}
-                                {Array.isArray(product.productSpecs.material)
-                                  ? product.productSpecs.material.join(", ")
-                                  : product.productSpecs.material}
-                              </p>
+                              <div className="text-xs">
+                                <strong className="block mb-1">
+                                  Material:
+                                </strong>
+                                <ul className="list-disc pl-4">
+                                  {Array.isArray(
+                                    product.productSpecs.material,
+                                  ) ? (
+                                    product.productSpecs.material.map(
+                                      (item, index) => (
+                                        <li key={index}>{item}</li>
+                                      ),
+                                    )
+                                  ) : (
+                                    <li>{product.productSpecs.material}</li>
+                                  )}
+                                </ul>
+                              </div>
                             )}
 
                             {/* Size/Dimensions */}
+                            {/* Dimensions / Size Section */}
                             {product.productSpecs.dimensions && (
-                              <p className="text-xs">
-                                <strong>Size:</strong>{" "}
-                                {product.productSpecs.dimensions}
-                              </p>
+                              <div className="text-xs mt-2">
+                                <strong className="block mb-1">Size:</strong>
+                                <ul className="list-disc pl-4">
+                                  {Array.isArray(
+                                    product.productSpecs.dimensions,
+                                  ) ? (
+                                    product.productSpecs.dimensions.map(
+                                      (dim, index) => (
+                                        <li key={index}>{dim}</li>
+                                      ),
+                                    )
+                                  ) : (
+                                    <li>{product.productSpecs.dimensions}</li>
+                                  )}
+                                </ul>
+                              </div>
                             )}
 
-                            {/* Other Fix */}
+                            {/* Other Fix / Notes Section */}
                             {product.productSpecs.other && (
-                              <p className="text-xs italic text-stone-400">
-                                *
-                                {Array.isArray(product.productSpecs.other)
-                                  ? product.productSpecs.other.join(" • ")
-                                  : product.productSpecs.other}
-                              </p>
+                              <div className="mt-2 text-xs italic text-stone-400">
+                                <ul className="list-none space-y-1">
+                                  {Array.isArray(product.productSpecs.other) ? (
+                                    product.productSpecs.other.map(
+                                      (note, index) => (
+                                        <li key={index}>* {note}</li>
+                                      ),
+                                    )
+                                  ) : (
+                                    <li>* {product.productSpecs.other}</li>
+                                  )}
+                                </ul>
+                              </div>
                             )}
                           </div>
                         )}
