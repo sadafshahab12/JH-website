@@ -37,6 +37,26 @@ import { Product, ProductVariant } from "@/app/types/productType";
 import { ProductSize } from "@/app/types/cartItems";
 import { Review } from "@/app/types/reviewType";
 import { PopulatedOrder } from "../types/orderType";
+//components
+import { productDetailRelatedQuery } from "@/app/lib/productDetailRelatedQuery";
+import { productDetailPageReview } from "@/app/lib/reviewDataQuery";
+import { productDetailBySlugQuery } from "@/app/lib/productDetailBySlugQuery";
+import { Check, Share2 } from "lucide-react";
+import { getEstimatedDelivery } from "../utils/getEstimatedDelivery";
+import { getPrices } from "../utils/getPrices";
+import ColorPicker from "../components/ColorPicker";
+import { BreadCrumbs } from "../components/BreadCrumbs";
+import ProductDetailReviews from "../components/ProductDetailReviews";
+import RelatedProducts from "../components/RelatedProducts";
+import CompletetheLook from "../components/CompletetheLook";
+import SizeGuideModal from "../components/SizeGuideModal";
+import RelatedProductSkeleton from "../components/RelatedProductSkeleton";
+import AddtoCartModal from "../components/AddtoCartModal";
+import PageTypeSelection from "../components/PageTypeSelection";
+import ProductTabInstructions from "../components/ProductTabInstructions";
+import ApparelMugSizeButton from "../components/ApparelMugSizeButton";
+import { MugCapacity } from "../types/cartItems";
+
 // icons
 export {
   ArrowRight,
@@ -50,6 +70,8 @@ export {
   ChevronDown,
   Recycle,
   Loader2,
+  Check,
+  Share2,
   BsInstagram,
   MapPin,
   ShoppingBag,
@@ -72,7 +94,30 @@ export type {
   ProductSize,
   Review,
   PopulatedOrder,
+  MugCapacity,
 };
 
+export {
+  productDetailBySlugQuery,
+  productDetailPageReview,
+  productDetailRelatedQuery,
+  getEstimatedDelivery,
+  getPrices,
+};
 //comp
-export { SearchResultsDropdown, FeaturedCard, BrandHighlights };
+export {
+  SearchResultsDropdown,
+  FeaturedCard,
+  BrandHighlights,
+  RelatedProductSkeleton,
+  RelatedProducts,
+  ColorPicker,
+  BreadCrumbs,
+  ProductDetailReviews,
+  ApparelMugSizeButton,
+  SizeGuideModal,
+  CompletetheLook,
+  AddtoCartModal,
+  PageTypeSelection,
+  ProductTabInstructions,
+};

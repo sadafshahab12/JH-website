@@ -4,7 +4,7 @@ import { sanityClient } from "@/app/lib/sanityClient";
 type ContactFormBody = {
   name: string;
   email: string;
-  phone?: string; // Added phone (optional)
+  phone?: string;
   customization: string;
   message: string;
   referenceImage?: {
@@ -18,7 +18,7 @@ type ContactFormDoc = {
   _type: "contactForm";
   name: string;
   email: string;
-  phone?: string; // Added phone
+  phone?: string; 
   customization: string;
   message: string;
   referenceImage?: {
@@ -38,8 +38,6 @@ const validateEmail = (email: string) => {
 export async function POST(req: NextRequest) {
   try {
     const body: ContactFormBody = await req.json();
-
-    // --- Validation ---
     if (!body.name || body.name.trim().length < 2) {
       return NextResponse.json(
         { error: "Name must be at least 2 characters long." },
@@ -68,7 +66,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // --- Prepare Document ---
+
     const doc: ContactFormDoc = {
       _type: "contactForm",
       name: body.name,
@@ -78,7 +76,7 @@ export async function POST(req: NextRequest) {
       message: body.message,
     };
 
-    // --- Handle Image Upload ---
+ 
     if (body.referenceImage) {
       doc.referenceImage = {
         _type: "image",

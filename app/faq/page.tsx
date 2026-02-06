@@ -20,7 +20,7 @@ const FAQ = () => {
         "@type": "Answer",
         text:
           item.q === "What makes the Junhae Studio production process unique?"
-            ? "Junhae Studio operates on a 100% made-to-order philosophy..." // Clean text for AI
+            ? "Junhae Studio operates on a 100% made-to-order philosophy..." 
             : "Detailed policy information on junhaestudio.com",
       },
     })),

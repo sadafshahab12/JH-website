@@ -88,7 +88,7 @@ const Footer = () => {
               </li>
               <li>
                 <Link
-                  href="/care-instruction"
+                  href="/care-instructions"
                   className="hover:text-stone-100 transition-colors"
                 >
                   Care Instructions (Print-on-Demand Apparel)

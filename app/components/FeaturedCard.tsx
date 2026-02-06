@@ -7,7 +7,7 @@ const FeaturedCard = () => {
       <section className="bg-stone-50 border border-stone-200 rounded-3xl p-6 transition-transform hover:-translate-y-1 duration-300">
         <div className="relative w-full h-44 mb-6 rounded-2xl overflow-hidden">
           <Image
-            src="/outstory image/our story.png"
+            src="/outstory-image/ourstory.png"
             alt="Junhae Studio's journey into minimalist and sustainable fashion"
             width={1000}
             height={1000}
@@ -33,7 +33,7 @@ const FeaturedCard = () => {
       <section className="bg-stone-50 border border-stone-200 rounded-3xl p-6 transition-transform hover:-translate-y-1 duration-300">
         <div className="relative w-full h-44 mb-6 rounded-2xl overflow-hidden">
           <Image
-            src="/outstory image/how its made.png"
+            src="/outstory-image/how-its-made.png"
             alt="The ethical print-on-demand process at Junhae Studio"
             width={1000}
             height={1000}
@@ -72,7 +72,7 @@ const FeaturedCard = () => {
       <section className="bg-stone-50 border border-stone-200 rounded-3xl p-6 transition-transform hover:-translate-y-1 duration-300">
         <div className="relative w-full h-44 mb-6 rounded-2xl overflow-hidden">
           <Image
-            src="/outstory image/why choose us.png"
+            src="/outstory-image/why-choose-us.png"
             alt="Why Junhae Studio is the choice for minimalist streetwear"
             width={1000}
             height={1000}

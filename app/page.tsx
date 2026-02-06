@@ -1,97 +1,148 @@
-"use client";
-
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
-import { useEffect, useState } from "react";
 import Image from "next/image";
+import { BrandHighlights, FeaturedCard } from "./exports/homeExports";
 
-import {
-  Product,
-  urlFor,
-  ReviewWithProduct,
-  BrandHighlights,
-  client,
-  FeaturedCard,
-} from "./exports/homeExports";
-import { homeProductQuery } from "./lib/homeProductQuery";
-import { reviewDataQuery } from "./lib/reviewDataQuery";
+import ReviewsSection from "./components/ReviewsSection";
+import FeaturedProducts from "./components/FeaturedProducts";
+import { Suspense } from "react";
+import ProductSkeleton from "./components/ProductSkeleton";
+import { ReviewSkeleton } from "./components/ReviewSkeleton";
+import { Metadata } from "next";
+import Script from "next/script";
 
+export const metadata: Metadata = {
+  title: "Junhae Studio | Premium Minimalist Apparel & Ethical Streetwear",
+  description:
+    "Discover Junhae Studio’s signature collection of premium minimalist apparel. Redefining global streetwear through ethically crafted designs and sustainable fashion.",
+  keywords: [
+    "Minimalist Fashion",
+    "Ethical Streetwear",
+    "Sustainable Clothing",
+    "Premium Apparel Pakistan",
+  ],
+  openGraph: {
+    title: "Junhae Studio | Premium Minimalist Apparel",
+    description: "Ethically crafted minimalist movement for modern creatives.",
+    url: "https://junhaestudio.com",
+    siteName: "Junhae Studio",
+    images: [
+      {
+        url: "https://junhaestudio.com/home-page-image/home-page-banner.png",
+        width: 1200,
+        height: 630,
+        alt: "Junhae Studio Collection",
+      },
+    ],
+    locale: "en_US",
+    type: "website",
+  },
+};
 const Home = () => {
-  const [products, setProducts] = useState<Product[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [reviews, setReviews] = useState<ReviewWithProduct[]>([]);
-  const [elapsed, setElapsed] = useState<number>(0);
-  console.log(elapsed);
-  const MIN_LOADING_TIME = 600;
-
-  useEffect(() => {
-    const fetchFeaturedProducts = async () => {
-      setLoading(true);
-      const start = Date.now();
-
-      const data: Product[] = await client.fetch(homeProductQuery);
-      const reviewsData: ReviewWithProduct[] =
-        await client.fetch(reviewDataQuery);
-      const elapsedTime = Date.now() - start;
-      const remaining = MIN_LOADING_TIME - elapsedTime;
-
-      if (remaining > 0) {
-        await new Promise((resolve) => setTimeout(resolve, remaining));
-      }
-
-      setElapsed(Date.now() - start);
-      setProducts(data);
-      setReviews(reviewsData);
-      setLoading(false);
-    };
-
-    fetchFeaturedProducts();
-  }, []);
-
-  // Filter for best seller or featured badge
-  const featuredProducts = products
-    .filter((p) =>
-      p.badges?.some(
-        (badge) => badge.value === "Best Seller" || badge.value === "Featured",
-      ),
-    )
-    .slice(0, 3);
-
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "OnlineStore",
+    name: "Junhae Studio",
+    alternateName: "Junhae",
+    description:
+      "Premium minimalist apparel, ethical streetwear, and curated stationery for modern creatives.",
+    url: "https://junhaestudio.com",
+    logo: "https://junhaestudio.com/logo.png",
+    image: "https://junhaestudio.com/home-page-image/home-page-banner.png",
+    priceRange: "$$",
+    address: {
+      "@type": "PostalAddress",
+      addressLocality: "Karachi",
+      addressRegion: "Sindh",
+      addressCountry: "PK",
+    },
+    geo: {
+      "@type": "GeoCoordinates",
+      latitude: "24.8607",
+      longitude: "67.0011",
+    },
+    // Main Categories Listing
+    hasOfferCatalog: {
+      "@type": "OfferCatalog",
+      name: "Junhae Studio Collections",
+      itemListElement: [
+        {
+          "@type": "OfferCatalog",
+          name: "Apparel",
+          itemListElement: [
+            { "@type": "ListItem", position: 1, item: { "@name": "T-Shirts" } },
+            { "@type": "ListItem", position: 2, item: { "@name": "Hoodies" } },
+            {
+              "@type": "ListItem",
+              position: 3,
+              item: { "@name": "Sweatshirts" },
+            },
+          ],
+        },
+        {
+          "@type": "OfferCatalog",
+          name: "Stationery",
+          itemListElement: [
+            {
+              "@type": "ListItem",
+              position: 1,
+              item: { "@name": "Notebooks" },
+            },
+            {
+              "@type": "ListItem",
+              position: 2,
+              item: { "@name": "Spiral Notebooks" },
+            },
+            {
+              "@type": "ListItem",
+              position: 3,
+              item: { "@name": "Bookmarks" },
+            },
+          ],
+        },
+        {
+          "@type": "OfferCatalog",
+          name: "Lifestyle & Merch",
+          itemListElement: [
+            { "@type": "ListItem", position: 1, item: { "@name": "Mugs" } },
+            {
+              "@type": "ListItem",
+              position: 2,
+              item: { "@name": "K-Pop Merch" },
+            },
+          ],
+        },
+      ],
+    },
+    knowsAbout: [
+      "Ethical Fashion",
+      "Sustainable Print-on-demand",
+      "Minimalist Lifestyle",
+      "Modern Creative Apparel",
+    ],
+    potentialAction: {
+      "@type": "SearchAction",
+      target: "https://junhaestudio.com/search?q={search_term_string}",
+      "query-input": "required name=search_term_string",
+    },
+    sameAs: [
+      "https://www.instagram.com/junhaestudio",
+      "https://www.facebook.com/junhaestudioco",
+    ],
+  };
   return (
     <>
-      <script
+      <Script
+        id="schema-org-store"
         type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "ClothingStore",
-            name: "Junhae Studio",
-            description:
-              "Premium minimalist apparel and ethical streetwear for modern creatives.",
-            url: "https://junhaestudio.com",
-            brand: {
-              "@type": "Brand",
-              name: "Junhae Studio",
-            },
-            address: {
-              "@type": "PostalAddress",
-              addressLocality: "Karachi",
-              addressCountry: "PK",
-            },
-            knowsAbout: [
-              "Minimalist Fashion",
-              "Ethical Streetwear",
-              "Sustainable Print-on-demand",
-            ],
-          }),
-        }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
       <div className="animate-fade-in">
         {/* Hero Section */}
         <section className="relative h-screen w-full bg-stone-200 overflow-hidden">
           <div className="absolute inset-0">
             <Image
-              src="/home page image/home page banner.png"
+              src="/home-page-image/home-page-banner.png"
               alt="Junhae Studio Collection"
               width={1000}
               height={1000}
@@ -264,106 +315,9 @@ const Home = () => {
         </section>
 
         {/* Featured Products */}
-        <section className="py-20 px-6 max-w-7xl mx-auto">
-          <div className="flex justify-between items-end mb-12">
-            <h2 className="text-3xl font-vogue ">
-              Curated Minimalist Essentials
-            </h2>
-            <Link
-              href="/junhae-edits"
-              className="text-sm border-b border-stone-300 hover:border-stone-900 pb-1 transition-colors"
-            >
-              View All
-            </Link>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-x-8 gap-y-12">
-            {loading
-              ? Array.from({ length: 3 }).map((_, idx) => (
-                  <div key={idx} className="group block animate-pulse">
-                    <div className="relative aspect-4/5 overflow-hidden bg-stone-100 mb-4">
-                      <div className="absolute inset-0 bg-stone-200/60" />
-                      <div className="absolute inset-0 bg-linear-to-r from-transparent via-white/70 to-transparent opacity-60 animate-shimmer" />
-                      <div className="absolute top-4 right-4 bg-white/90 backdrop-blur px-2 py-1 text-[10px] tracking-widest uppercase font-medium">
-                        Loading...
-                      </div>
-                    </div>
-
-                    <div className="h-5 bg-stone-200 rounded-md mb-2 w-3/4" />
-                    <div className="h-4 bg-stone-200 rounded-md w-1/2" />
-                  </div>
-                ))
-              : featuredProducts.map((product) => (
-                  <Link
-                    key={product._id}
-                    href={`/junhae-edits/${product.slug.current}`}
-                    className="group block"
-                  >
-                    <div className="relative aspect-4/5 overflow-hidden bg-stone-100 mb-4">
-                      {product.baseImage && (
-                        <Image
-                          src={urlFor(product.baseImage)
-                            .width(800)
-                            .height(1000)
-                            .url()}
-                          alt={product.name}
-                          width={1000}
-                          height={1000}
-                          loading="lazy"
-                          className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                        />
-                      )}
-                      {product.badges?.map((badge, index) => (
-                        <span
-                          key={badge._id || index}
-                          className="absolute top-4 right-4 bg-white/90 backdrop-blur px-2 py-1 text-[10px] tracking-widest uppercase font-medium"
-                        >
-                          {badge.value}
-                        </span>
-                      ))}
-                    </div>
-
-                    <h3 className="text-lg font-medium text-stone-900 group-hover:text-stone-600 transition-colors">
-                      {product.name}
-                    </h3>
-                    <div className="flex flex-col gap-2 mt-2">
-                      {/* PKR Section */}
-                      <div className="flex flex-col">
-                        <div className="flex items-center gap-2">
-                          {product.pricing.pkPrice.discount && (
-                            <span className="text-stone-400 line-through text-sm">
-                              PKR{" "}
-                              {product.pricing.pkPrice.original.toLocaleString()}
-                            </span>
-                          )}
-                          <span className="text-base font-bold text-stone-950">
-                            PKR{" "}
-                            {(
-                              product.pricing.pkPrice.discount ??
-                              product.pricing.pkPrice.original
-                            ).toLocaleString()}
-                          </span>
-                        </div>
-                      </div>
-
-                      {/* USD Section */}
-                      <div className="flex items-center gap-2">
-                        {product.pricing.intlPrice.discount && (
-                          <span className="text-stone-400 line-through text-[11px]">
-                            USD {product.pricing.intlPrice.original}
-                          </span>
-                        )}
-                        <span className="text-sm font-medium text-stone-700">
-                          USD{" "}
-                          {product.pricing.intlPrice.discount ??
-                            product.pricing.intlPrice.original}
-                        </span>
-                      </div>
-                    </div>
-                  </Link>
-                ))}
-          </div>
-        </section>
+        <Suspense fallback={<ProductSkeleton />}>
+          <FeaturedProducts />
+        </Suspense>
         <section className="py-24 bg-white">
           <div className="max-w-7xl mx-auto px-6">
             {/* Section Header */}
@@ -378,127 +332,17 @@ const Home = () => {
               </p>
             </div>
 
-            {/* Grid */}
             <FeaturedCard />
           </div>
         </section>
 
-        {/* Process / Trust */}
         <BrandHighlights />
+        <Suspense fallback={<ReviewSkeleton />}>
+          <ReviewsSection />
+        </Suspense>
 
-        {/* TESTIMONIALS - BEAUTIFUL UI + LOADING */}
-        {/* TESTIMONIALS - SEO & TRUST OPTIMIZED */}
-        <section className="py-24 bg-[#FAFAFA]" aria-labelledby="reviews-title">
-          <div className="max-w-7xl mx-auto px-6">
-            <div className="flex flex-col items-center text-center mb-16">
-              <span className="text-sm font-semibold tracking-[0.2em] text-stone-400 uppercase mb-3">
-                Real Experiences
-              </span>
-              <h2
-                id="reviews-title"
-                className="text-4xl md:text-5xl font-vogue tracking-tight text-stone-900"
-              >
-                Community{" "}
-                <span className="italic text-stone-500">Feedback</span>
-              </h2>
-
-              {/* Average Rating Summary Badge */}
-              <div className="mt-6 flex items-center gap-2 bg-white px-4 py-2 rounded-full border border-stone-200 shadow-sm">
-                <div className="flex text-amber-400">
-                  {[...Array(5)].map((_, i) => (
-                    <svg
-                      key={i}
-                      className="w-3 h-3 fill-current"
-                      viewBox="0 0 20 20"
-                    >
-                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                    </svg>
-                  ))}
-                </div>
-                <span className="text-xs font-medium text-stone-600">
-                  4.9/5 Based on Recent Drops
-                </span>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              {loading
-                ? Array.from({ length: 3 }).map((_, idx) => (
-                    <div
-                      key={idx}
-                      className="h-72 bg-stone-100 rounded-3xl animate-pulse"
-                    />
-                  ))
-                : reviews.map((review) => (
-                    <figure
-                      key={review._id}
-                      className="group relative bg-white border border-stone-100 p-8 rounded-4xl shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-500 ease-out flex flex-col justify-between"
-                    >
-                      {/* Top Section: Rating & Quote Icon */}
-                      <div>
-                        <div className="flex justify-between items-start mb-6">
-                          <div className="flex gap-0.5">
-                            {Array.from({ length: 5 }).map((_, i) => (
-                              <svg
-                                key={i}
-                                className={`w-4 h-4 ${i < review.rating ? "text-amber-400" : "text-stone-200"}`}
-                                fill="currentColor"
-                                viewBox="0 0 20 20"
-                              >
-                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                              </svg>
-                            ))}
-                          </div>
-                          <svg
-                            width="24"
-                            height="18"
-                            viewBox="0 0 40 30"
-                            className="text-stone-100 group-hover:text-stone-200 transition-colors"
-                          >
-                            <path
-                              fill="currentColor"
-                              d="M10.5 0L14 3.5C10.5 7 8 11.5 8 16H15V30H0V16C0 6.5 4.5 0 10.5 0ZM35.5 0L39 3.5C35.5 7 33 11.5 33 16H40V30H25V16C25 6.5 29.5 0 35.5 0Z"
-                            />
-                          </svg>
-                        </div>
-
-                        <blockquote>
-                          <p className="text-stone-700 leading-relaxed text-[1rem] font-light italic mb-8">
-                            &ldquo;{review.comment}&rdquo;
-                          </p>
-                        </blockquote>
-                      </div>
-
-                      {/* Bottom Section: User Info */}
-                      <figcaption className="flex items-center gap-4 border-t border-stone-50 pt-6 mt-auto">
-                        <div className="h-12 w-12 rounded-full bg-stone-50 flex items-center justify-center text-stone-400 font-medium border border-stone-200 text-xs shadow-inner">
-                          {review.name.charAt(0)}
-                        </div>
-                        <div>
-                          <h3 className="text-sm font-bold text-stone-900 tracking-wide uppercase flex items-center gap-1.5">
-                            {review.name}
-                            <span className="inline-block bg-blue-50 text-[8px] text-blue-500 px-1.5 py-0.5 rounded-full border border-blue-100 font-bold">
-                              VERIFIED
-                            </span>
-                          </h3>
-                          <Link
-                            href={`/junhae-edits/${review.product.slug.current}`}
-                            className="text-xs text-stone-400 mt-0.5 hover:text-crimson transition-colors underline underline-offset-2 decoration-stone-200"
-                          >
-                            Purchased: {review.product.name}
-                          </Link>
-                        </div>
-                      </figcaption>
-                    </figure>
-                  ))}
-            </div>
-          </div>
-        </section>
-
-        {/* CTA */}
         <section className="py-32 px-6 bg-crimson text-stone-200 text-center">
           <div className="max-w-4xl mx-auto">
-            {/* SEO Header: Target specific niche keywords */}
             <h2 className="text-4xl md:text-5xl font-vogue mb-6 text-white leading-tight">
               Elevate Your Style with <br />
               <span className="italic">Premium Minimalist Streetwear</span>

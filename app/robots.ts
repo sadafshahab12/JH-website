@@ -4,9 +4,25 @@ export default function robots(): MetadataRoute.Robots {
   return {
     rules: {
       userAgent: "*",
-      allow: "/",
-      disallow: [ "/cart", "/checkout"],
+      allow: [
+        "/",
+        "/junhae-edits",
+        "/our-story",
+        "/contact",
+        "/faq",
+        "/shipping-return",
+        "/size-guide",
+        "/care-instructions",
+        "/terms",
+        "/privacy-policy",
+        "/accessibility",
+        "/home-page-image/",
+        "/outstory-image/",
+        "/junhae-edits-image/",
+        "/search",
+      ],
+      disallow: ["/checkout", "/api/", "/*?_rsc"],
     },
-    sitemap: "https://www.junhaestudio.com/sitemap.xml",
+    sitemap: "https://junhaestudio.com/sitemap.xml",
   };
 }

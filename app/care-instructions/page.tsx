@@ -36,7 +36,7 @@ const CareInstructions = () => {
       />
 
       <main className="pt-24 sm:pt-32 pb-20 px-6 max-w-5xl mx-auto min-h-screen">
-        {/* SEO H1 - Sirf ek baar */}
+        
         <header className="mb-12">
           <h1 className="text-4xl md:text-5xl font-vogue text-stone-900 mb-6 tracking-tight">
             Care Guide

@@ -225,7 +225,7 @@ const JunhaeEdits = () => {
           {/* Desktop Image */}
           <div className="hidden md:block absolute inset-0">
             <Image
-              src="/junhae-edits-image/junhaestudio header background image.png"
+              src="/junhae-edits-image/junhaestudio-header-background-image.png"
               alt="Junhae Studio collection background"
               width={800}
               height={800}

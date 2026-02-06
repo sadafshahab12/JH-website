@@ -69,7 +69,7 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  // Schema data to help Google identify your brand
+ 
   const organizationSchema = {
     "@context": "https://schema.org",
     "@type": "Organization",
@@ -82,7 +82,7 @@ export default function RootLayout({
       addressCountry: "PK",
     },
     sameAs: [
-      "https://instagram.com/junhaestudio", // Apne real social links yahan dalein
+      "https://instagram.com/junhaestudio", 
       "https://facebook.com/junhaestudioco",
     ],
   };

@@ -15,7 +15,7 @@ const EmptyCart = () => {
         <div className="relative mb-8 transform transition-transform duration-700 ease-out group-hover:scale-105">
           <div className="animate-bounce-slow">
             <Image
-              src="/checkout images/cart is empty.png"
+              src="/checkout-images/cart-is-empty.png"
               alt="Lonely Chibi Character"
               className="h-64 w-auto object-contain drop-shadow-sm"
               width={800}

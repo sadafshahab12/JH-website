@@ -182,7 +182,7 @@ const Contact = () => {
             <div className="p-2.5 border border-stone-100 rounded-full group-hover:bg-stone-50 transition-all">
               <Mail size={18} />
             </div>
-            <span className="text-xs font-bold tracking-widest uppercase text-stone-600 truncate group-hover:text-[#B32A36]">
+            <span className="text-xs font-bold tracking-widest uppercase text-stone-600  group-hover:text-[#B32A36]">
               junhaestudio@gmail.com
             </span>
           </Link>
@@ -315,7 +315,7 @@ const Contact = () => {
                     height={100}
                     className="w-24 h-24 object-cover rounded-lg mb-3 shadow-md border-2 border-white"
                   />
-                  <span className="text-xs text-stone-600 font-medium truncate max-w-37.5">
+                  <span className="text-xs text-stone-600 font-medium  max-w-37.5">
                     {form.file.name}
                   </span>
                   <button

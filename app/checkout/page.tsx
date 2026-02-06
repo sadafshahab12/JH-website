@@ -162,7 +162,6 @@ const CheckoutPage = () => {
       setIsPlacingOrder(true);
 
       const orderItems = cart.map((item) => {
-        // Logic to decide what to send based on productType
         const isApparel = item.productType === "apparel";
         const isMug = item.productType === "mug";
         const isStationery = item.productType === "stationery";
@@ -590,7 +589,7 @@ const CheckoutPage = () => {
                 Terms
               </Link>
               <Link
-                href="/care-instruction"
+                href="/care-instructions"
                 className="hover:text-stone-900 transition-colors"
               >
                 Care Guide

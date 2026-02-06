@@ -1,16 +1,15 @@
 import { MetadataRoute } from "next";
-
 import { groq } from "next-sanity";
 import { client } from "./exports/homeExports";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const baseUrl = "https://www.junhaestudio.com";
 
-  // 1. Fetch all products (Sirf slug aur update time chahiye sitemap ke liye)
+  const baseUrl = "https://junhaestudio.com";
+
+
   const productQuery = groq`*[_type == "product"]{ "slug": slug.current, _updatedAt }`;
   const products = await client.fetch(productQuery);
 
-  // 2. Product URLs generate karein
   const productRoutes = products.map(
     (product: { slug: string; _updatedAt: string }) => ({
       url: `${baseUrl}/junhae-edits/${product.slug}`,
@@ -22,16 +21,16 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     }),
   );
 
-  // 3. Static Pages list
+
   const staticPages = [
-    "",
+    "/",
     "/junhae-edits",
     "/our-story",
     "/contact",
     "/faq",
     "/shipping-return",
     "/size-guide",
-    "/care-instruction",
+    "/care-instructions", 
     "/terms",
     "/privacy-policy",
     "/accessibility",
@@ -44,6 +43,5 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: route === "" ? 1.0 : 0.8,
   }));
 
-  // 4. Combine both
   return [...staticRoutes, ...productRoutes];
 }

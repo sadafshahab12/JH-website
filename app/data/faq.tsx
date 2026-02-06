@@ -12,7 +12,7 @@ export const faqData = [
         placed. This bespoke approach ensures zero overstock waste.
       </>
     ),
-    rawText: "Junhae Studio operates on a 100% made-to-order philosophy...", // For JSON-LD
+    rawText: "Junhae Studio operates on a 100% made-to-order philosophy...",
   },
   {
     q: "How long does delivery take for made-to-order apparel?",
