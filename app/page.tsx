@@ -1,20 +1,22 @@
-import { ArrowRight } from "lucide-react";
+import { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
-import { BrandHighlights, FeaturedCard } from "./exports/homeExports";
-
-import ReviewsSection from "./components/ReviewsSection";
-import FeaturedProducts from "./components/FeaturedProducts";
 import { Suspense } from "react";
-import ProductSkeleton from "./components/ProductSkeleton";
-import { ReviewSkeleton } from "./components/ReviewSkeleton";
-import { Metadata } from "next";
 import Script from "next/script";
+import {
+  ArrowRight,
+  BrandHighlights,
+  FeaturedCard,
+  FeaturedProducts,
+  ProductSkeleton,
+  ReviewSkeleton,
+  ReviewsSection,
+} from "./exports/homeExports";
 
 export const metadata: Metadata = {
   title: "Junhae Studio | Premium Minimalist Apparel & Ethical Streetwear",
   description:
-    "Discover Junhae Studio’s signature collection of premium minimalist apparel. Redefining global streetwear through ethically crafted designs and sustainable fashion.",
+    "Shop Junhae Studio’s signature minimalist apparel. Ethically crafted, sustainable streetwear designed for the global stage. Redefine your style today.",
   keywords: [
     "Minimalist Fashion",
     "Ethical Streetwear",

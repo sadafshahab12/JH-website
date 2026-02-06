@@ -7,13 +7,27 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: "https",
-        hostname: "*",
+        hostname: "cdn.sanity.io",
         port: "",
       },
     ],
   },
   compiler: {
     removeConsole: process.env.NODE_ENV === "production",
+  },
+  async headers() {
+    return [
+      {
+        source: "/(.*).(jpg|jpeg|png|webp|avif|gif|svg|ico)",
+        headers: [
+          {
+            key: "Cache-Control",
+            value:
+              "public, max-age=31536000, s-maxage=31536000, stale-while-revalidate=59",
+          },
+        ],
+      },
+    ];
   },
 };
 

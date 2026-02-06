@@ -56,7 +56,10 @@ import PageTypeSelection from "../components/PageTypeSelection";
 import ProductTabInstructions from "../components/ProductTabInstructions";
 import ApparelMugSizeButton from "../components/ApparelMugSizeButton";
 import { MugCapacity } from "../types/cartItems";
-
+import ReviewsSection from "../components/ReviewsSection";
+import FeaturedProducts from "../components/FeaturedProducts";
+import ProductSkeleton from "../components/ProductSkeleton";
+import { ReviewSkeleton } from "../components/ReviewSkeleton";
 // icons
 export {
   ArrowRight,
@@ -120,4 +123,8 @@ export {
   AddtoCartModal,
   PageTypeSelection,
   ProductTabInstructions,
+  ProductSkeleton,
+  ReviewSkeleton,
+  ReviewsSection,
+  FeaturedProducts,
 };
