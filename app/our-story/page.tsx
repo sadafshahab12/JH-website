@@ -103,7 +103,7 @@ const OurStoryPage: React.FC = () => {
             {/* Featured Image Box - Displaying the latest aesthetic */}
             <div className="md:col-span-7 relative h-125 md:h-auto overflow-hidden">
               <Image
-                src="/outstory-image/latest-arirang-collection.jpg" 
+                src="/ourstory-image/latest-arirang-collection.jpg" 
                 alt="Junhae Studio Latest Design"
                 width={800}
                 height={800}
@@ -148,7 +148,7 @@ const OurStoryPage: React.FC = () => {
             </div>
             <div className="order-1 md:order-2 relative aspect-square bg-stone-200 rounded-2xl overflow-hidden shadow-2xl">
               <Image
-                src="/outstory-image/junhae-studio-fabric.png"
+                src="/ourstory-image/junhae-studio-fabric.png"
                 alt="Minimalist Design Philosophy"
                 width={800}
                 height={800}

@@ -17,7 +17,7 @@ export default function robots(): MetadataRoute.Robots {
         "/privacy-policy",
         "/accessibility",
         "/home-page-image/",
-        "/outstory-image/",
+        "/ourstory-image/",
         "/junhae-edits-image/",
         "/search",
       ],
