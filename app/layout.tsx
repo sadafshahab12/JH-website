@@ -9,6 +9,8 @@ import CartDrawer from "./components/CartDrawer";
 import { SearchProvider } from "./context/searchContext";
 import { GoogleAnalytics } from "@next/third-parties/google";
 import ScrollToTop from "./components/ScrollToTop";
+import Script from "next/script";
+import Image from "next/image";
 
 const outfit = Outfit({
   weight: ["400", "800"],
@@ -18,7 +20,7 @@ const outfit = Outfit({
 });
 
 export const metadata: Metadata = {
-  title: "Junhae Studio | Minimalist Print-On-Demand Apparel",
+  title: "Junhae Studio | Ethically Crafted Sustainable Minimalist Apparel",
   description:
     "Shop minimalist, trendy print-on-demand apparel at Junhae Studio. Premium t-shirts and hoodies designed with modern aesthetics and ethical crafting.",
 
@@ -38,20 +40,20 @@ export const metadata: Metadata = {
   ],
 
   alternates: {
-    canonical: "https://www.junhaestudio.com",
+    canonical: "https://junhaestudio.com",
   },
 
   openGraph: {
-    title: "Junhae Studio | Minimalist Print-On-Demand Apparel",
+    title: "Junhae Studio | Ethically Crafted Sustainable Minimalist Apparel",
     description:
       "Premium minimalist print-on-demand clothing for modern fashion lovers.",
-    url: "https://www.junhaestudio.com",
+    url: "https://junhaestudio.com",
     siteName: "Junhae Studio",
     locale: "en_US",
     type: "website",
     images: [
       {
-        url: "https://www.junhaestudio.com/og-image.png",
+        url: "https://junhaestudio.com/og-image.png",
         width: 1200,
         height: 630,
         alt: "Junhae Studio Minimalist Apparel",
@@ -64,40 +66,71 @@ export const metadata: Metadata = {
     follow: true,
   },
 };
+const fbPixelId = process.env.NEXT_PUBLIC_FB_PIXEL_ID;
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
- 
   const organizationSchema = {
     "@context": "https://schema.org",
     "@type": "Organization",
     name: "Junhae Studio",
-    url: "https://www.junhaestudio.com",
-    logo: "https://www.junhaestudio.com/logo.png",
+    url: "https://junhaestudio.com",
+    logo: "https://junhaestudio.com/logo.png",
     description: "Premium minimalist print-on-demand apparel brand.",
     address: {
       "@type": "PostalAddress",
       addressCountry: "PK",
     },
     sameAs: [
-      "https://instagram.com/junhaestudio", 
+      "https://instagram.com/junhaestudio",
       "https://facebook.com/junhaestudioco",
     ],
   };
   return (
     <html lang="en">
       <head>
-        {/* Schema Markup injection */}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
             __html: JSON.stringify(organizationSchema),
           }}
         />
+        {fbPixelId && (
+          <Script
+            id="fb-pixel"
+            strategy="afterInteractive"
+            dangerouslySetInnerHTML={{
+              __html: `
+                !function(f,b,e,v,n,t,s)
+                {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+                n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+                if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+                n.queue=[];t=b.createElement(e);t.async=!0;
+                t.src=v;s=b.getElementsByTagName(e)[0];
+                s.parentNode.insertBefore(t,s)}(window, document,'script',
+                'https://connect.facebook.net/en_US/fbevents.js');
+                fbq('init', '${fbPixelId}');
+                fbq('track', 'PageView');
+              `,
+            }}
+          />
+        )}
       </head>
       <body className={`${outfit.className} ${outfit.style}  antialiased`}>
+        {fbPixelId && (
+          <noscript>
+            <Image
+              src={`https://www.facebook.com/tr?id=${fbPixelId}&ev=PageView&noscript=1`}
+              alt=""
+              width={1}
+              height={1}
+              style={{ display: "none" }}
+              unoptimized={true}
+            />
+          </noscript>
+        )}
         <ScrollToTop />
         <ShopProvider>
           <SearchProvider>

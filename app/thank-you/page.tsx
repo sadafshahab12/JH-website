@@ -100,13 +100,11 @@ const ThankYouContent = () => {
     // --- Items Table (Dynamic Variant Logic) ---
     const rows = order.items.map((item) => {
       // ✅ Dynamic Detail Logic
-      let variantInfo = item.color; 
+      let variantInfo = item.color;
 
       if (item.productType === "apparel") {
-
         variantInfo += ` / Size: ${item.size || "N/A"}`;
       } else if (item.productType === "stationery") {
-
         if (item.pageType) {
           variantInfo += ` / ${item.pageType}`;
         }
@@ -135,7 +133,7 @@ const ThankYouContent = () => {
         fontSize: 9,
       },
       columnStyles: {
-        1: { cellWidth: 160 }, 
+        1: { cellWidth: 160 },
       },
     });
 
@@ -177,6 +175,18 @@ const ThankYouContent = () => {
 
     doc.save(`Receipt-${order.orderNumber}.pdf`);
   };
+
+  useEffect(() => {
+    if (order && typeof window !== "undefined" && window.fbq) {
+      window.fbq("track", "Purchase", {
+        content_ids: order.items.map((item) => item.product._id),
+        content_type: "product",
+        value: order.total,
+        currency: order.currencyMode === "pk" ? "PKR" : "USD",
+        num_items: order.items.reduce((sum, item) => sum + item.quantity, 0),
+      });
+    }
+  }, [order]);
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-stone-50">

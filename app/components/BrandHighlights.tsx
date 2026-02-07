@@ -4,9 +4,9 @@ const BrandHighlights = () => {
   return (
     <section className="py-24 bg-stone-50 border-t border-stone-200">
       <div className="max-w-7xl mx-auto px-6">
-        {/* Added a screen-reader only H2 for better SEO structure */}
         <h2 className="sr-only">
-          Junhae Studio Brand Values and Quality Commitment
+          Ethically Crafted Sustainable Apparel | Junhae Studio Brand Values and
+          Quality Commitment
         </h2>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12 text-center">
@@ -16,7 +16,8 @@ const BrandHighlights = () => {
               <PenTool strokeWidth={1} size={30} />
             </div>
             <h3 className="text-xl font-vogue mb-3 tracking-wider text-stone-900">
-              Artistic <span className="italic">Minimalism</span>
+              Artistic <span className="italic">Ethically Crafted</span>{" "}
+              Minimalism
             </h3>
             <p className="text-sm font-light text-stone-500 max-w-xs leading-relaxed">
               <span className="font-vogue text-stone-900">Junhae Studio</span>{" "}
@@ -36,7 +37,7 @@ const BrandHighlights = () => {
               <Box strokeWidth={1} size={30} />
             </div>
             <h3 className="text-xl font-vogue mb-3 tracking-wider text-stone-900">
-              Sustainable <span className="italic">Production</span>
+              Sustainable <span className="italic">Apparel Production</span>
             </h3>
             <p className="text-sm font-light text-stone-500 max-w-xs leading-relaxed">
               Our{" "}
@@ -55,7 +56,7 @@ const BrandHighlights = () => {
               <Truck size={30} strokeWidth={1} />
             </div>
             <h3 className="text-xl font-vogue mb-3 tracking-wider text-stone-900">
-              Reliable <span className="italic">Global Shipping</span>
+              Reliable <span className="italic">Global Delivery</span>
             </h3>
             <p className="text-sm font-light text-stone-500 max-w-xs leading-relaxed">
               Experience fast and{" "}

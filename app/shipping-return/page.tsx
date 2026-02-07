@@ -3,9 +3,16 @@ import Link from "next/link";
 import Script from "next/script";
 
 export const metadata: Metadata = {
-  title: "Shipping & Returns | Junhae Studio | Global Minimalist Apparel",
+  title:
+    "Shipping & Returns | Worldwide Shipping | Junhae Studio Ethically Crafted",
+
   description:
-    "Junhae Studio Shipping & Returns policy. Learn about our ethical print-on-demand delivery timelines, shipping fees, and return process for minimalist streetwear.",
+    "Junhae Studio shipping policy for modern creatives. Details on our ethically crafted delivery timelines, worldwide shipping rates, and sustainable return process.",
+
+  robots: {
+    index: true,
+    follow: true,
+  },
 };
 
 const ShippingReturn = () => {

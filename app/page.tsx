@@ -14,30 +14,47 @@ import {
 } from "./exports/homeExports";
 
 export const metadata: Metadata = {
-  title: "Junhae Studio | Premium Minimalist Apparel & Ethical Streetwear",
+  title: "Junhae Studio | Ethically Crafted Sustainable Minimalist Apparel",
+
   description:
-    "Shop Junhae Studio’s signature minimalist apparel. Ethically crafted, sustainable streetwear designed for the global stage. Redefine your style today.",
+    "Explore Junhae Studio's ethically crafted sustainable minimalist apparel. Premium streetwear designed for modern creatives. Shop now with worldwide shipping.",
+
   keywords: [
-    "Minimalist Fashion",
-    "Ethical Streetwear",
-    "Sustainable Clothing",
-    "Premium Apparel Pakistan",
+    "Junhae Studio",
+    "Ethically Crafted",
+    "Sustainable Apparel",
+    "Modern Creatives",
+    "Worldwide Shipping",
+    "Minimalist Fashion Brand",
+    "Premium Streetwear Pakistan",
+    "Custom Printed Apparel",
   ],
+
+  alternates: {
+    canonical: "https://junhaestudio.com",
+  },
+
   openGraph: {
-    title: "Junhae Studio | Premium Minimalist Apparel",
-    description: "Ethically crafted minimalist movement for modern creatives.",
+    title: "Junhae Studio | Ethically Crafted Sustainable Apparel",
+    description:
+      "Premium minimalist clothing for modern creatives. Ethically crafted with worldwide shipping.",
     url: "https://junhaestudio.com",
     siteName: "Junhae Studio",
-    images: [
-      {
-        url: "https://junhaestudio.com/home-page-image/home-page-banner.png",
-        width: 1200,
-        height: 630,
-        alt: "Junhae Studio Collection",
-      },
-    ],
     locale: "en_US",
     type: "website",
+    images: [
+      {
+        url: "https://junhaestudio.com/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "Junhae Studio Sustainable Minimalist Apparel Collection",
+      },
+    ],
+  },
+
+  robots: {
+    index: true,
+    follow: true,
   },
 };
 const Home = () => {
@@ -162,10 +179,11 @@ const Home = () => {
               </span>
 
               <h1 className="text-[2rem] sm:text-7xl font-extrabold text-crimson sm:text-stone-950 leading-[1.1] mb-8 tracking-tight">
-                Minimalist Apparel for <br />
+                Ethically Crafted <br />
                 <span className="text-stone-1000 font-vogue italic font-medium">
-                  Modern Creatives.
+                  Sustainable Apparel
                 </span>
+                <br /> for Modern Creatives.
               </h1>
 
               <p className="max-w-xl mx-auto mb-10 text-stone-700 text-sm md:text-base leading-relaxed font-light">

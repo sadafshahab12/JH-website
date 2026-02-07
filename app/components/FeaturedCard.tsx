@@ -16,7 +16,7 @@ const FeaturedCard = () => {
           />
         </div>
         <h2 className="text-xl font-vogue text-stone-900 mb-3">
-          Our Brand Story
+          Our Sustainable Brand Story
         </h2>
         <p className="text-stone-600 font-light leading-relaxed text-sm md:text-base">
           <span className="font-vogue text-stone-900">Junhae Studio</span> was
@@ -42,7 +42,7 @@ const FeaturedCard = () => {
           />
         </div>
         <h2 className="text-xl font-vogue text-stone-900 mb-3">
-          Ethical Production
+          Ethically Crafted Production
         </h2>
         <p className="text-stone-600 font-light leading-relaxed text-sm md:text-base">
           To reduce environmental waste, we utilize an{" "}
@@ -81,7 +81,7 @@ const FeaturedCard = () => {
           />
         </div>
         <h2 className="text-xl font-vogue text-stone-900 mb-3">
-          The Junhae Advantage
+          The Sustainable Junhae Advantage
         </h2>
         <p className="text-stone-600 font-light leading-relaxed text-sm md:text-base">
           Choose <strong className="text-stone-900">Junhae Studio</strong> for

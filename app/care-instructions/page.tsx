@@ -2,9 +2,15 @@ import { Metadata } from "next";
 import Script from "next/script";
 
 export const metadata: Metadata = {
-  title: "Care Instructions | Junhae Studio | Preserve Your Minimalist Apparel",
+  title: "Care Instructions | Junhae Studio | Sustainable Minimalist Apparel",
+
   description:
-    "Learn how to care for your Junhae Studio print-on-demand clothing. Expert tips on washing, drying, and preserving the quality of our minimalist streetwear.",
+    "Keep your Junhae Studio pieces in pristine condition. Expert tips on caring for your ethically crafted sustainable apparel and minimalist streetwear collection.",
+
+  robots: {
+    index: true,
+    follow: true,
+  },
 };
 
 const CareInstructions = () => {
@@ -36,7 +42,6 @@ const CareInstructions = () => {
       />
 
       <main className="pt-24 sm:pt-32 pb-20 px-6 max-w-5xl mx-auto min-h-screen">
-        
         <header className="mb-12">
           <h1 className="text-4xl md:text-5xl font-vogue text-stone-900 mb-6 tracking-tight">
             Care Guide

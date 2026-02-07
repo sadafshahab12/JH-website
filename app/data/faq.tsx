@@ -1,6 +1,6 @@
 export const faqData = [
   {
-    q: "What makes the Junhae Studio production process unique?",
+    q: "How does Junhae Studio ensure ethically crafted production?", 
     a: (
       <>
         Junhae Studio operates on a{" "}
@@ -15,7 +15,22 @@ export const faqData = [
     rawText: "Junhae Studio operates on a 100% made-to-order philosophy...",
   },
   {
-    q: "How long does delivery take for made-to-order apparel?",
+    q: "Is Junhae Studio a sustainable apparel brand?", 
+    a: (
+      <>
+        Yes, we prioritize longevity and eco-consciousness. Our garments are
+        designed as{" "}
+        <strong className="font-medium text-stone-900">
+          capsule wardrobe staples
+        </strong>{" "}
+        using high-quality fabrics that reduce the need for frequent
+        replacements, directly combatting the environmental impact of disposable
+        fashion.
+      </>
+    ),
+  },
+  {
+    q: "How long does delivery take for our ethically crafted clothing?", 
     a: (
       <>
         Total delivery typically takes{" "}
@@ -24,20 +39,6 @@ export const faqData = [
         </strong>
         . This includes a 2–4 day production window where your garment is
         handcrafted, followed by 5–10 days for carbon-neutral domestic shipping.
-      </>
-    ),
-  },
-  {
-    q: "Does Junhae Studio offer international shipping?",
-    a: (
-      <>
-        Yes, we provide{" "}
-        <strong className="font-medium text-stone-900">
-          global streetwear delivery
-        </strong>{" "}
-        to over 50 countries. Shipping rates are calculated in real-time at
-        checkout. All international shipments include end-to-end tracking for a
-        secure delivery experience.
       </>
     ),
   },

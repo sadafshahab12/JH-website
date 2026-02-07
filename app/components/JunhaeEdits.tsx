@@ -164,24 +164,40 @@ const JunhaeEdits = () => {
   const filteredProducts = useMemo(() => {
     let result = [...products];
 
-    // 1. Filter by Category
-    if (filterCategory !== "All") {
+    // --- 1. CATEGORY FILTER ---
+    if (queryCategory && queryCategory !== "All") {
+      result = result.filter(
+        (p) => p.category?.slug?.current === queryCategory,
+      );
+    } else if (filterCategory !== "All") {
       result = result.filter((p) => p.category?.title === filterCategory);
     }
 
-    // 2. 💡 Updated Search Logic: Priority to URL Param (querySearch) then context (searchTerm)
+    // --- 2. SMART SEARCH LOGIC ---
     const activeSearch = querySearch || searchTerm;
 
     if (activeSearch && activeSearch.trim()) {
-      const term = activeSearch.toLowerCase();
-      result = result.filter(
-        (p) =>
-          p.name.toLowerCase().includes(term) ||
-          p.category?.title?.toLowerCase().includes(term),
-      );
-    }
+      // 💡 Step A: Dono formats taiyar karein
+      const searchWithSpaces = activeSearch.toLowerCase().replace(/-/g, " "); // "t-shirt" -> "t shirt"
+      const searchWithDash = activeSearch.toLowerCase().replace(/\s+/g, "-"); // "t shirt" -> "t-shirt"
 
-    // 3. Sorting Logic
+      result = result.filter((p) => {
+        const productName = p.name.toLowerCase();
+        const categoryTitle = (p.category?.title || "").toLowerCase();
+        const categorySlug = (p.category?.slug?.current || "").toLowerCase();
+
+        return (
+          // Name mein "t shirt" ya "t-shirt" dhoonde
+          productName.includes(searchWithSpaces) ||
+          productName.includes(searchWithDash) ||
+          // Category Title mein match kare ("Stationery", "T-Shirt")
+          categoryTitle.includes(searchWithSpaces) ||
+          // Category Slug mein match kare ("t-shirt", "spiral-notebook")
+          categorySlug.includes(searchWithDash)
+        );
+      });
+    }
+    // --- 3. SORTING LOGIC ---
     if (sortOption === "price-low") {
       result.sort(
         (a, b) => getPrices(a).pk.discount - getPrices(b).pk.discount,
@@ -191,6 +207,7 @@ const JunhaeEdits = () => {
         (a, b) => getPrices(b).pk.discount - getPrices(a).pk.discount,
       );
     } else if (sortOption !== "newest") {
+      // Dynamic Badges Sorting (Best Seller, Popular etc.)
       result.sort((a, b) => {
         const aHas = a.badges?.some((x) => x.value === sortOption) ? 1 : 0;
         const bHas = b.badges?.some((x) => x.value === sortOption) ? 1 : 0;
@@ -199,7 +216,14 @@ const JunhaeEdits = () => {
     }
 
     return result;
-  }, [products, filterCategory, sortOption, searchTerm, querySearch]);
+  }, [
+    products,
+    filterCategory,
+    sortOption,
+    searchTerm,
+    querySearch,
+    queryCategory,
+  ]);
 
   const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
 
@@ -239,15 +263,27 @@ const JunhaeEdits = () => {
 
           {/* Overlay Content */}
           <div className="relative z-10 p-6 sm:p-8 rounded-3xl">
-            <h1 className="text-3xl sm:text-4xl font-vogue text-white mb-4 text-center sm:text-left">
-              {querySearch
-                ? `Results for "${querySearch}"`
-                : "Minimalist Streetwear & Apparel | Junhae Studio Collection"}
+            {/* SEO Tip: Heading mein primary keywords (Ethical & Sustainable) add kiye hain */}
+            <h1 className="text-3xl sm:text-4xl font-vogue text-white mb-4 text-center sm:text-left leading-tight">
+              Ethically Crafted Sustainable Apparel{" "}
+              <br className="hidden sm:block" />
+              <span className="opacity-90">
+                & Minimalist Streetwear | Junhae Studio
+              </span>
             </h1>
-            <p className="text-stone-200 text-sm sm:text-[16px] font-light max-w-2xl text-center sm:text-left">
-              Explore our premium minimalist streetwear essentials — ethically
-              crafted, sustainable print-on-demand apparel designed for modern
-              creatives.
+
+            <p className="text-stone-200 text-sm sm:text-[16px] font-light max-w-2xl text-center sm:text-left leading-relaxed">
+              Discover the Junhae Studio collection:{" "}
+              <strong className="font-bold">
+                ethically crafted{" "}
+              </strong>{" "}
+              ,{" "}
+              <strong className="font-bold">
+                sustainable
+              </strong>
+              print-on-demand essentials. Our premium minimalist streetwear is
+              designed with purpose for modern creatives who value quality and
+              conscious fashion.
             </p>
           </div>
         </div>

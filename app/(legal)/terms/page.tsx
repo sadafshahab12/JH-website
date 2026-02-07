@@ -3,9 +3,15 @@ import Link from "next/link";
 import Script from "next/script";
 
 export const metadata: Metadata = {
-  title: "Terms & Conditions | Junhae Studio | Secure Shopping Policy",
+  title: "Terms & Conditions | Junhae Studio | Ethically Crafted Shopping",
+
   description:
-    "Read the official terms and conditions for shopping at Junhae Studio. Learn about our ethical print-on-demand process, order production, and global shipping terms.",
+    "Official terms for Junhae Studio. Understand our ethical print-on-demand process, sustainable apparel production, and worldwide shipping terms for our community.",
+
+  robots: {
+    index: true,
+    follow: true,
+  },
 };
 
 export default function TermsPage() {

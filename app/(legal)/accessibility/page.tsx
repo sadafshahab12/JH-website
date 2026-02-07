@@ -3,10 +3,15 @@ import Link from "next/link";
 import Script from "next/script";
 
 export const metadata: Metadata = {
-  title:
-    "Accessibility Statement | Junhae Studio | Inclusive Minimalist Fashion",
+  title: "Accessibility Statement | Junhae Studio | Ethically Crafted Fashion",
   description:
-    "Junhae Studio is committed to providing an inclusive shopping experience. Learn about our digital accessibility standards for minimalist apparel and streetwear.",
+    "Junhae Studio is committed to an inclusive shopping experience for all. Learn about our digital accessibility standards for sustainable minimalist apparel.",
+
+  robots: {
+    index: true,
+    follow: true,
+    nocache: true,
+  },
 };
 
 export default function AccessibilityPage() {

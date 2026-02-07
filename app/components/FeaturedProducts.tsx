@@ -39,7 +39,9 @@ const FeaturedProducts = async () => {
   return (
     <section className="py-20 px-6 max-w-7xl mx-auto">
       <div className="flex justify-between items-end mb-12">
-        <h2 className="text-3xl font-vogue">Curated Minimalist Essentials</h2>
+        <h2 className="text-3xl font-vogue">
+          Ethically Crafted Minimalist Essentials
+        </h2>
         <Link
           href="/junhae-edits"
           className="text-sm border-b border-stone-300 hover:border-stone-900 pb-1 transition-colors"

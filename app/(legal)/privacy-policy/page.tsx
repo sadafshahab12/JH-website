@@ -3,9 +3,15 @@ import Link from "next/link";
 import Script from "next/script";
 
 export const metadata: Metadata = {
-  title: "Privacy Policy | Junhae Studio | Secure Minimalist Shopping",
+  title: "Privacy Policy | Junhae Studio | Ethically Crafted & Secure",
+
   description:
-    "Learn how Junhae Studio collects, uses, and protects your personal data. We ensure a secure and transparent shopping experience for our global community.",
+    "Read the Junhae Studio Privacy Policy. We are committed to protecting your data while providing a secure shopping experience for our global sustainable fashion community.",
+
+  robots: {
+    index: true,
+    follow: true,
+  },
 };
 
 export default function PrivacyPage() {

@@ -10,17 +10,36 @@ export async function generateMetadata({ params }: Props) {
   const { slug } = await params;
   const product = await client.fetch(productDetailBySlugQuery, { slug });
 
-  if (!product) return { title: "Product Not Found" };
+  if (!product) return { title: "Product Not Found | Junhae Studio" };
+  const brandSuffix = "Ethically Crafted Sustainable Apparel | Junhae Studio";
 
   return {
-    title: `${product.name} | Junhae Studio`,
-    description: product.description?.substring(0, 160),
+    title: `${product.name} | ${brandSuffix}`,
+    description: `${product.description?.substring(0, 120)}... Ethically crafted for modern creatives with worldwide shipping.`,
+
     openGraph: {
-      title: product.name,
-      images: [urlFor(product.baseImage).width(1200).url()],
+      title: `${product.name} | Junhae Studio`,
+      description: product.description?.substring(0, 160),
+      url: `https://junhaestudio.com/junhae-edits/${slug}`,
+      siteName: "Junhae Studio",
+      images: [
+        {
+          url: urlFor(product.baseImage).width(1200).height(630).url(),
+          width: 1200,
+          height: 630,
+          alt: `${product.name} - Sustainable Minimalist Apparel`,
+        },
+      ],
+      type: "website",
     },
+
     alternates: {
       canonical: `https://junhaestudio.com/junhae-edits/${slug}`,
+    },
+
+    robots: {
+      index: true,
+      follow: true,
     },
   };
 }

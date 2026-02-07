@@ -3,9 +3,15 @@ import Link from "next/link";
 import Script from "next/script";
 
 export const metadata: Metadata = {
-  title: "Size Guide | Junhae Studio | Find Your Perfect Minimalist Fit",
+  title: "Size Guide | Junhae Studio | Fit for Sustainable Minimalist Apparel",
+
   description:
-    "Comprehensive size guide for Junhae Studio's minimalist apparel. Accurate measurements for tees, hoodies, and sweatshirts to ensure the perfect aesthetic fit.",
+    "Find your perfect fit with Junhae Studio’s size guide. Accurate measurements for our ethically crafted sustainable minimalist streetwear, hoodies, and tees.",
+
+  robots: {
+    index: true,
+    follow: true,
+  },
 };
 
 const shirtSizes = [

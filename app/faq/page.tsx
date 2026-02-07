@@ -4,9 +4,16 @@ import Script from "next/script";
 import { faqData } from "../data/faq";
 
 export const metadata: Metadata = {
-  title: "Inquiry Hub | FAQ & Shipping | Junhae Studio",
+  title:
+    "Inquiry Hub | Worldwide Shipping & Ethically Crafted FAQ | Junhae Studio",
+
   description:
-    "Find answers about Junhae Studio's made-to-order process, carbon-neutral shipping, and sustainable streetwear care.",
+    "Answers for modern creatives. Learn about Junhae Studio's ethically crafted process, sustainable streetwear, and worldwide shipping for our global community.",
+
+  robots: {
+    index: true,
+    follow: true,
+  },
 };
 
 const FAQ = () => {
@@ -20,7 +27,7 @@ const FAQ = () => {
         "@type": "Answer",
         text:
           item.q === "What makes the Junhae Studio production process unique?"
-            ? "Junhae Studio operates on a 100% made-to-order philosophy..." 
+            ? "Junhae Studio operates on a 100% made-to-order philosophy..."
             : "Detailed policy information on junhaestudio.com",
       },
     })),
@@ -52,7 +59,7 @@ const FAQ = () => {
         {/* Journey Map Section */}
         <div className="mb-20 bg-stone-50 p-8 rounded-3xl border border-stone-100">
           <h3 className="text-xs font-bold uppercase tracking-[0.2em] mb-8 text-center text-stone-400">
-            Journey of your Garment
+            The Ethically Crafted Journey of a Junhae Garment
           </h3>
           <div className="flex flex-col md:flex-row justify-between gap-8 text-center">
             <div className="flex-1">

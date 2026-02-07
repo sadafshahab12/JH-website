@@ -17,7 +17,15 @@ import {
 } from "../types/cartItems";
 import { client } from "@/sanity/lib/client";
 import { shopContextQuery } from "../lib/shopContextQuery";
-
+declare global {
+  interface Window {
+    fbq: (
+      type: string,
+      event: string,
+      params?: Record<string, string | number | string[] | undefined>,
+    ) => void;
+  }
+}
 type AnySize = ProductSize | MugCapacity | string;
 interface ShopContextType {
   products: Product[];
@@ -154,7 +162,16 @@ export const ShopProvider = ({ children }: { children: ReactNode }) => {
         },
       ];
     });
-
+    if (typeof window !== "undefined" && window.fbq) {
+      window.fbq("track", "AddToCart", {
+        content_name: product.name,
+        content_category: productType,
+        content_ids: [product._id],
+        content_type: "product",
+        value: selectedPrice,
+        currency: priceMode === "pk" ? "PKR" : "USD",
+      });
+    }
     // setIsCartOpen(true);
   };
 

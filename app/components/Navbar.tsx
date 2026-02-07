@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import {
   ShoppingBag,
   Menu,
@@ -17,6 +17,9 @@ import {
 
 const Navbar: React.FC = () => {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const pathname = usePathname();
+
   const { toggleCart, cartCount } = useShop();
   const { searchTerm, setSearchTerm } = useSearch();
 
@@ -24,19 +27,25 @@ const Navbar: React.FC = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
+  const [showDropdown, setShowDropdown] = useState(false); // 💡 New State
   const [dynamicCategories, setDynamicCategories] = useState<
     { title: string; slug: string }[]
   >([]);
 
-  const pathname = usePathname();
   const hideNavbar = pathname?.startsWith("/studio");
+
+  // URL se search term sync karo (Enter dabane ke baad text bar mein hi rahega)
+  useEffect(() => {
+    const query = searchParams.get("search");
+    if (query) {
+      setSearchTerm(query.replace(/-/g, " "));
+    }
+  }, [searchParams, setSearchTerm]);
 
   useEffect(() => {
     const fetchCats = async () => {
       try {
-        const data = await client.fetch(
-          `*[_type == "category"]{ title, "slug": slug.current }`,
-        );
+        const data = await client.fetch(`*[_type == "category"]{ title, slug}`);
         setDynamicCategories(data);
       } catch (error) {
         console.error("Failed to fetch categories:", error);
@@ -52,21 +61,36 @@ const Navbar: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    const toggleMenu = () => {
+    const toggleMobileMenu = () => {
       setIsMobileMenuOpen(false);
       setIsMobileSearchOpen(false);
+      setShowDropdown(false);
     };
-    toggleMenu();
+    toggleMobileMenu();
   }, [pathname]);
 
-  // 💡 Enter Key Handler with Auto-Close Results
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(e.target.value);
+    setShowDropdown(true); // Typing par dropdown dikhao
+  };
+
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter" && searchTerm.trim() !== "") {
-      const query = searchTerm;
-      setSearchTerm(""); // 💡 Close dropdown & clear bar
+      const searchSlug = searchTerm.toLowerCase().trim().replace(/\s+/g, "-");
+
+      setShowDropdown(false); // 💡 Enter dabatay hi dropdown hide
       setIsMobileSearchOpen(false);
       setIsMobileMenuOpen(false);
-      router.push(`/junhae-edits?search=${encodeURIComponent(query)}`);
+
+      router.push(`/junhae-edits?search=${searchSlug}`);
+    }
+  };
+
+  const handleClearSearch = () => {
+    setSearchTerm("");
+    setShowDropdown(false);
+    if (searchParams.get("search")) {
+      router.push("/junhae-edits");
     }
   };
 
@@ -79,7 +103,7 @@ const Navbar: React.FC = () => {
         { label: "All Products", href: "/junhae-edits" },
         ...dynamicCategories.map((cat) => ({
           label: cat.title,
-          href: `/junhae-edits?category=${encodeURIComponent(cat.title)}`,
+          href: `/junhae-edits?category=${cat.slug}`,
         })),
       ],
     },
@@ -102,6 +126,7 @@ const Navbar: React.FC = () => {
             Junhae Studio
           </Link>
 
+          {/* Desktop Links */}
           <div className="hidden md:flex items-center space-x-8 text-sm font-medium tracking-wide text-stone-600">
             {NAV_LINKS.map((link) => (
               <div
@@ -122,7 +147,6 @@ const Navbar: React.FC = () => {
                     />
                   )}
                 </Link>
-
                 {link.subLinks && activeDropdown === link.label && (
                   <div className="absolute top-full left-0 w-56 bg-white border border-stone-100 shadow-xl rounded-lg py-3 animate-in fade-in slide-in-from-top-2">
                     {link.subLinks.map((sub) => (
@@ -140,16 +164,26 @@ const Navbar: React.FC = () => {
             ))}
           </div>
 
+          {/* Actions */}
           <div className="flex items-center gap-2 z-50">
+            {/* Desktop Search */}
             <div className="relative hidden lg:block w-48 xl:w-64 mr-4">
               <input
                 value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
+                onChange={handleInputChange}
                 onKeyDown={handleKeyDown}
                 placeholder="Search..."
-                className="w-full rounded-full border border-stone-200 bg-white/80 px-4 py-1.5 text-xs focus:outline-none focus:border-stone-900"
+                className="w-full rounded-full border border-stone-200 bg-white/80 pl-4 pr-10 py-1.5 text-xs focus:outline-none focus:border-stone-900"
               />
-              {searchTerm && <SearchResultsDropdown />}
+              {searchTerm && (
+                <button
+                  onClick={handleClearSearch}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-stone-400 hover:text-stone-900 transition-colors"
+                >
+                  <X size={14} />
+                </button>
+              )}
+              {searchTerm && showDropdown && <SearchResultsDropdown />}
             </div>
 
             <button
@@ -180,21 +214,33 @@ const Navbar: React.FC = () => {
           </div>
         </div>
 
+        {/* Mobile Search Input */}
         {isMobileSearchOpen && (
           <div className="md:hidden px-6 pb-4 pt-2 bg-white border-t border-stone-200 shadow-sm animate-in slide-in-from-top">
-            <input
-              autoFocus
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              onKeyDown={handleKeyDown}
-              placeholder="Search products..."
-              className="w-full rounded-full border border-stone-200 px-5 py-2 text-sm focus:border-stone-900 outline-none"
-            />
-            {searchTerm && <SearchResultsDropdown />}
+            <div className="relative">
+              <input
+                autoFocus
+                value={searchTerm}
+                onChange={handleInputChange}
+                onKeyDown={handleKeyDown}
+                placeholder="Search products..."
+                className="w-full rounded-full border border-stone-200 pl-5 pr-12 py-2 text-sm focus:border-stone-900 outline-none"
+              />
+              {searchTerm && (
+                <button
+                  onClick={handleClearSearch}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-stone-400"
+                >
+                  <X size={18} />
+                </button>
+              )}
+            </div>
+            {searchTerm && showDropdown && <SearchResultsDropdown />}
           </div>
         )}
       </nav>
 
+      {/* Mobile Menu Overlay */}
       <div
         className={`fixed inset-0 z-40 bg-white transform transition-transform duration-300 ease-in-out md:hidden ${isMobileMenuOpen ? "translate-y-0" : "-translate-y-full"}`}
       >
