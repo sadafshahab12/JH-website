@@ -13,7 +13,9 @@ import {
   SearchResultsDropdown,
   ChevronDown,
   client,
+  Product,
 } from "../exports/homeExports";
+import { Category } from "../types/productType";
 
 const Navbar: React.FC = () => {
   const router = useRouter();
@@ -27,13 +29,10 @@ const Navbar: React.FC = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
-  const [showDropdown, setShowDropdown] = useState(false); 
-  const [dynamicCategories, setDynamicCategories] = useState<
-    { title: string; slug: string }[]
-  >([]);
+  const [showDropdown, setShowDropdown] = useState(false);
+  const [dynamicCategories, setDynamicCategories] = useState<Category[]>([]);
 
   const hideNavbar = pathname?.startsWith("/studio");
-
 
   useEffect(() => {
     const query = searchParams.get("search");
@@ -45,7 +44,11 @@ const Navbar: React.FC = () => {
   useEffect(() => {
     const fetchCats = async () => {
       try {
-        const data = await client.fetch(`*[_type == "category"]{ title, slug}`);
+        // Sirf wo categories laein jin ka title aur slug ho
+        const data = await client.fetch(`*[_type == "category"]{ 
+        title, 
+        slug
+      }`);
         setDynamicCategories(data);
       } catch (error) {
         console.error("Failed to fetch categories:", error);
@@ -71,14 +74,14 @@ const Navbar: React.FC = () => {
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);
-    setShowDropdown(true); 
+    setShowDropdown(true);
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter" && searchTerm.trim() !== "") {
       const searchSlug = searchTerm.toLowerCase().trim().replace(/\s+/g, "-");
 
-      setShowDropdown(false); 
+      setShowDropdown(false);
       setIsMobileSearchOpen(false);
       setIsMobileMenuOpen(false);
 
