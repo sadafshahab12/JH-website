@@ -33,6 +33,7 @@ import {
   MugCapacity,
 } from "../exports/homeExports";
 import Image from "next/image";
+import Script from "next/script";
 
 const ProductDetail = () => {
   const { addToCart } = useShop();
@@ -227,6 +228,28 @@ const ProductDetail = () => {
       setTimeout(() => setCopied(false), 2000);
     }
   };
+  useEffect(() => {
+    if (window.fbq && product) {
+      const currentPrice =
+        priceMode === "pk"
+          ? (product.pricing.pkPrice.discount ??
+            product.pricing.pkPrice.original)
+          : (product.pricing.intlPrice.discount ??
+            product.pricing.intlPrice.original);
+
+      window.fbq("track", "ViewContent", {
+        content_name: product.name,
+        content_category:
+          typeof product.category === "string"
+            ? product.category
+            : product.category?.title || "General",
+        content_ids: [product._id],
+        content_type: "product",
+        value: currentPrice,
+        currency: priceMode === "pk" ? "PKR" : "USD",
+      });
+    }
+  }, [product, priceMode]);
   // ✅ FULL LOADING SKELETON
   if (loadingProduct || !product || !selectedVariant) {
     return (
@@ -299,7 +322,8 @@ const ProductDetail = () => {
   };
   return (
     <>
-      <script
+      <Script
+        id="product-schema"
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(productSchema) }}
       />
