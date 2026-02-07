@@ -16,7 +16,7 @@ export const metadata: Metadata = {
   },
 };
 
-const FAQ = () => {
+export default function FAQPage() {
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "FAQPage",
@@ -117,6 +117,4 @@ const FAQ = () => {
       </section>
     </>
   );
-};
-
-export default FAQ;
+}
