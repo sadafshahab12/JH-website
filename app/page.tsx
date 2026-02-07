@@ -178,7 +178,7 @@ const Home = () => {
                 Ethically Crafted • Defined by Silence • 2025
               </span>
 
-              <h1 className="text-[2rem] sm:text-7xl font-extrabold text-crimson sm:text-stone-950 leading-[1.1] mb-8 tracking-tight">
+              <h1 className="text-[2rem] sm:text-6xl  lg:text-7xl font-extrabold text-crimson sm:text-stone-950 leading-[1.1] mb-8 tracking-tight">
                 Ethically Crafted <br />
                 <span className="text-stone-1000 font-vogue italic font-medium">
                   Sustainable Apparel

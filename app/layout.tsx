@@ -124,7 +124,7 @@ export default function RootLayout({
           <noscript>
             <Image
               src={`https://www.facebook.com/tr?id=${fbPixelId}&ev=PageView&noscript=1`}
-              alt=""
+              alt="..."
               width={1}
               height={1}
               style={{ display: "none" }}
