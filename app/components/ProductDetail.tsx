@@ -454,11 +454,9 @@ const ProductDetail = () => {
                   <div>
                     <div className="flex justify-between items-center mb-3">
                       <span className="text-xs font-bold tracking-widest text-stone-400 uppercase">
-                        {/* ✅ Check for Mug vs Apparel Label */}
                         {product.productType === "mug" ? "Capacity" : "Size"}
                       </span>
 
-                      {/* ✅ Show Size Guide only if relevant guide exists */}
                       {(product.sizeGuide || product.mugSizeGuide) && (
                         <button
                           onClick={() => setShowSizeGuide(true)}

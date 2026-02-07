@@ -177,7 +177,7 @@ const JunhaeEdits = () => {
     const activeSearch = querySearch || searchTerm;
 
     if (activeSearch && activeSearch.trim()) {
-      // 💡 Step A: Dono formats taiyar karein
+
       const searchWithSpaces = activeSearch.toLowerCase().replace(/-/g, " "); // "t-shirt" -> "t shirt"
       const searchWithDash = activeSearch.toLowerCase().replace(/\s+/g, "-"); // "t shirt" -> "t-shirt"
 
@@ -187,12 +187,12 @@ const JunhaeEdits = () => {
         const categorySlug = (p.category?.slug?.current || "").toLowerCase();
 
         return (
-          // Name mein "t shirt" ya "t-shirt" dhoonde
+
           productName.includes(searchWithSpaces) ||
           productName.includes(searchWithDash) ||
-          // Category Title mein match kare ("Stationery", "T-Shirt")
+
           categoryTitle.includes(searchWithSpaces) ||
-          // Category Slug mein match kare ("t-shirt", "spiral-notebook")
+       
           categorySlug.includes(searchWithDash)
         );
       });
@@ -263,7 +263,7 @@ const JunhaeEdits = () => {
 
           {/* Overlay Content */}
           <div className="relative z-10 p-6 sm:p-8 rounded-3xl">
-            {/* SEO Tip: Heading mein primary keywords (Ethical & Sustainable) add kiye hain */}
+
             <h1 className="text-3xl sm:text-4xl font-vogue text-white mb-4 text-center sm:text-left leading-tight">
               Ethically Crafted Sustainable Apparel{" "}
               <br className="hidden sm:block" />

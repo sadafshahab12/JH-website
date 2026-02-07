@@ -11,6 +11,7 @@ import { GoogleAnalytics } from "@next/third-parties/google";
 import ScrollToTop from "./components/ScrollToTop";
 import Script from "next/script";
 import Image from "next/image";
+import { Suspense } from "react";
 
 const outfit = Outfit({
   weight: ["400", "800"],
@@ -134,7 +135,9 @@ export default function RootLayout({
         <ScrollToTop />
         <ShopProvider>
           <SearchProvider>
-            <Navbar />
+            <Suspense fallback={<div className="h-16" />}>
+              <Navbar />
+            </Suspense>
             {children}
             <CartDrawer />
             <Footer />

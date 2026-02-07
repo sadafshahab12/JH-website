@@ -52,7 +52,7 @@ const OurStoryPage: React.FC = () => {
                 </span>
               </div>
               <div>
-                {/* Eyebrow Text: SEO Keywords cover karne ke liye */}
+      
                 <span className="block text-[10px] sm:text-xs uppercase tracking-[0.4em] text-stone-500 font-bold mb-4">
                   Ethically Crafted • Sustainable Essentials
                 </span>
@@ -72,7 +72,7 @@ const OurStoryPage: React.FC = () => {
           </div>
         </section>
 
-        {/* 2. THE MOVEMENT: Latest Product Spotlight (dxdssfsf.png style) */}
+ 
         <section className="py-12 md:py-24 px-4 md:px-6 max-w-7xl mx-auto">
           <div className="flex flex-col md:grid md:grid-cols-12 gap-6 md:gap-0 bg-white shadow-2xl rounded-3xl overflow-hidden border border-rose-50">
             {/* Main Content Box */}
@@ -111,7 +111,7 @@ const OurStoryPage: React.FC = () => {
               </div>
             </div>
 
-            {/* Featured Image Box - Displaying the latest aesthetic */}
+   
             <div className="md:col-span-7 relative h-125 md:h-auto overflow-hidden">
               <Image
                 src="/ourstory-image/latest-arirang-collection.jpg"
@@ -266,8 +266,7 @@ const OurStoryPage: React.FC = () => {
         {/* 4. FINAL CALL TO ACTION */}
         <section className="relative py-24 md:py-40 px-4 text-center">
           <div className="max-w-3xl mx-auto">
-            <div className="text-center">
-              {/* SEO Eyebrow: Keywords coverage */}
+            <div className="text-center">           {/* SEO Eyebrow: Keywords coverage */}
               <span className="block text-[10px] md:text-xs uppercase tracking-[0.4em] text-stone-400 font-bold mb-4">
                 Ethically Crafted • Sustainable Streetwear
               </span>

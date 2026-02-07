@@ -190,7 +190,6 @@ const SizeGuide = () => {
           </Link>
         </footer>
 
-        {/* Structured Data for Google Dataset/Table Recognition */}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{

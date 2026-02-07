@@ -27,14 +27,14 @@ const Navbar: React.FC = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
-  const [showDropdown, setShowDropdown] = useState(false); // 💡 New State
+  const [showDropdown, setShowDropdown] = useState(false); 
   const [dynamicCategories, setDynamicCategories] = useState<
     { title: string; slug: string }[]
   >([]);
 
   const hideNavbar = pathname?.startsWith("/studio");
 
-  // URL se search term sync karo (Enter dabane ke baad text bar mein hi rahega)
+
   useEffect(() => {
     const query = searchParams.get("search");
     if (query) {
@@ -71,14 +71,14 @@ const Navbar: React.FC = () => {
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);
-    setShowDropdown(true); // Typing par dropdown dikhao
+    setShowDropdown(true); 
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter" && searchTerm.trim() !== "") {
       const searchSlug = searchTerm.toLowerCase().trim().replace(/\s+/g, "-");
 
-      setShowDropdown(false); // 💡 Enter dabatay hi dropdown hide
+      setShowDropdown(false); 
       setIsMobileSearchOpen(false);
       setIsMobileMenuOpen(false);
 

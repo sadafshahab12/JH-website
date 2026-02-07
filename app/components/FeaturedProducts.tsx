@@ -4,10 +4,8 @@ import { Product } from "../types/productType";
 import { homeProductQuery } from "../lib/homeProductQuery";
 import { client, urlFor } from "../exports/homeExports";
 
-// Artificial delay function
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
-// Logic ko component se bahar nikal diya taake compiler ko masla na ho
 async function getProductsWithMinDelay() {
   const MIN_LOADING_TIME = 600;
   const start = Date.now();
@@ -25,7 +23,6 @@ async function getProductsWithMinDelay() {
 }
 
 const FeaturedProducts = async () => {
-  // Data fetch kar rahe hain fixed logic ke sath
   const products = await getProductsWithMinDelay();
 
   const featuredProducts = products

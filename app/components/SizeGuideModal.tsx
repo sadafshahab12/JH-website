@@ -82,7 +82,6 @@ const SizeGuideModal: React.FC<SizeGuideModalProps> = ({
               </table>
             </div>
 
-            {/* --- Mug Specific Extra Info (Material & Safety) --- */}
             {product.productType === "mug" && product.mugSizeGuide && (
               <div className="space-y-4 border-t border-stone-100 pt-6">
                 <div className="grid grid-cols-2 gap-4 text-[11px]">
@@ -116,7 +115,6 @@ const SizeGuideModal: React.FC<SizeGuideModalProps> = ({
               </div>
             )}
 
-            {/* --- Apparel Specific Extra Info (Model Stats) --- */}
             {product.productType === "apparel" &&
               product.sizeGuide?.modelStats && (
                 <div className="space-y-4 border-t border-stone-100 pt-6">

@@ -3,7 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation"; // Router add kiya
+import { useRouter } from "next/navigation";
 import { urlFor, client, Product, useSearch } from "../exports/homeExports";
 import { searchResultQuery } from "../lib/searchResultQuery";
 
@@ -22,21 +22,13 @@ export default function SearchResultsDropdown() {
 
   if (!searchTerm) return null;
 
-  // View All click handle karne ke liye function
+
   const handleViewAll = (e: React.MouseEvent) => {
     e.preventDefault();
 
-    // URL friendly search term (spaces ko hyphens se badalna)
     const searchSlug = searchTerm.toLowerCase().trim().replace(/\s+/g, "-");
 
-    // Search term ko context mein rehne dein taake page par filter ho sake
-    // Lekin dropdown band karne ke liye state update ki zarurat nahi,
-    // bas redirect karein
     router.push(`/junhae-edits?search=${searchSlug}`);
-
-    // Optional: Agar aap dropdown band karna chahte hain toh searchTerm reset mat karein,
-    // balki dropdown ki visibility control karein.
-    // Filhal redirection hi kafi hai.
   };
 
   return (
@@ -45,7 +37,6 @@ export default function SearchResultsDropdown() {
         <>
           <div className="max-h-100 overflow-y-auto">
             {" "}
-            {/* Scroll add kiya taake dropdown screen se bahar na jaye */}
             {products.map((product) => (
               <Link
                 key={product._id}
@@ -58,7 +49,8 @@ export default function SearchResultsDropdown() {
                     <Image
                       src={urlFor(product.baseImage).width(200).url()}
                       alt={product.name}
-                      fill // Image layout ko responsive banaya
+                      width={800}
+                      height={800}
                       sizes="48px"
                       className="object-cover"
                     />

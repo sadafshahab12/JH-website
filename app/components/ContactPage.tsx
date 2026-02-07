@@ -291,7 +291,7 @@ const ContactPage = () => {
                 className="flex items-center gap-3 group"
               >
                 <div className="p-2 border border-stone-100 rounded-full group-hover:text-[#FF0000] group-hover:border-[#FF0000]/30 transition-all">
-                  {/* Make sure to import BsYoutube from react-icons/bs */}
+  
                   <BsYoutube size={16} />
                 </div>
                 <span className="text-[10px] font-bold uppercase tracking-tighter text-stone-500 group-hover:text-stone-900">
