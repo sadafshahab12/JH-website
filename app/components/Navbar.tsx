@@ -98,7 +98,7 @@ const Navbar: React.FC = () => {
   const NAV_LINKS = [
     { label: "HOME", href: "/" },
     {
-      label: "Junhae Edits",
+      label: "JUNHAE EDITS",
       href: "/junhae-edits",
       subLinks: [
         { label: "All Products", href: "/junhae-edits" },
