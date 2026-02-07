@@ -13,7 +13,6 @@ import {
   SearchResultsDropdown,
   ChevronDown,
   client,
-  Product,
 } from "../exports/homeExports";
 import { Category } from "../types/productType";
 
@@ -44,7 +43,6 @@ const Navbar: React.FC = () => {
   useEffect(() => {
     const fetchCats = async () => {
       try {
-        // Sirf wo categories laein jin ka title aur slug ho
         const data = await client.fetch(`*[_type == "category"]{ 
         title, 
         slug
@@ -100,7 +98,7 @@ const Navbar: React.FC = () => {
   const NAV_LINKS = [
     { label: "HOME", href: "/" },
     {
-      label: "SHOP",
+      label: "Junhae Edits",
       href: "/junhae-edits",
       subLinks: [
         { label: "All Products", href: "/junhae-edits" },
