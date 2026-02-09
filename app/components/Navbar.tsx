@@ -104,7 +104,7 @@ const Navbar: React.FC = () => {
         { label: "All Products", href: "/junhae-edits" },
         ...dynamicCategories.map((cat) => ({
           label: cat.title,
-          href: `/junhae-edits?category=${cat.slug}`,
+          href: `/junhae-edits?category=${cat.slug.current}`,
         })),
       ],
     },
