@@ -11,6 +11,7 @@ import {
   PopulatedOrder,
 } from "../exports/homeExports";
 import { thankyouOrderQuery } from "../lib/thankyouOrderQuery";
+import { CurrencyMode } from "../types/orderType";
 
 const ThankYouContent = () => {
   const searchParams = useSearchParams();
@@ -177,14 +178,31 @@ const ThankYouContent = () => {
   };
 
   useEffect(() => {
-    if (order && typeof window !== "undefined" && window.fbq) {
-      window.fbq("track", "Purchase", {
-        content_ids: order.items.map((item) => item.product._id),
-        content_type: "product",
-        value: order.total,
-        currency: order.currencyMode === "pk" ? "PKR" : "USD",
-        num_items: order.items.reduce((sum, item) => sum + item.quantity, 0),
-      });
+    // 1. Guard Clause: Ensure order exists and window.fbq is available
+    if (!order || typeof window === "undefined" || !window.fbq) return;
+
+    // 2. Strict Currency Mapping (ISO 4217 Requirement)
+    // Meta Pixel will reject "pk" or "intl", it needs "PKR" or "USD"
+    const currencyMap: Record<CurrencyMode, string> = {
+      pk: "PKR",
+      intl: "USD",
+    };
+
+    const finalCurrency = currencyMap[order.currencyMode] || "USD";
+
+    // 3. Data Formatting
+    const pixelData = {
+      content_ids: order.items.map((item) => item.product._id),
+      content_type: "product",
+      value: Number(order.total),
+      currency: finalCurrency,
+      num_items: order.items.reduce((sum, item) => sum + item.quantity, 0),
+    };
+
+    try {
+      window.fbq("track", "Purchase", pixelData);
+    } catch (err) {
+      console.error("Meta Pixel tracking failed:", err);
     }
   }, [order]);
   if (loading) {

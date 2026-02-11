@@ -23,7 +23,7 @@ const Navbar: React.FC = () => {
 
   const { toggleCart, cartCount } = useShop();
   const { searchTerm, setSearchTerm } = useSearch();
-
+  const [mounted, setMounted] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
@@ -69,7 +69,12 @@ const Navbar: React.FC = () => {
     };
     toggleMobileMenu();
   }, [pathname]);
-
+  useEffect(() => {
+    const mountTag = () => {
+      setMounted(true);
+    };
+    mountTag();
+  }, []);
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);
     setShowDropdown(true);
@@ -199,7 +204,7 @@ const Navbar: React.FC = () => {
               className="relative p-2 text-stone-800"
             >
               <ShoppingBag size={22} strokeWidth={1.5} />
-              {cartCount > 0 && (
+              {mounted && cartCount > 0 && (
                 <span className="absolute top-1 right-1 bg-stone-800 text-white text-[10px] w-4 h-4 flex items-center justify-center rounded-full shadow-sm">
                   {cartCount}
                 </span>
