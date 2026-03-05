@@ -24,10 +24,10 @@ const CheckoutPage = () => {
   const { cart, cartTotal, updateQuantity, clearCart } = useShop();
   const router = useRouter();
 
-  // Calculate total quantity of items in the cart
+
   const totalQuantity = cart.reduce((sum, item) => sum + item.quantity, 0);
 
-  // Shipping & Total State
+
   const [shippingFee, setShippingFee] = useState<number>(0);
   const [shippingNote, setShippingNote] = useState<string>("");
   const [total, setTotal] = useState<number>(0);
@@ -87,7 +87,7 @@ const CheckoutPage = () => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // 2. Updated Logic: Quantity-based Shipping Calculation
+
   useEffect(() => {
     const fetchShipping = async () => {
       const trimmedCountry = country.trim();
@@ -106,7 +106,7 @@ const CheckoutPage = () => {
         if (result) {
           const threshold = result.freeShippingMinOrder || 0;
 
-          // Logic Change: Check if Total Quantity reaches the threshold
+
           const meetsFreeShipping = threshold > 0 && totalQuantity >= threshold;
 
           if (meetsFreeShipping) {

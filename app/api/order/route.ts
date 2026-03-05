@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { v4 as uuidv4 } from "uuid";
 import { Resend } from "resend";
-
+import nodemailer from "nodemailer";
 import { CreateOrderPayload } from "@/app/types/orderType";
 import { sanityClient } from "@/app/lib/sanityClient";
 
@@ -202,10 +202,68 @@ export async function POST(req: Request) {
           "Email delivery failed, but order was created:",
           emailError,
         );
-        // Hum order successfully return karenge kyunke Sanity mein data save ho chuka hai
       }
     }
+    // try {
+    //   await resend.emails.send({
+    //     from: "Junhae Studio <orders@junhaestudio.com>",
+    //     to: ["junhaestudio@gmail.com"],
+    //     subject: `🚨 New Order Alert: #${orderNumber}`,
+    //     html: `
+    //       <div style="font-family: Arial, sans-serif; padding: 20px; color: #333; border: 1px solid #ddd;">
+    //         <h2 style="color: #1a1a1a;">New Order Received!</h2>
+    //         <p><strong>Order Number:</strong> #${orderNumber}</p>
+    //         <p><strong>Customer Name:</strong> ${order.customer.fullName}</p>
+    //         <p><strong>Customer Name:</strong> ${order.customer.email}</p>
+    //         <p><strong>Phone:</strong> ${order.customer.phone}</p>
+    //         <p><strong>Phone:</strong> ${order.customer.country} - ${order.customer.city}</p>
+    //         <p><strong>Phone:</strong> ${order.customer.address}</p>
+    //         <p><strong>Phone:</strong> ${order.customer.customization}</p>
+    //         <p><strong>Total Amount:</strong> ${order.currencyMode === "pk" ? "Rs." : "$"} ${order.total}</p>
+    //         <hr />
+    //         <p>Verify the payment receipt in your Sanity Dashboard.</p>
+    //         <a href="https://junhaestudio.com/studio" style="background: #000; color: #fff; padding: 10px 15px; text-decoration: none; border-radius: 5px;">Go to Dashboard</a>
+    //       </div>
+    //     `,
+    //   });
+    // } catch (adminError) {
+    //   console.error("Admin Notification Error:", adminError);
+    // }
+    try {
+      const transporter = nodemailer.createTransport({
+        service: "gmail",
+        auth: {
+          user: process.env.GMAIL,
+          pass: process.env.GMAIL_APP_PASSWORD,
+        },
+      });
 
+      const adminMailOptions = {
+        from: "Order System <order.junhaestudio.com>",
+        to: "junhaestudio@gmail.com",
+        subject: `🚨 NEW ORDER ALERT #${orderNumber}`,
+        text: `Naya order aya hai! Customer: ${order.customer.fullName}, Total: ${order.total}`,
+        html: `
+        <div style="font-family: sans-serif; border: 1px solid #eee; padding: 20px;">
+          <h2 style="color: #d4a373;">New Order Notification</h2>
+          <p><strong>Customer:</strong> ${order.customer.fullName}</p>
+          <p><strong>Email:</strong> ${order.customer.email}</p>
+          <p><strong>Phone:</strong> ${order.customer.phone}</p>
+          <p><strong>Address:</strong> ${order.customer.address}</p>
+          <p><strong>Destination:</strong> ${order.customer.country} - ${order.customer.city} </p>
+          <p><strong>Customer Customization:</strong> ${order.customer.customization} </p>
+          <p><strong>Total:</strong> ${order.total}</p>
+          <br/>
+          <a href="https://junhaestudio.com/studio" style="padding: 10px 20px; background: #000; color: #fff; text-decoration: none;">Open Sanity</a>
+        </div>
+      `,
+      };
+
+      await transporter.sendMail(adminMailOptions);
+      console.log("Admin notification sent via Nodemailer");
+    } catch (nmError) {
+      console.error("Nodemailer Admin Error:", nmError);
+    }
     return NextResponse.json(
       { success: true, orderId: createdOrder._id, orderNumber },
       { status: 201 },
